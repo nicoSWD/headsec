@@ -1,0 +1,14 @@
+#parameters:
+
+services:
+  nicoSWD\SecHeaderCheck\:
+    resource: '../src/*'
+    exclude: '../src/Application/Command'
+    autowire: true
+    public: false
+
+  nicoSWD\SecHeaderCheck\Application\Command\:
+    resource: '../src/Application/Command'
+    autowire: true
+    public: true
+    tags: [console.command]

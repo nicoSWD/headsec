@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Application;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+$container = new ContainerBuilder();
+$loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/config'));
+$loader->load('services.yml');
+
+$container->compile();
+
+$application = new Application();
+
+$consoleCommands = $container->findTaggedServiceIds('console.command');
+
+foreach ($consoleCommands as $consoleCommand => $tags) {
+    $application->add($container->get($consoleCommand));
+}
+
+$application->run();

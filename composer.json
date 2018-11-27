@@ -1,0 +1,33 @@
+{
+    "name": "nicoswd/sec-header-check",
+    "type": "library",
+    "description": "Check security headers",
+    "require": {
+        "symfony/console": "^4.1",
+        "symfony/config": "^4.1",
+        "symfony/dependency-injection": "^4.1",
+        "symfony/yaml": "^4.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4",
+        "mockery/mockery": "^1.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Oelgart",
+            "email": "nico@nicoswd.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "nicoSWD\\SecHeaderCheck\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\nicoSWD\\SecHeaderCheck\\": "tests/"
+        }
+    }
+}
