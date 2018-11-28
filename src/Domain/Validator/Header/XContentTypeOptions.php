@@ -16,7 +16,7 @@ final class XContentTypeOptions extends SecurityHeader
         $value = $this->getUniqueValue();
 
         if (!$this->isNoSniff($value)) {
-            $this->addRecommendation('"nosniff" is the expected value');
+            $this->addWarning('"nosniff" is the expected value');
             return .0;
         }
 

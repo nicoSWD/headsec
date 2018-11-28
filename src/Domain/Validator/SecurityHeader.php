@@ -12,23 +12,24 @@ abstract class SecurityHeader
     /** @var string|string[] */
     private $value;
     /** @var string[] */
-    private $recommendations = [];
+    private $warnings = [];
 
+    /** @throws \nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException */
     abstract public function getScore(): float;
-
-    public function getRecommendations(): array
-    {
-        return $this->recommendations;
-    }
 
     public function __construct($value)
     {
         $this->value = $value;
     }
 
-    protected function addRecommendation(string $recommendation): void
+    public function getWarnings(): array
     {
-        $this->recommendations[] = $recommendation;
+        return $this->warnings;
+    }
+
+    protected function addWarning(string $warning): void
+    {
+        $this->warnings[] = $warning;
     }
 
     protected function getValue()

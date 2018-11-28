@@ -23,15 +23,15 @@ final class StrictTransportSecurity extends SecurityHeader
                 $score = 1;
             } else {
                 $score = .5;
-                $this->addRecommendation('max-age should be at least 6 months (15768000 seconds)');
+                $this->addWarning('max-age should be at least 6 months (15768000 seconds)');
             }
         } else {
             $score = 0;
-            $this->addRecommendation('Missing or invalid max-age');
+            $this->addWarning('Missing or invalid max-age');
         }
 
         if (!$this->hasIncludeSubDomainsFlag($value)) {
-            $this->addRecommendation('The flag includeSubdomains should be set');
+            $this->addWarning('The flag includeSubdomains should be set');
         }
 
         return $score;
@@ -48,7 +48,7 @@ final class StrictTransportSecurity extends SecurityHeader
 
     private function getMaxAge(string $value)
     {
-        if (preg_match('~max-age[ ]*=[ ]*([1-9]\d*)~i', $value, $maxAge)) {
+        if (preg_match('~max-age\s*=\s*([1-9]\d*)~i', $value, $maxAge)) {
             return (int) $maxAge[1];
         }
 

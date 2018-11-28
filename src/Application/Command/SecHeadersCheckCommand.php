@@ -40,11 +40,9 @@ final class SecHeadersCheckCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        [$score, $recommendations] = $this->headerService->analise($input->getArgument('url'));
-
+        $resultSet = $this->headerService->analise($input->getArgument('url'));
         $printer = $this->resultPrinterFactory->createFromFormat($input->getOption('format'));
-        $result = $printer->print($score, $recommendations);
 
-        $output->writeln($result);
+        $output->writeln($printer->getOutput($resultSet));
     }
 }

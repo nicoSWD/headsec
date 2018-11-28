@@ -17,15 +17,15 @@ final class SetCookie extends SecurityHeader
             $options = $this->getCookieOptions($cookie);
 
             if (!$this->hasSecureFlag($options)) {
-                $this->addRecommendation("Cookies should be set with the <Secure> flag");
+                $this->addWarning("Cookies should be set with the <Secure> flag");
             }
 
             if (!$this->hasHttpOnlyFlag($options)) {
-                $this->addRecommendation("Cookies should be set with the <HttpOnly> flag");
+                $this->addWarning("Cookies should be set with the <HttpOnly> flag");
             }
 
             if (!$this->hasSameSiteFlag($options)) {
-                $this->addRecommendation("Cookies should be set with the <SameSite> flag to prevent CSRF");
+                $this->addWarning("Cookies should be set with the <SameSite> flag to prevent CSRF");
             }
         }
 

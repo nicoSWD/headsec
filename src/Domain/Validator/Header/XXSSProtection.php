@@ -21,11 +21,11 @@ final class XXSSProtection extends SecurityHeader
             if ($this->isBlocking($mode)) {
                 $score = 1;
             } else {
-                $this->addRecommendation('mode=block should be specified');
+                $this->addWarning('mode=block should be specified');
                 $score = .5;
             }
         } else {
-            $this->addRecommendation('value should be set to 1');
+            $this->addWarning('value should be set to 1');
             $score = 0;
         }
 

@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\ResultPrinter;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ResultSet;
+
 interface ResultPrinterInterface
 {
-    public function print(float $score, array $recommendations): string;
+    public function getOutput(ResultSet $resultSet): string;
 }
