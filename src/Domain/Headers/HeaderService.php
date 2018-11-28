@@ -1,5 +1,10 @@
 <?php declare(strict_types=1);
 
+/**
+ * @license  http://opensource.org/licenses/mit-license.php MIT
+ * @link     https://github.com/nicoSWD
+ * @author   Nicolas Oelgart <nico@oelgart.com>
+ */
 namespace nicoSWD\SecHeaderCheck\Domain\Headers;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
@@ -19,27 +24,46 @@ final class HeaderService
         $this->headerFactory = $headerFactory;
     }
 
-    public function analise(string $url)
+    public function analise(string $url): array
     {
+        if (!$this->isValidUrl($url)) {
+            throw new \Exception('Invalid URL');
+        }
+
         $score = 0;
         $recommendations = [];
 
-        foreach ($this->getHeaders($url) as $header => $value) {
-            $head = $this->headerFactory->createFromHeader($header, $value);
+        foreach ($this->getHeaders($url) as $headerName => $value) {
+            $header = $this->headerFactory->createFromHeader($headerName, $value);
 
-            $score += $head->getScore();
-            $recommendations += $head->getRecommendations();
+            $score += $header->getScore();
+            $recommendations += $header->getRecommendations();
         }
 
-        return $score;
+        return [$score, $recommendations];
     }
 
     private function getHeaders(string $url)
     {
         $headers = $this->headerProvider->getHeaders($url);
-        $headers =  array_change_key_case($headers, CASE_LOWER);
+        $headers = array_change_key_case($headers, CASE_LOWER);
         unset($headers[0]);
 
         return $headers;
+    }
+
+    private function isValidUrl(string $url): bool
+    {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+
+        if ($scheme === false || $scheme === null) {
+            return false;
+        }
+
+        return in_array($scheme, ['http', 'https'], true);
     }
 }
