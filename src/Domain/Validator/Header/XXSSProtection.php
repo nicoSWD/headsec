@@ -12,10 +12,11 @@ use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
 final class XXSSProtection extends SecurityHeader
 {
     private const MODE_ON = '1';
+    private const MODE_BLOCK = 'mode=block';
 
     public function getScore(): float
     {
-        [$status, $mode] = explode(';', strtolower($this->getUniqueValue()));
+        [$status, $mode] = $this->getStatusAndMode();
 
         if ($this->protectionIsOn($status)) {
             if ($this->isBlocking($mode)) {
@@ -26,19 +27,26 @@ final class XXSSProtection extends SecurityHeader
             }
         } else {
             $this->addWarning('value should be set to 1');
-            $score = 0;
+            $score = .0;
         }
 
         return $score;
     }
 
-    private function protectionIsOn(?string $status): bool
+    private function protectionIsOn(string $status): bool
     {
-        return trim($status) === self::MODE_ON;
+        return $status === self::MODE_ON;
     }
 
-    private function isBlocking(?string $mode): bool
+    private function isBlocking(string $mode): bool
     {
-        return trim($mode, '; ') === 'mode=block';
+        return $mode === self::MODE_BLOCK;
+    }
+
+    private function getStatusAndMode(): array
+    {
+        [$status, $mode] = preg_split('~;~', $this->getUniqueValue(), 2, PREG_SPLIT_NO_EMPTY);
+
+        return [trim($status), strtolower(trim($mode))];
     }
 }

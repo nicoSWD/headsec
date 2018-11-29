@@ -11,6 +11,8 @@ use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
 
 final class XContentTypeOptions extends SecurityHeader
 {
+    private const NO_SNIFF = 'nosniff';
+
     public function getScore(): float
     {
         $value = $this->getUniqueValue();
@@ -25,6 +27,6 @@ final class XContentTypeOptions extends SecurityHeader
 
     private function isNoSniff(string $value): bool
     {
-        return strtolower($value) === 'nosniff';
+        return strtolower($value) === self::NO_SNIFF;
     }
 }

@@ -21,7 +21,7 @@ final class ResultSet
         }
     }
 
-    public function addScore(float $score): void
+    public function sumScore(float $score): void
     {
         $this->score += $score;
     }

@@ -1,5 +1,3 @@
-#parameters:
-
 services:
   nicoSWD\SecHeaderCheck\:
     resource: '../src/*'
@@ -12,3 +10,14 @@ services:
     autowire: true
     public: true
     tags: [console.command]
+
+  nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory:
+    arguments:
+      - '@nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter'
+      - '@nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter'
+
+  nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter
+
+  nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter

@@ -28,33 +28,34 @@ final class HeaderService
 
     public function analise(string $url): ResultSet
     {
-        if (!$this->isValidUrl($url)) {
-            throw new \Exception('Invalid URL');
-        }
-
+        $foundHeaders = $this->getHeadersFromUrl($url);
         $resultSet = new ResultSet();
-        $foundHeaders = $this->getHeaders($url);
 
         foreach (SecurityHeaders::all() as $headerName) {
             if (!isset($foundHeaders[$headerName])) {
                 $resultSet->addWarnings($headerName, ['Header is missing']);
-            } else {
-                $header = $this->headerFactory->createFromHeader($headerName, $foundHeaders[$headerName]);
+                continue;
+            }
 
-                try {
-                    $resultSet->addScore($header->getScore());
-                    $resultSet->addWarnings($headerName, $header->getWarnings());
-                } catch (DuplicateHeaderException $e) {
-                    $resultSet->addWarnings($headerName, ['Header has been sent multiple times']);
-                }
+            $header = $this->headerFactory->createFromHeader($headerName, $foundHeaders[$headerName]);
+
+            try {
+                $resultSet->sumScore($header->getScore());
+                $resultSet->addWarnings($headerName, $header->getWarnings());
+            } catch (DuplicateHeaderException $e) {
+                $resultSet->addWarnings($headerName, ['Header has been sent multiple times']);
             }
         }
 
         return $resultSet;
     }
 
-    private function getHeaders(string $url): array
+    private function getHeadersFromUrl(string $url): array
     {
+        if (!$this->isValidUrl($url)) {
+            throw new \Exception('Invalid URL');
+        }
+
         $headers = $this->headerProvider->getHeaders($url);
         $headers = array_change_key_case($headers, CASE_LOWER);
         unset($headers[0]);

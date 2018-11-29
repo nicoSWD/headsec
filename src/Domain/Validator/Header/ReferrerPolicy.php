@@ -20,7 +20,7 @@ final class ReferrerPolicy extends SecurityHeader
         }
 
         if ($this->mayLeakOrigin($value)) {
-            $this->addWarning("{$value} may leak partial referrer information");
+            $this->addWarning("Option '{$value}' may leak partial referrer information");
             return .5;
         }
 
