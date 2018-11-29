@@ -11,13 +11,29 @@ services:
     public: true
     tags: [console.command]
 
+  nicoSWD\SecHeaderCheck\Domain\Headers\HeaderService:
+    arguments:
+      - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
+      - '@nicoswd.security_header_check.domain.validator.header_factory'
+      - '@nicoswd.security_header_check.domain.headers.security_headers'
+
   nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory:
     arguments:
-      - '@nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter'
-      - '@nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter'
+      - '@nicoswd.security_header_check.infrastructure.result_printer.json_result_printer'
+      - '@nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer'
 
-  nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter:
+
+  nicoswd.security_header_check.infrastructure.result_printer.json_result_printer:
     class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter
 
-  nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter:
+  nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer:
     class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter
+
+  nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeAbstractHeaderProvider
+
+  nicoswd.security_header_check.domain.validator.header_factory:
+    class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory
+
+  nicoswd.security_header_check.domain.headers.security_headers:
+    class: nicoSWD\SecHeaderCheck\Domain\Headers\SecurityHeaders

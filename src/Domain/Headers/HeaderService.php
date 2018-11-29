@@ -10,71 +10,61 @@ namespace nicoSWD\SecHeaderCheck\Domain\Headers;
 use nicoSWD\SecHeaderCheck\Domain\Result\ResultSet;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
+use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class HeaderService
 {
-    /** @var HeaderProviderInterface */
+    /** @var AbstractHeaderProvider */
     private $headerProvider;
     /** @var HeaderFactory */
     private $headerFactory;
+    /** @var SecurityHeaders */
+    private $securityHeaders;
 
     public function __construct(
-        HeaderProviderInterface $headerProvider,
-        HeaderFactory $headerFactory
+        AbstractHeaderProvider $headerProvider,
+        HeaderFactory $headerFactory,
+        SecurityHeaders $securityHeaders
     ) {
         $this->headerProvider = $headerProvider;
         $this->headerFactory = $headerFactory;
+        $this->securityHeaders = $securityHeaders;
     }
 
     public function analise(string $url): ResultSet
     {
-        $foundHeaders = $this->getHeadersFromUrl($url);
+        $foundHeaders = $this->getHeaders($url);
         $resultSet = new ResultSet();
 
-        foreach (SecurityHeaders::all() as $headerName) {
-            if (!isset($foundHeaders[$headerName])) {
-                $resultSet->addWarnings($headerName, ['Header is missing']);
+        foreach ($this->securityHeaders->all() as $headerName) {
+            if (!$foundHeaders->has($headerName)) {
+                $resultSet->addWarnings($headerName, [ValidationError::HEADER_MISSING]);
                 continue;
             }
 
-            $header = $this->headerFactory->createFromHeader($headerName, $foundHeaders[$headerName]);
+            $headerValidator = $this->createHeaderValidator($headerName, $foundHeaders);
 
             try {
-                $resultSet->sumScore($header->getScore());
-                $resultSet->addWarnings($headerName, $header->getWarnings());
+                $resultSet->sumScore($headerValidator->getScore());
+                $resultSet->addWarnings($headerName, $headerValidator->getWarnings());
             } catch (DuplicateHeaderException $e) {
-                $resultSet->addWarnings($headerName, ['Header has been sent multiple times']);
+                $resultSet->addWarnings($headerName, [ValidationError::HEADER_DUPLICATE]);
             }
         }
 
         return $resultSet;
     }
 
-    private function getHeadersFromUrl(string $url): array
+    private function getHeaders(string $url): HeaderBag
     {
-        if (!$this->isValidUrl($url)) {
-            throw new \Exception('Invalid URL');
-        }
-
-        $headers = $this->headerProvider->getHeaders($url);
-        $headers = array_change_key_case($headers, CASE_LOWER);
-        unset($headers[0]);
-
-        return $headers;
+        return new HeaderBag(
+            $this->headerProvider->getHeadersFromUrl($url)
+        );
     }
 
-    private function isValidUrl(string $url): bool
+    private function createHeaderValidator(string $headerName, HeaderBag $foundHeaders): SecurityHeader
     {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            return false;
-        }
-
-        $scheme = parse_url($url, PHP_URL_SCHEME);
-
-        if ($scheme === false || $scheme === null) {
-            return false;
-        }
-
-        return in_array($scheme, ['http', 'https'], true);
+        return $this->headerFactory->createFromHeader($headerName, $foundHeaders->get($headerName));
     }
 }

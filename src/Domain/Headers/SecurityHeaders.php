@@ -16,7 +16,7 @@ final class SecurityHeaders
     public const REFERRER_POLICY = 'referrer-policy';
     public const SET_COOKIE = 'set-cookie';
 
-    public static function all(): array
+    public function all(): array
     {
         return [
             self::STRICT_TRANSPORT_SECURITY,

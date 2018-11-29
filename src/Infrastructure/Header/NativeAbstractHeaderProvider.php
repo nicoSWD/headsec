@@ -7,11 +7,11 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Headers\HeaderProviderInterface;
+use nicoSWD\SecHeaderCheck\Domain\Headers\AbstractHeaderProvider;
 
-final class NativeHeaderProviderInterface implements HeaderProviderInterface
+final class NativeAbstractHeaderProvider extends AbstractHeaderProvider
 {
-    public function getHeaders(string $url): array
+    protected function getHeaders(string $url): array
     {
         $headers = @get_headers($url, 1);
 
