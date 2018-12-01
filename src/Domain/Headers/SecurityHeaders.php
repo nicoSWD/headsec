@@ -15,8 +15,10 @@ final class SecurityHeaders
     public const X_CONTENT_TYPE_OPTIONS = 'x-content-type-options';
     public const REFERRER_POLICY = 'referrer-policy';
     public const SET_COOKIE = 'set-cookie';
+    public const SERVER = 'server';
+    public const X_POWERED_BY = 'x-powered-by';
 
-    public function all(): array
+    public function getExpected(): array
     {
         return [
             self::STRICT_TRANSPORT_SECURITY,
@@ -24,7 +26,6 @@ final class SecurityHeaders
             self::X_XSS_PROTECTION,
             self::X_CONTENT_TYPE_OPTIONS,
             self::REFERRER_POLICY,
-//            self::SET_COOKIE,
         ];
     }
 }

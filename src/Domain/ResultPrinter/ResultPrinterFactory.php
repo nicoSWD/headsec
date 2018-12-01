@@ -13,22 +13,28 @@ final class ResultPrinterFactory
     private $jsonPrinter;
     /** @var ResultPrinterInterface */
     private $xmlPrinter;
+    /** @var ResultPrinterInterface */
+    private $consolePrinter;
 
     public function __construct(
         ResultPrinterInterface $jsonPrinter,
-        ResultPrinterInterface $xmlPrinter
+        ResultPrinterInterface $xmlPrinter,
+        ResultPrinterInterface $consolePrinter
     ) {
         $this->jsonPrinter = $jsonPrinter;
         $this->xmlPrinter = $xmlPrinter;
+        $this->consolePrinter = $consolePrinter;
     }
 
     /** @throws Exception\InvalidOutputFormatException */
     public function createFromFormat(string $format): ResultPrinterInterface
     {
         switch ($format) {
-            case Format::JSON:
+            case OutputFormat::CONSOLE:
+                return $this->consolePrinter;
+            case OutputFormat::JSON:
                 return $this->jsonPrinter;
-            case Format::XML:
+            case OutputFormat::XML:
                 return $this->xmlPrinter;
             default:
                 throw new Exception\InvalidOutputFormatException();

@@ -7,8 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
-abstract class SecurityHeader
+abstract class AbstractHeaderValidator
 {
+    protected const PASS = 1;
+    protected const FAIL = 0;
+    protected const PASS_WITH_WARNING = .5;
+
     /** @var string|string[] */
     private $value;
     /** @var string[] */
@@ -17,7 +21,7 @@ abstract class SecurityHeader
     /** @throws \nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException */
     abstract public function getScore(): float;
 
-    public function __construct($value)
+    public function __construct($value = '')
     {
         $this->value = $value;
     }
@@ -47,6 +51,6 @@ abstract class SecurityHeader
             throw new Exception\DuplicateHeaderException();
         }
 
-        return $this->value;
+        return $this->getValue();
     }
 }

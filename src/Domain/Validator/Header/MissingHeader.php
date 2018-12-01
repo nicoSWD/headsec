@@ -8,11 +8,14 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
-final class NonSecurityHeader extends AbstractHeaderValidator
+final class MissingHeader extends AbstractHeaderValidator
 {
     public function getScore(): float
     {
+        $this->addWarning(ValidationError::HEADER_MISSING);
+
         return .0;
     }
 }

@@ -1,16 +1,51 @@
 <?php declare(strict_types=1);
 
+/**
+ * @license  http://opensource.org/licenses/mit-license.php MIT
+ * @link     https://github.com/nicoSWD
+ * @author   Nicolas Oelgart <nico@oelgart.com>
+ */
 namespace Tests\nicoSWD\SecHeaderCheck\Application\Command;
 
-use nicoSWD\SecHeaderCheck\Domain\HeaderService;
-use PHPUnit\Framework\TestCase;
+use Mockery\Adapter\Phpunit\MockeryTestCase;
+use nicoSWD\SecHeaderCheck\Domain\Headers\AbstractHeaderProvider;
+use nicoSWD\SecHeaderCheck\Domain\Headers\HeaderService;
+use nicoSWD\SecHeaderCheck\Domain\Headers\SecurityHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
 
-class HeaderServiceTest extends TestCase
+final class HeaderServiceTest extends MockeryTestCase
 {
-    public function testOne()
-    {
-        $service = new HeaderService();
+    /** @var AbstractHeaderProvider|\Mockery\Mock */
+    private $headerProvider;
+    /** @var HeaderService */
+    private $headerService;
 
-        $this->assertTrue($service->getHeaders());
+    protected function setUp()
+    {
+        $this->headerProvider = \Mockery::mock(AbstractHeaderProvider::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods();
+
+        $this->headerService = new HeaderService(
+            $this->headerProvider,
+            new HeaderFactory(),
+            new SecurityHeaders()
+        );
+    }
+
+    public function testGivenAnUrlWhenValidItShouldReturnTheNumberOfWarnings()
+    {
+        $this->headerProvider->shouldReceive('getHeaders')->once()->andReturn([]);
+
+        $resultSet = $this->headerService->scan('https://example.com/');
+
+        $warnings = $resultSet->getWarnings();
+
+        $this->assertCount(5, $warnings);
+        $this->assertArrayHasKey('x-xss-protection', $warnings);
+        $this->assertArrayHasKey('x-frame-options', $warnings);
+        $this->assertArrayHasKey('x-content-type-options', $warnings);
+        $this->assertArrayHasKey('referrer-policy', $warnings);
+        $this->assertArrayHasKey('strict-transport-security', $warnings);
     }
 }

@@ -11,23 +11,32 @@ use nicoSWD\SecHeaderCheck\Domain\Headers\SecurityHeaders;
 
 final class HeaderFactory
 {
-    public function createFromHeader(string $header, $value): SecurityHeader
+    public function createFromHeader(string $headerName, $value): AbstractHeaderValidator
     {
-        switch ($header) {
+        switch ($headerName) {
             case SecurityHeaders::STRICT_TRANSPORT_SECURITY:
-                return new Header\StrictTransportSecurity($value);
+                return new Header\StrictTransportSecurityHeader($value);
             case SecurityHeaders::X_FRAME_OPTIONS:
-                return new Header\XFrameOptions($value);
+                return new Header\XFrameOptionsHeader($value);
             case SecurityHeaders::X_XSS_PROTECTION:
-                return new Header\XXSSProtection($value);
+                return new Header\XXSSProtectionHeader($value);
             case SecurityHeaders::X_CONTENT_TYPE_OPTIONS:
-                return new Header\XContentTypeOptions($value);
+                return new Header\XContentTypeOptionsHeader($value);
             case SecurityHeaders::REFERRER_POLICY:
-                return new Header\ReferrerPolicy($value);
+                return new Header\ReferrerPolicyHeader($value);
             case SecurityHeaders::SET_COOKIE:
-                return new Header\SetCookie($value);
+                return new Header\SetCookieHeader($value);
+            case SecurityHeaders::SERVER:
+                return new Header\ServerHeader($value);
+            case SecurityHeaders::X_POWERED_BY:
+                return new Header\XPoweredByHeader($value);
             default:
                 return new Header\NonSecurityHeader($value);
         }
+    }
+
+    public function createMissingHeader(): AbstractHeaderValidator
+    {
+        return new Header\MissingHeader();
     }
 }

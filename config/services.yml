@@ -21,13 +21,16 @@ services:
     arguments:
       - '@nicoswd.security_header_check.infrastructure.result_printer.json_result_printer'
       - '@nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer'
-
+      - '@nicoswd.security_header_check.infrastructure.result_printer.console_result_printer'
 
   nicoswd.security_header_check.infrastructure.result_printer.json_result_printer:
     class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter
 
   nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer:
     class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter
+
+  nicoswd.security_header_check.infrastructure.result_printer.console_result_printer:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\ConsoleResultPrinter
 
   nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider:
     class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeAbstractHeaderProvider

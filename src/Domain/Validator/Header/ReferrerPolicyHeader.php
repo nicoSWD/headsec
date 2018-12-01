@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class ReferrerPolicy extends SecurityHeader
+final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
     public function getScore(): float
     {

@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class ResultSet
+final class ScanResults
 {
     /** @var float */
     private $score = .0;
@@ -16,9 +16,7 @@ final class ResultSet
 
     public function addWarnings(string $headerName, array $warnings): void
     {
-        if (!empty($warnings)) {
-            $this->warnings[$headerName] = $warnings;
-        }
+        $this->warnings[$headerName] = $warnings;
     }
 
     public function sumScore(float $score): void

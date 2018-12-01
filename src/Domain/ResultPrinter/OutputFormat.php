@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * @license  http://opensource.org/licenses/mit-license.php MIT
@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResults;
-
-interface ResultPrinterInterface
+final class OutputFormat
 {
-    public function getOutput(ScanResults $scanResults): string;
+    public const CONSOLE = 'console';
+    public const JSON = 'json';
+    public const XML = 'xml';
 }

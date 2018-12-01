@@ -1,0 +1,13 @@
+language: php
+
+php:
+- 7.1
+- 7.2
+
+script:
+- composer install --dev
+- php vendor/bin/phpunit --coverage-clover=coverage.clover
+
+after_script:
+- wget https://scrutinizer-ci.com/ocular.phar
+- php ocular.phar code-coverage:upload --format=php-clover coverage.clover

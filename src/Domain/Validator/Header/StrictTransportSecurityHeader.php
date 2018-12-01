@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class StrictTransportSecurity extends SecurityHeader
+final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 {
     private const SIX_MONTHS_IN_SECONDS = 15768000;
 

@@ -5,10 +5,11 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\ResultPrinter;
+namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-final class Format
+final class ScanSecurityHeadersResponse
 {
-    public const JSON = 'json';
-    public const XML = 'xml';
+    public $score = 0;
+    public $output = '';
+    public $hitTargetScore = false;
 }

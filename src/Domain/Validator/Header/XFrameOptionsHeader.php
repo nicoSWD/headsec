@@ -7,10 +7,13 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class XFrameOptions extends SecurityHeader
+final class XFrameOptionsHeader extends AbstractHeaderValidator
 {
+    private const OPTION_DENY = 'deny';
+    private const OPTION_SAME_ORIGIN = 'sameorigin';
+
     public function getScore(): float
     {
         $value = strtolower($this->getUniqueValue());
@@ -19,12 +22,12 @@ final class XFrameOptions extends SecurityHeader
             return 1;
         }
 
-        return 0;
+        return .0;
     }
 
     private function isSecureOrigin(string $value): bool
     {
-        return $value === 'deny' || $value === 'sameorigin';
+        return $value === self::OPTION_DENY || $value === self::OPTION_SAME_ORIGIN;
     }
 
     private function hasAllowFrom(string $value): bool

@@ -7,8 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\Command;
 
-use nicoSWD\SecHeaderCheck\Domain\Headers\HeaderService;
-use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
+use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanSecurityHeadersRequest;
+use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanSecurityHeadersUseCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,17 +17,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SecHeadersCheckCommand extends Command
 {
-    /** @var HeaderService */
-    private $headerService;
-    /** @var ResultPrinterFactory */
-    private $resultPrinterFactory;
+    private const STATUS_ERROR = 1;
+    private const STATUS_SUCCESS = 0;
 
-    public function __construct(HeaderService $headerService, ResultPrinterFactory $resultPrinterFactory)
+    /** @var ScanSecurityHeadersUseCase */
+    private $scanSecurityHeadersUseCase;
+
+    public function __construct(ScanSecurityHeadersUseCase $scanSecurityHeadersUseCase)
     {
         parent::__construct();
 
-        $this->headerService = $headerService;
-        $this->resultPrinterFactory = $resultPrinterFactory;
+        $this->scanSecurityHeadersUseCase = $scanSecurityHeadersUseCase;
     }
 
     protected function configure()
@@ -35,14 +35,30 @@ final class SecHeadersCheckCommand extends Command
         $this->setName('nicoswd:security-header-check')
             ->setDescription('Check a site\'s security headers')
             ->addArgument('url', InputArgument::REQUIRED, 'URL to check')
-            ->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'Output format', 'json');
+            ->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'Output format', 'console')
+            ->addOption('target-score', 't', InputOption::VALUE_OPTIONAL, 'Target score', '5')
+            // Ideas...
+            ->addOption('raw-headers', 'r', InputOption::VALUE_OPTIONAL, 'Show raw headers', false)
+            ->addOption('silent', 's', InputOption::VALUE_OPTIONAL, 'No output, just fail on error', false)
+            ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Load config file', '')
+            ->addOption('print-score', 'p', InputOption::VALUE_OPTIONAL, 'Only output the score', '')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $resultSet = $this->headerService->analise($input->getArgument('url'));
-        $printer = $this->resultPrinterFactory->createFromFormat($input->getOption('format'));
+        $scanRequest = new ScanSecurityHeadersRequest();
+        $scanRequest->url = $input->getArgument('url');
+        $scanRequest->outputFormat = $input->getOption('format');
 
-        $output->writeln($printer->getOutput($resultSet));
+        $scanResult = $this->scanSecurityHeadersUseCase->execute($scanRequest);
+
+        $output->writeln($scanResult->output);
+
+        if ($scanResult->hitTargetScore) {
+            return self::STATUS_SUCCESS;
+        }
+
+        return self::STATUS_ERROR;
     }
 }

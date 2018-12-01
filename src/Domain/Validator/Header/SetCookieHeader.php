@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class SetCookie extends SecurityHeader
+final class SetCookieHeader extends AbstractHeaderValidator
 {
     public function getScore(): float
     {

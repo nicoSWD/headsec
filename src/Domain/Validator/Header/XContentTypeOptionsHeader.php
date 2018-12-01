@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class XContentTypeOptions extends SecurityHeader
+final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 {
     private const NO_SNIFF = 'nosniff';
 
@@ -19,10 +19,10 @@ final class XContentTypeOptions extends SecurityHeader
 
         if (!$this->isNoSniff($value)) {
             $this->addWarning('"nosniff" is the expected value');
-            return .0;
+            return self::FAIL;
         }
 
-        return 1;
+        return self::PASS;
     }
 
     private function isNoSniff(string $value): bool
