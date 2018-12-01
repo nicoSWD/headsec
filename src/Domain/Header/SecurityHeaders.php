@@ -5,7 +5,7 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Headers;
+namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 final class SecurityHeaders
 {
@@ -17,6 +17,7 @@ final class SecurityHeaders
     public const SET_COOKIE = 'set-cookie';
     public const SERVER = 'server';
     public const X_POWERED_BY = 'x-powered-by';
+    public const CONTENT_SECURITY_POLICY = 'content-security-policy';
 
     public function getExpected(): array
     {
@@ -26,6 +27,7 @@ final class SecurityHeaders
             self::X_XSS_PROTECTION,
             self::X_CONTENT_TYPE_OPTIONS,
             self::REFERRER_POLICY,
+            self::CONTENT_SECURITY_POLICY,
         ];
     }
 }

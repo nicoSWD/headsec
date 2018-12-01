@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
-use nicoSWD\SecHeaderCheck\Domain\Headers\SecurityHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
 
 final class HeaderFactory
 {
@@ -30,6 +30,8 @@ final class HeaderFactory
                 return new Header\ServerHeader($value);
             case SecurityHeaders::X_POWERED_BY:
                 return new Header\XPoweredByHeader($value);
+            case SecurityHeaders::CONTENT_SECURITY_POLICY:
+                return new Header\ContentSecurityPolicyHeader($value);
             default:
                 return new Header\NonSecurityHeader($value);
         }

@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-use nicoSWD\SecHeaderCheck\Domain\Headers\HeaderService;
+use nicoSWD\SecHeaderCheck\Domain\Header\HeaderService;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
 
 final class ScanSecurityHeadersUseCase

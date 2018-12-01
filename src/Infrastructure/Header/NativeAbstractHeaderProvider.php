@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Headers\AbstractHeaderProvider;
+use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
 
 final class NativeAbstractHeaderProvider extends AbstractHeaderProvider
 {

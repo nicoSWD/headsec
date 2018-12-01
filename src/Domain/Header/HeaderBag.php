@@ -5,7 +5,7 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Headers;
+namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 final class HeaderBag
 {

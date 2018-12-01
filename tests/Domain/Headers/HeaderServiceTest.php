@@ -8,9 +8,9 @@
 namespace Tests\nicoSWD\SecHeaderCheck\Application\Command;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
-use nicoSWD\SecHeaderCheck\Domain\Headers\AbstractHeaderProvider;
-use nicoSWD\SecHeaderCheck\Domain\Headers\HeaderService;
-use nicoSWD\SecHeaderCheck\Domain\Headers\SecurityHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
+use nicoSWD\SecHeaderCheck\Domain\Header\HeaderService;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
 
 final class HeaderServiceTest extends MockeryTestCase

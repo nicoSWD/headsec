@@ -51,6 +51,6 @@ abstract class AbstractHeaderValidator
             throw new Exception\DuplicateHeaderException();
         }
 
-        return $this->getValue();
+        return trim($this->value);
     }
 }
