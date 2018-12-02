@@ -12,5 +12,5 @@ final class ValidationError
     public const HEADER_MISSING = 'Header is missing';
     public const HEADER_DUPLICATE = 'Header has been sent multiple times';
     public const SERVER_VERSION_DISCLOSURE = 'Server version may be leaking';
-    public const CSP_DIRECTIVE_MISSING = 'Missing directive';
+    public const CSP_DIRECTIVE_MISSING = 'Missing directives';
 }

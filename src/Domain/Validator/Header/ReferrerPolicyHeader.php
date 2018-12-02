@@ -21,8 +21,11 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
 
         if ($this->mayLeakOrigin($value)) {
             $this->addWarning("Option '{$value}' may leak partial referrer information");
+
             return .5;
         }
+
+        $this->addWarning('Invalid option');
 
         return .0;
     }

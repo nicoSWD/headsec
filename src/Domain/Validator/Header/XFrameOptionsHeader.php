@@ -19,8 +19,10 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
         $value = strtolower($this->getUniqueValue());
 
         if ($this->isSecureOrigin($value) || $this->hasAllowFrom($value)) {
-            return 1;
+            return 1.;
         }
+
+        $this->addWarning('Insecure option');
 
         return .0;
     }

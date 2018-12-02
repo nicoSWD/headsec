@@ -5,7 +5,7 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace Tests\nicoSWD\SecHeaderCheck\Application\Command;
+namespace Tests\nicoSWD\SecHeaderCheck\Domain\Header;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
@@ -41,7 +41,7 @@ final class HeaderServiceTest extends MockeryTestCase
 
         $warnings = $resultSet->getWarnings();
 
-        $this->assertCount(5, $warnings);
+        $this->assertCount(6, $warnings);
         $this->assertArrayHasKey('x-xss-protection', $warnings);
         $this->assertArrayHasKey('x-frame-options', $warnings);
         $this->assertArrayHasKey('x-content-type-options', $warnings);
