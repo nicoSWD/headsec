@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
 
-final class HeaderFactory
+final class HeaderValidatorFactory
 {
     public function createFromHeader(?string $headerName, $value): AbstractHeaderValidator
     {

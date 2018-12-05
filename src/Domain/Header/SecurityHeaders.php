@@ -9,32 +9,37 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 final class SecurityHeaders
 {
-    public const STRICT_TRANSPORT_SECURITY = 'strict-transport-security';
     public const CONTENT_SECURITY_POLICY = 'content-security-policy';
-    public const X_FRAME_OPTIONS = 'x-frame-options';
-    public const X_XSS_PROTECTION = 'x-xss-protection';
-    public const X_CONTENT_TYPE_OPTIONS = 'x-content-type-options';
     public const REFERRER_POLICY = 'referrer-policy';
     public const SET_COOKIE = 'set-cookie';
     public const SERVER = 'server';
+    public const STRICT_TRANSPORT_SECURITY = 'strict-transport-security';
+    public const X_FRAME_OPTIONS = 'x-frame-options';
+    public const X_CONTENT_TYPE_OPTIONS = 'x-content-type-options';
     public const X_POWERED_BY = 'x-powered-by';
+    public const X_XSS_PROTECTION = 'x-xss-protection';
 
-    public const MANDATORY = true;
-    public const OPTIONAL = false;
+    /** @var HeaderFactory */
+    private $headerFactory;
+
+    public function __construct(HeaderFactory $headerFactory)
+    {
+        $this->headerFactory = $headerFactory;
+    }
 
     /** @return Header[] */
     public function getAll(): array
     {
         return [
-            new Header(self::STRICT_TRANSPORT_SECURITY, self::MANDATORY),
-            new Header(self::X_FRAME_OPTIONS, self::MANDATORY),
-            new Header(self::X_XSS_PROTECTION, self::MANDATORY),
-            new Header(self::X_CONTENT_TYPE_OPTIONS, self::MANDATORY),
-            new Header(self::REFERRER_POLICY, self::MANDATORY),
-            new Header(self::CONTENT_SECURITY_POLICY, self::MANDATORY),
-            new Header(self::SET_COOKIE, self::OPTIONAL),
-            new Header(self::SERVER, self::OPTIONAL),
-            new Header(self::X_POWERED_BY, self::OPTIONAL),
+            $this->headerFactory->createMandatory(self::STRICT_TRANSPORT_SECURITY),
+            $this->headerFactory->createMandatory(self::X_FRAME_OPTIONS),
+            $this->headerFactory->createMandatory(self::X_XSS_PROTECTION),
+            $this->headerFactory->createMandatory(self::X_CONTENT_TYPE_OPTIONS),
+            $this->headerFactory->createMandatory(self::REFERRER_POLICY),
+            $this->headerFactory->createMandatory(self::CONTENT_SECURITY_POLICY),
+            $this->headerFactory->createOptional(self::SET_COOKIE),
+            $this->headerFactory->createOptional(self::SERVER),
+            $this->headerFactory->createOptional(self::X_POWERED_BY),
         ];
     }
 }

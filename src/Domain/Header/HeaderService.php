@@ -10,22 +10,21 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\MissingMandatoryHeaderException;
-use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
+use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class HeaderService
 {
     /** @var AbstractHeaderProvider */
     private $headerProvider;
-    /** @var HeaderFactory */
+    /** @var HeaderValidatorFactory */
     private $headerFactory;
     /** @var SecurityHeaders */
     private $securityHeaders;
 
     public function __construct(
         AbstractHeaderProvider $headerProvider,
-        HeaderFactory $headerFactory,
+        HeaderValidatorFactory $headerFactory,
         SecurityHeaders $securityHeaders
     ) {
         $this->headerProvider = $headerProvider;
@@ -45,9 +44,9 @@ final class HeaderService
                 $resultSet->sumScore($validator->getCalculatedScore());
                 $resultSet->addWarnings($header->getName(), $validator->getWarnings());
             } catch (DuplicateHeaderException $e) {
-                $resultSet->addWarnings($header->getName(), [ValidationError::HEADER_DUPLICATE]);
+                $resultSet->addDuplicateHeaderWarning($header->getName());
             } catch (MissingMandatoryHeaderException $e) {
-                $resultSet->addWarnings($header->getName(), [ValidationError::HEADER_MISSING]);
+                $resultSet->addMissingHeaderWarning($header->getName());
             }
         }
 

@@ -11,7 +11,7 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
 use nicoSWD\SecHeaderCheck\Domain\Header\HeaderService;
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
-use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
+use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 
 final class HeaderServiceTest extends MockeryTestCase
 {
@@ -28,7 +28,7 @@ final class HeaderServiceTest extends MockeryTestCase
 
         $this->headerService = new HeaderService(
             $this->headerProvider,
-            new HeaderFactory(),
+            new HeaderValidatorFactory(),
             new SecurityHeaders()
         );
     }

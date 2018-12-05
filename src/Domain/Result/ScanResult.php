@@ -7,6 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
+use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
+
 final class ScanResult
 {
     /** @var float */
@@ -32,5 +34,15 @@ final class ScanResult
     public function getWarnings(): array
     {
         return $this->warnings;
+    }
+
+    public function addDuplicateHeaderWarning(string $headerName): void
+    {
+        $this->addWarnings($headerName, [ValidationError::HEADER_DUPLICATE]);
+    }
+
+    public function addMissingHeaderWarning(string $headerName): void
+    {
+        $this->addWarnings($headerName, [ValidationError::HEADER_MISSING]);
     }
 }
