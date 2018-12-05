@@ -16,7 +16,7 @@ final class XContentTypeOptionsHeaderTest extends TestCase
     {
         $header = new XContentTypeOptionsHeader('nosniff');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -24,7 +24,7 @@ final class XContentTypeOptionsHeaderTest extends TestCase
     {
         $header = new XContentTypeOptionsHeader('anything');
 
-        $this->assertSame(.0, $header->getScore());
+        $this->assertSame(.0, $header->scan());
         $this->assertCount(1, $header->getWarnings());
     }
 }

@@ -11,8 +11,12 @@ use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
 
 final class HeaderFactory
 {
-    public function createFromHeader(string $headerName, $value): AbstractHeaderValidator
+    public function createFromHeader(?string $headerName, $value): AbstractHeaderValidator
     {
+        if ($value === null) {
+            return new Header\MissingHeader();
+        }
+
         switch ($headerName) {
             case SecurityHeaders::STRICT_TRANSPORT_SECURITY:
                 return new Header\StrictTransportSecurityHeader($value);
@@ -35,10 +39,5 @@ final class HeaderFactory
             default:
                 return new Header\NonSecurityHeader($value);
         }
-    }
-
-    public function createMissingHeader(): AbstractHeaderValidator
-    {
-        return new Header\MissingHeader();
     }
 }

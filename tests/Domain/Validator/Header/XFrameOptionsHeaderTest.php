@@ -16,7 +16,7 @@ final class XFrameOptionsHeaderTest extends TestCase
     {
         $header = new XFrameOptionsHeader('deny');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -24,7 +24,7 @@ final class XFrameOptionsHeaderTest extends TestCase
     {
         $header = new XFrameOptionsHeader('sameorigin');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -32,7 +32,7 @@ final class XFrameOptionsHeaderTest extends TestCase
     {
         $header = new XFrameOptionsHeader('allow-from https://www.google.com');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -40,7 +40,7 @@ final class XFrameOptionsHeaderTest extends TestCase
     {
         $header = new XFrameOptionsHeader('allow');
 
-        $this->assertSame(0., $header->getScore());
+        $this->assertSame(0., $header->scan());
         $this->assertCount(1, $header->getWarnings());
     }
 }

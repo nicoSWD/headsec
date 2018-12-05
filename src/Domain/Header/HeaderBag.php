@@ -23,6 +23,6 @@ final class HeaderBag
 
     public function get(string $headerName)
     {
-        return $this->headers[$headerName];
+        return $this->has($headerName) ? $this->headers[$headerName] : null;
     }
 }

@@ -11,8 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class NonSecurityHeader extends AbstractHeaderValidator
 {
-    public function getScore(): float
+    protected function scan(): void
     {
-        return .0;
     }
 }

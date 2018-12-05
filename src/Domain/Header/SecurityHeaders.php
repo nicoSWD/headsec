@@ -10,6 +10,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 final class SecurityHeaders
 {
     public const STRICT_TRANSPORT_SECURITY = 'strict-transport-security';
+    public const CONTENT_SECURITY_POLICY = 'content-security-policy';
     public const X_FRAME_OPTIONS = 'x-frame-options';
     public const X_XSS_PROTECTION = 'x-xss-protection';
     public const X_CONTENT_TYPE_OPTIONS = 'x-content-type-options';
@@ -17,17 +18,23 @@ final class SecurityHeaders
     public const SET_COOKIE = 'set-cookie';
     public const SERVER = 'server';
     public const X_POWERED_BY = 'x-powered-by';
-    public const CONTENT_SECURITY_POLICY = 'content-security-policy';
 
-    public function getExpected(): array
+    public const MANDATORY = true;
+    public const OPTIONAL = false;
+
+    /** @return Header[] */
+    public function getAll(): array
     {
         return [
-            self::STRICT_TRANSPORT_SECURITY,
-            self::X_FRAME_OPTIONS,
-            self::X_XSS_PROTECTION,
-            self::X_CONTENT_TYPE_OPTIONS,
-            self::REFERRER_POLICY,
-            self::CONTENT_SECURITY_POLICY,
+            new Header(self::STRICT_TRANSPORT_SECURITY, self::MANDATORY),
+            new Header(self::X_FRAME_OPTIONS, self::MANDATORY),
+            new Header(self::X_XSS_PROTECTION, self::MANDATORY),
+            new Header(self::X_CONTENT_TYPE_OPTIONS, self::MANDATORY),
+            new Header(self::REFERRER_POLICY, self::MANDATORY),
+            new Header(self::CONTENT_SECURITY_POLICY, self::MANDATORY),
+            new Header(self::SET_COOKIE, self::OPTIONAL),
+            new Header(self::SERVER, self::OPTIONAL),
+            new Header(self::X_POWERED_BY, self::OPTIONAL),
         ];
     }
 }

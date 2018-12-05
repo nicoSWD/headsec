@@ -8,26 +8,26 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
-    public function getScore(): float
+    protected function scan(): void
     {
-        $value = strtolower($this->getUniqueValue());
+        $policy = strtolower($this->getUniqueValue());
 
-        if ($this->doesNotLeakReferrer($value)) {
-            return 1;
+        if ($this->doesNotLeakReferrer($policy)) {
+            // Good job
+        } elseif ($this->mayLeakOrigin($policy)) {
+            $this->addWarning(
+                ErrorSeverity::MEDIUM,
+                ValidationError::OPTION_MAY_LEAK_PARTIAL_REFERRER_INFO,
+                $policy
+            );
+        } else {
+            $this->addWarning(ErrorSeverity::VERY_HIGH, ValidationError::INVALID_REFERRER_POLICY);
         }
-
-        if ($this->mayLeakOrigin($value)) {
-            $this->addWarning("Option '{$value}' may leak partial referrer information");
-
-            return .5;
-        }
-
-        $this->addWarning('Invalid option');
-
-        return .0;
     }
 
     private function doesNotLeakReferrer(string $value): bool

@@ -8,23 +8,20 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XFrameOptionsHeader extends AbstractHeaderValidator
 {
     private const OPTION_DENY = 'deny';
     private const OPTION_SAME_ORIGIN = 'sameorigin';
 
-    public function getScore(): float
+    protected function scan(): void
     {
         $value = strtolower($this->getUniqueValue());
 
-        if ($this->isSecureOrigin($value) || $this->hasAllowFrom($value)) {
-            return 1.;
+        if (!$this->isSecureOrigin($value) && !$this->hasAllowFrom($value)) {
+            $this->addWarning(ErrorSeverity::VERY_HIGH, 'Insecure option');
         }
-
-        $this->addWarning('Insecure option');
-
-        return .0;
     }
 
     private function isSecureOrigin(string $value): bool

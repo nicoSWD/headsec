@@ -7,8 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResults;
+use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException;
+use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\MissingMandatoryHeaderException;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
@@ -32,19 +33,21 @@ final class HeaderService
         $this->securityHeaders = $securityHeaders;
     }
 
-    public function scan(string $url): ScanResults
+    public function scan(string $url): ScanResult
     {
         $foundHeaders = $this->getHeaders($url);
-        $resultSet = new ScanResults();
+        $resultSet = new ScanResult();
 
-        foreach ($this->securityHeaders->getExpected() as $headerName) {
-            $headerValidator = $this->createHeaderValidator($headerName, $foundHeaders);
-
+        foreach ($this->securityHeaders->getAll() as $header) {
             try {
-                $resultSet->sumScore($headerValidator->getScore());
-                $resultSet->addWarnings($headerName, $headerValidator->getWarnings());
+                $validator = $this->createHeaderValidator($header, $foundHeaders);
+
+                $resultSet->sumScore($validator->getCalculatedScore());
+                $resultSet->addWarnings($header->getName(), $validator->getWarnings());
             } catch (DuplicateHeaderException $e) {
-                $resultSet->addWarnings($headerName, [ValidationError::HEADER_DUPLICATE]);
+                $resultSet->addWarnings($header->getName(), [ValidationError::HEADER_DUPLICATE]);
+            } catch (MissingMandatoryHeaderException $e) {
+                $resultSet->addWarnings($header->getName(), [ValidationError::HEADER_MISSING]);
             }
         }
 
@@ -58,10 +61,12 @@ final class HeaderService
         );
     }
 
-    private function createHeaderValidator(string $headerName, HeaderBag $foundHeaders): AbstractHeaderValidator
+    private function createHeaderValidator(Header $header, HeaderBag $foundHeaders): AbstractHeaderValidator
     {
-        if (!$foundHeaders->has($headerName)) {
-            return $this->headerFactory->createMissingHeader();
+        $headerName = $header->getName();
+
+        if (!$foundHeaders->has($headerName) && $header->isMandatory()) {
+            throw new MissingMandatoryHeaderException();
         }
 
         return $this->headerFactory->createFromHeader($headerName, $foundHeaders->get($headerName));

@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class ScanResults
+final class ScanResult
 {
     /** @var float */
     private $score = .0;

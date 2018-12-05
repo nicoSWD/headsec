@@ -16,7 +16,7 @@ final class StrictTransportSecurityHeaderTest extends TestCase
     {
         $header = new StrictTransportSecurityHeader('max-age=15768000; includeSubdomains');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -24,7 +24,7 @@ final class StrictTransportSecurityHeaderTest extends TestCase
     {
         $header = new StrictTransportSecurityHeader('max-age=15768000');
 
-        $this->assertSame(1., $header->getScore());
+        $this->assertSame(1., $header->scan());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -32,7 +32,7 @@ final class StrictTransportSecurityHeaderTest extends TestCase
     {
         $header = new StrictTransportSecurityHeader('max-age=5000');
 
-        $this->assertSame(.5, $header->getScore());
+        $this->assertSame(.5, $header->scan());
         $this->assertCount(2, $header->getWarnings());
     }
 
@@ -40,7 +40,7 @@ final class StrictTransportSecurityHeaderTest extends TestCase
     {
         $header = new StrictTransportSecurityHeader('includeSubdomains');
 
-        $this->assertSame(.0, $header->getScore());
+        $this->assertSame(.0, $header->scan());
         $this->assertCount(1, $header->getWarnings());
     }
 }

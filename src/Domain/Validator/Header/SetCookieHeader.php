@@ -8,31 +8,34 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class SetCookieHeader extends AbstractHeaderValidator
 {
-    public function getScore(): float
+    private const FLAG_SECURE = 'secure';
+    private const FLAG_HTTP_ONLY = 'httponly';
+    private const FLAG_SAME_SITE_STRICT = 'samesite=strict';
+
+    protected function scan(): void
     {
         foreach ($this->getCookies() as $cookie) {
-            $options = $this->getCookieOptions($cookie);
+            $flags = $this->getCookieFlags($cookie);
 
-            if (!$this->hasSecureFlag($options)) {
-                $this->addWarning("Cookies should be set with the <Secure> flag");
+            if (!$this->hasSecureFlag($flags)) {
+                $this->addWarning(ErrorSeverity::MEDIUM, 'Cookies should be set with the <Secure> flag');
             }
 
-            if (!$this->hasHttpOnlyFlag($options)) {
-                $this->addWarning("Cookies should be set with the <HttpOnly> flag");
+            if (!$this->hasHttpOnlyFlag($flags)) {
+                $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <HttpOnly> flag');
             }
 
-            if (!$this->hasSameSiteFlag($options)) {
-                $this->addWarning("Cookies should be set with the <SameSite> flag to prevent CSRF");
+            if (!$this->hasSameSiteFlag($flags)) {
+                $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <SameSite> flag to prevent CSRF');
             }
         }
-
-        return .0;
     }
 
-    private function getCookieOptions(string $cookie): array
+    private function getCookieFlags(string $cookie): array
     {
         $callback = function (string $value): string {
             return strtolower(trim($value));
@@ -48,16 +51,16 @@ final class SetCookieHeader extends AbstractHeaderValidator
 
     private function hasSecureFlag(array $options): bool
     {
-        return in_array('secure', $options, true);
+        return in_array(self::FLAG_SECURE, $options, true);
     }
 
     private function hasHttpOnlyFlag(array $options): bool
     {
-        return in_array('httponly', $options, true);
+        return in_array(self::FLAG_HTTP_ONLY, $options, true);
     }
 
     private function hasSameSiteFlag(array $options): bool
     {
-        return in_array('samesite=strict', $options, true);
+        return in_array(self::FLAG_SAME_SITE_STRICT, $options, true);
     }
 }

@@ -14,7 +14,7 @@ abstract class AbstractHeaderProvider
     public function getHeadersFromUrl(string $url): array
     {
         if (!$this->isValidUrl($url)) {
-            throw new \Exception('Invalid URL');
+            throw new Exception\InvalidUrlException();
         }
 
         $headers = $this->getHeaders($url);

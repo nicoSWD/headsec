@@ -8,25 +8,21 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 {
     private const NO_SNIFF = 'nosniff';
 
-    public function getScore(): float
+    protected function scan(): void
     {
-        $value = $this->getUniqueValue();
-
-        if (!$this->isNoSniff($value)) {
-            $this->addWarning('"nosniff" is the expected value');
-            return self::FAIL;
+        if (!$this->isNoSniff()) {
+            $this->addWarning(ErrorSeverity::VERY_HIGH, 'nosniff is the expected value');
         }
-
-        return self::PASS;
     }
 
-    private function isNoSniff(string $value): bool
+    private function isNoSniff(): bool
     {
-        return strtolower($value) === self::NO_SNIFF;
+        return strtolower($this->getUniqueValue()) === self::NO_SNIFF;
     }
 }

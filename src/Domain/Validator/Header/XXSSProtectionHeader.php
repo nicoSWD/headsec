@@ -8,33 +8,28 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XXSSProtectionHeader extends AbstractHeaderValidator
 {
     private const MODE_ON = '1';
     private const MODE_BLOCK = 'mode=block';
 
-    public function getScore(): float
+    protected function scan(): void
     {
         $options = $this->getOptions();
 
         if ($this->protectionIsOn($options)) {
             if ($this->isBlocking($options)) {
-                $score = 1;
-
                 if (!$this->hasReportUri($options)) {
-                    $this->addWarning('Consider adding a report URI');
+                    $this->addWarning(ErrorSeverity::NONE, 'Consider adding a report URI');
                 }
             } else {
-                $this->addWarning('mode=block should be specified');
-                $score = .5;
+                $this->addWarning(ErrorSeverity::MEDIUM, 'mode=block should be specified');
             }
         } else {
-            $this->addWarning('value should be set to 1');
-            $score = .0;
+            $this->addWarning(ErrorSeverity::VERY_HIGH, 'value should be set to 1');
         }
-
-        return $score;
     }
 
     private function protectionIsOn(array $options): bool
@@ -49,13 +44,11 @@ final class XXSSProtectionHeader extends AbstractHeaderValidator
 
     private function hasReportUri(array $options): bool
     {
-        return count(preg_grep('~report=~', $options)) > 0;
+        return count(preg_grep('~report=~', $options)) === 1;
     }
 
     private function getOptions(): array
     {
-        $options = preg_split('~;~', $this->getUniqueValue(), -1, PREG_SPLIT_NO_EMPTY);
-
-        return array_map('trim', $options);
+        return preg_split('~\s*;\s*~', $this->getUniqueValue(), -1, PREG_SPLIT_NO_EMPTY);
     }
 }

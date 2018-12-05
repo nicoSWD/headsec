@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Infrastructure\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
 
-final class NativeAbstractHeaderProvider extends AbstractHeaderProvider
+final class NativeHeaderProvider extends AbstractHeaderProvider
 {
     protected function getHeaders(string $url): array
     {

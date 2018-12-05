@@ -33,7 +33,7 @@ services:
     class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\ConsoleResultPrinter
 
   nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider:
-    class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeAbstractHeaderProvider
+    class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeHeaderProvider
 
   nicoswd.security_header_check.domain.validator.header_factory:
     class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderFactory

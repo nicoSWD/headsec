@@ -7,12 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResults;
+use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class XMLResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(ScanResults $scanResults): string
+    public function getOutput(ScanResult $scanResults): string
     {
         return '<xml></xml>';
     }

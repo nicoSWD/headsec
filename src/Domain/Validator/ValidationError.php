@@ -13,4 +13,6 @@ final class ValidationError
     public const HEADER_DUPLICATE = 'Header has been sent multiple times';
     public const SERVER_VERSION_DISCLOSURE = 'Server version may be leaking';
     public const CSP_DIRECTIVE_MISSING = 'Missing directives';
+    public const OPTION_MAY_LEAK_PARTIAL_REFERRER_INFO = "Option '%s' may leak partial referrer information";
+    public const INVALID_REFERRER_POLICY = 'Invalid option';
 }

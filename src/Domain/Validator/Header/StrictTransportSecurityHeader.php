@@ -8,42 +8,40 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 {
     private const SIX_MONTHS_IN_SECONDS = 15768000;
+    private const FLAG_INCLUDE_SUB_DOMAINS = 'includesubdomains';
 
-    public function getScore(): float
+    protected function scan(): void
     {
         $value = $this->getUniqueValue();
         $maxAge = $this->getMaxAge($value);
 
         if ($maxAge !== false) {
-            if ($this->isMinRecommendedMaxAge($maxAge)) {
-                $score = 1;
-            } else {
-                $score = .5;
-                $this->addWarning('max-age should be at least 6 months (15768000 seconds)');
+            if (!$this->isMinRecommendedMaxAge($maxAge)) {
+                $this->addWarning(ErrorSeverity::MEDIUM, 'max-age should be at least 6 months (15768000 seconds)');
             }
         } else {
-            $score = 0;
-            $this->addWarning('Missing or invalid max-age');
+            $this->addWarning(ErrorSeverity::VERY_HIGH, 'Missing or invalid max-age');
         }
 
         if (!$this->hasIncludeSubDomainsFlag($value)) {
-            $this->addWarning('The flag includeSubdomains should be set');
+            $this->addWarning(ErrorSeverity::NONE, 'The flag includeSubdomains should be set');
         }
-
-        return $score;
     }
 
     private function hasIncludeSubDomainsFlag(string $value): bool
     {
-        $options = explode(';', $value);
-        $options = array_map('trim', $options);
-        $options = array_map('strtolower', $options);
+        $callback = function (string $option): string {
+            return strtolower(trim($option));
+        };
 
-        return in_array('includesubdomains', $options, true);
+        $options = array_map($callback, explode(';', $value));
+
+        return in_array(self::FLAG_INCLUDE_SUB_DOMAINS, $options, true);
     }
 
     private function getMaxAge(string $value)

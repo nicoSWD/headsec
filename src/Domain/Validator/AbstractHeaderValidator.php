@@ -7,33 +7,42 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
+use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException;
+
 abstract class AbstractHeaderValidator
 {
-    protected const PASS = 1;
-    protected const FAIL = 0;
-    protected const PASS_WITH_WARNING = .5;
-
     /** @var string|string[] */
     private $value;
     /** @var string[] */
     private $warnings = [];
-
-    /** @throws \nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException */
-    abstract public function getScore(): float;
+    /** @var float */
+    private $penalty = .0;
 
     public function __construct($value = '')
     {
         $this->value = $value;
     }
 
-    public function getWarnings(): array
+    /** @throws DuplicateHeaderException */
+    abstract protected function scan(): void;
+
+    /** @throws DuplicateHeaderException */
+    final public function getCalculatedScore(): float
     {
-        return $this->warnings;
+        $this->scan();
+
+        return 1 - $this->getPenalty();
     }
 
-    protected function addWarning(string $warning): void
+    public function getWarnings(): array
     {
-        $this->warnings[] = $warning;
+        return array_unique($this->warnings);
+    }
+
+    protected function addWarning(float $penalty, string $warning, array $context = []): void
+    {
+        $this->warnings[] = vsprintf($warning, $context);
+        $this->penalty += $penalty;
     }
 
     protected function getValue()
@@ -52,5 +61,10 @@ abstract class AbstractHeaderValidator
         }
 
         return trim($this->value);
+    }
+
+    private function getPenalty(): float
+    {
+        return $this->penalty;
     }
 }

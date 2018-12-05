@@ -8,18 +8,22 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ServerHeader extends AbstractHeaderValidator
 {
-    public function getScore(): float
+    protected function scan(): void
     {
         $server = $this->getUniqueValue();
 
-        if (preg_match('~\d\.\d~', $server)) {
-            $this->addWarning(ValidationError::SERVER_VERSION_DISCLOSURE);
+        if ($this->serverContainsVersionNumber($server)) {
+            $this->addWarning(ErrorSeverity::LOW, ValidationError::SERVER_VERSION_DISCLOSURE);
         }
+    }
 
-        return .0;
+    private function serverContainsVersionNumber(string $server): bool
+    {
+        return preg_match('~\d\.\d~', $server) === 1;
     }
 }
