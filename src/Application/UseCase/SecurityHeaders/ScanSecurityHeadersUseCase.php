@@ -7,17 +7,17 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-use nicoSWD\SecHeaderCheck\Domain\Header\HeaderService;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScannerService;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
 
 final class ScanSecurityHeadersUseCase
 {
-    /** @var HeaderService */
+    /** @var SecurityScannerService */
     private $headerService;
     /** @var ResultPrinterFactory */
     private $resultPrinterFactory;
 
-    public function __construct(HeaderService $headerService, ResultPrinterFactory $resultPrinterFactory)
+    public function __construct(SecurityScannerService $headerService, ResultPrinterFactory $resultPrinterFactory)
     {
         $this->headerService = $headerService;
         $this->resultPrinterFactory = $resultPrinterFactory;
@@ -25,7 +25,7 @@ final class ScanSecurityHeadersUseCase
 
     public function execute(ScanSecurityHeadersRequest $request): ScanSecurityHeadersResponse
     {
-        $scanResults = $this->headerService->scan($request->url);
+        $scanResults = $this->headerService->scan($request->url, $request->followRedirects);
         $outputPrinter = $this->resultPrinterFactory->createFromFormat($request->outputFormat);
 
         $result = new ScanSecurityHeadersResponse();

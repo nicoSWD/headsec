@@ -26,10 +26,13 @@ abstract class AbstractHeaderValidator
     /** @throws DuplicateHeaderException */
     abstract protected function scan(): void;
 
-    /** @throws DuplicateHeaderException */
     final public function getCalculatedScore(): float
     {
-        $this->scan();
+        try {
+            $this->scan();
+        } catch (DuplicateHeaderException $e) {
+            $this->addWarning(1, ValidationError::HEADER_DUPLICATE);
+        }
 
         return 1 - $this->getPenalty();
     }
@@ -54,10 +57,11 @@ abstract class AbstractHeaderValidator
         return trim($this->value);
     }
 
+    /** @throws DuplicateHeaderException */
     protected function getUniqueValue(): string
     {
         if (is_array($this->value)) {
-            throw new Exception\DuplicateHeaderException();
+            throw new DuplicateHeaderException();
         }
 
         return trim($this->value);

@@ -9,19 +9,23 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 abstract class AbstractHeaderProvider
 {
-    abstract protected function getHeaders(string $url): array;
+    private const ALLOWED_PROTOCOLS = ['http', 'https'];
 
-    public function getHeadersFromUrl(string $url): array
+    abstract protected function getHeaders(string $url, bool $followRedirects): array;
+
+    public function getHeadersFromUrl(string $url, bool $followRedirects): HeaderBag
     {
         if (!$this->isValidUrl($url)) {
             throw new Exception\InvalidUrlException();
         }
 
-        $headers = $this->getHeaders($url);
-        $headers = array_change_key_case($headers, CASE_LOWER);
-        unset($headers[0]);
+        $headerBag = new HeaderBag();
 
-        return $headers;
+        foreach ($this->getHeaders($url, $followRedirects) as $headerName => $value) {
+            $headerBag[$headerName] = $this->createHeader($headerName, $value);
+        }
+
+        return $headerBag;
     }
 
     protected function isValidUrl(string $url): bool
@@ -36,6 +40,15 @@ abstract class AbstractHeaderProvider
             return false;
         }
 
-        return in_array($scheme, ['http', 'https'], true);
+        return in_array($scheme, self::ALLOWED_PROTOCOLS, true);
+    }
+
+    private function createHeader($headerName, $value): HttpHeader
+    {
+        if (is_int($headerName)) {
+            return new HttpHeader(trim($value), '');
+        }
+
+        return new HttpHeader(strtolower(trim($headerName)), $value);
     }
 }

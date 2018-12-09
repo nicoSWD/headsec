@@ -13,12 +13,14 @@ use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 {
+    private const DEFAULT_SRC = 'default-src';
     private const SCRIPT_SRC = 'script-src';
     private const IMG_SRC = 'img-src';
     private const FRAME_ANCESTORS = 'frame-ancestors';
     private const REPORT_URI = 'report-uri';
     private const CONNECT_SRC = 'connect-src';
     private const STYLE_SRC = 'style-src';
+    private const SANDBOX = 'sandbox';
 
     private const EXPECTED_DIRECTIVES = [
         self::SCRIPT_SRC,
@@ -38,12 +40,14 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
                 [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);
 
                 switch ($directiveName) {
+                    case self::DEFAULT_SRC:
                     case self::IMG_SRC:
                     case self::SCRIPT_SRC:
                     case self::FRAME_ANCESTORS:
                     case self::REPORT_URI:
                     case self::CONNECT_SRC:
                     case self::STYLE_SRC:
+                    case self::SANDBOX:
                         if ($this->hasValidPolicy($policy)) {
                             $this->foundDirectives[] = $directiveName;
                         } else {
@@ -94,6 +98,10 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 
     private function getMissingDirectives(): array
     {
-        return array_diff(self::EXPECTED_DIRECTIVES, $this->foundDirectives);
+        if (!in_array(self::DEFAULT_SRC, $this->foundDirectives, true)) {
+            return array_diff(self::EXPECTED_DIRECTIVES, $this->foundDirectives);
+        }
+
+        return [];
     }
 }

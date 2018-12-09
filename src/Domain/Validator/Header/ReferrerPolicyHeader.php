@@ -23,7 +23,7 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
             $this->addWarning(
                 ErrorSeverity::MEDIUM,
                 ValidationError::OPTION_MAY_LEAK_PARTIAL_REFERRER_INFO,
-                $policy
+                [$policy]
             );
         } else {
             $this->addWarning(ErrorSeverity::VERY_HIGH, ValidationError::INVALID_REFERRER_POLICY);

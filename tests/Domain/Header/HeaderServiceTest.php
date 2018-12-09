@@ -9,15 +9,15 @@ namespace Tests\nicoSWD\SecHeaderCheck\Domain\Header;
 
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use nicoSWD\SecHeaderCheck\Domain\Header\AbstractHeaderProvider;
-use nicoSWD\SecHeaderCheck\Domain\Header\HeaderService;
-use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScannerService;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 
 final class HeaderServiceTest extends MockeryTestCase
 {
     /** @var AbstractHeaderProvider|\Mockery\Mock */
     private $headerProvider;
-    /** @var HeaderService */
+    /** @var SecurityScannerService */
     private $headerService;
 
     protected function setUp()
@@ -26,10 +26,10 @@ final class HeaderServiceTest extends MockeryTestCase
             ->makePartial()
             ->shouldAllowMockingProtectedMethods();
 
-        $this->headerService = new HeaderService(
+        $this->headerService = new SecurityScannerService(
             $this->headerProvider,
             new HeaderValidatorFactory(),
-            new SecurityHeaders()
+            new SecurityHeader()
         );
     }
 

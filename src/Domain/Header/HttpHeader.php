@@ -7,15 +7,17 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
-final class Header
+final class HttpHeader
 {
+    /** @var string */
     private $name = '';
-    private $isMandatory = true;
+    /** @var string|string[] */
+    private $value;
 
-    public function __construct(string $name, bool $isMandatory)
+    public function __construct(string $name, $value)
     {
         $this->name = $name;
-        $this->isMandatory = $isMandatory;
+        $this->value = $value;
     }
 
     public function getName(): string
@@ -23,8 +25,8 @@ final class Header
         return $this->name;
     }
 
-    public function isMandatory(): bool
+    public function getValue()
     {
-        return $this->isMandatory;
+        return $this->value;
     }
 }

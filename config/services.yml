@@ -11,11 +11,10 @@ services:
     public: true
     tags: [console.command]
 
-  nicoSWD\SecHeaderCheck\Domain\Header\HeaderService:
+  nicoSWD\SecHeaderCheck\Domain\Header\SecurityScannerService:
     arguments:
       - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
       - '@nicoswd.security_header_check.domain.validator.header_validator_factory'
-      - '@nicoswd.security_header_check.domain.headers.security_headers'
 
   nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory:
     arguments:
@@ -38,12 +37,10 @@ services:
   nicoswd.security_header_check.domain.validator.header_validator_factory:
     class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory
 
-  nicoswd.security_header_check.domain.headers.security_headers:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaders
-    arguments:
-      - '@nicoswd.security_header_check.domain.headers.header_factory'
+  nicoswd.security_header_check.domain.headers.expected_security_headers:
+    class: nicoSWD\SecHeaderCheck\Domain\Header\ExpectedSecurityHeaders
 
   nicoswd.security_header_check.domain.headers.header_factory:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\HeaderFactory
+    class: nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaderFactory
 
 

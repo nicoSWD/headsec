@@ -20,10 +20,10 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $output .= '│ <options=bold>' . str_pad('Header', 25, ' ') . '</> │ ' .'<options=bold>Warning</>' . PHP_EOL;
         $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
 
-        foreach ($scanResults->getWarnings() as $headerName => $warning) {
+        foreach ($scanResults->getSortedWarnings() as $headerName => $warning) {
             $hasWarnings = count($warning) > 0;
 
-            $line = '│ <fg=' . ($hasWarnings ? 'red' : 'green') . '>' . str_pad($headerName, 25, ' ') . '</> │ ' . ($warning ? implode(', ', $warning) : 'None') . PHP_EOL;
+            $line = '│ <fg=' . ($hasWarnings ? 'red' : 'green') . '>' . str_pad($this->prettyName($headerName), 25, ' ') . '</> │ ' . ($warning ? implode(', ', $warning) : 'None') . PHP_EOL;
 
             $output .= $line;
             $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
@@ -33,5 +33,10 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $output .= '╰'.str_repeat('─', 28) . '' . str_repeat('─', 55) . PHP_EOL;
 
         return $output;
+    }
+
+    private function prettyName($headerName)
+    {
+        return implode('-', array_map('ucfirst', explode('-', $headerName)));
     }
 }

@@ -7,12 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
-
 final class ScanResult
 {
-    /** @var float */
-    private $score = .0;
+    /** @var float[] */
+    private $score = [];
     /** @var array */
     private $warnings = [];
 
@@ -21,14 +19,18 @@ final class ScanResult
         $this->warnings[$headerName] = $warnings;
     }
 
-    public function sumScore(float $score): void
+    public function sumScore(string $headerName, float $score): void
     {
-        $this->score += $score;
+        if (!isset($this->score[$headerName])) {
+            $this->score[$headerName] = 0;
+        }
+
+        $this->score[$headerName] += $score;
     }
 
     public function getScore(): float
     {
-        return $this->score;
+        return array_sum($this->score);
     }
 
     public function getWarnings(): array
@@ -36,13 +38,12 @@ final class ScanResult
         return $this->warnings;
     }
 
-    public function addDuplicateHeaderWarning(string $headerName): void
+    public function getSortedWarnings(): array
     {
-        $this->addWarnings($headerName, [ValidationError::HEADER_DUPLICATE]);
-    }
+        uasort($this->warnings, function ($a, $b) {
+            return -(count($a) <=> count($b));
+        });
 
-    public function addMissingHeaderWarning(string $headerName): void
-    {
-        $this->addWarnings($headerName, [ValidationError::HEADER_MISSING]);
+        return $this->warnings;
     }
 }
