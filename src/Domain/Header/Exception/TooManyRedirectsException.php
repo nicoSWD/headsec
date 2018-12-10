@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header\Exception;
 
-final class InvalidUrlException extends \Exception
+final class TooManyRedirectsException extends \Exception
 {
-    protected $message = 'Invalid URL';
+    protected $message = 'Too many redirects';
 }

@@ -5,9 +5,8 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Header\Exception;
+namespace nicoSWD\SecHeaderCheck\Domain\URL\Exception;
 
 final class InvalidUrlException extends \Exception
 {
-    protected $message = 'Invalid URL';
 }

@@ -33,14 +33,9 @@ services:
 
   nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider:
     class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeHeaderProvider
+    arguments:
+      - 5
+      - 3
 
   nicoswd.security_header_check.domain.validator.header_validator_factory:
     class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory
-
-  nicoswd.security_header_check.domain.headers.expected_security_headers:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\ExpectedSecurityHeaders
-
-  nicoswd.security_header_check.domain.headers.header_factory:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeaderFactory
-
-

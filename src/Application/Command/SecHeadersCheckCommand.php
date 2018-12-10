@@ -35,7 +35,8 @@ final class SecHeadersCheckCommand extends Command
         $this->setName('nicoswd:security-header-check')
             ->setDescription('Check a site\'s security headers')
             ->addArgument('url', InputArgument::REQUIRED, 'URL to check')
-            ->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'Output format', 'console')
+            ->addOption('follow-redirects', 'f', InputOption::VALUE_OPTIONAL, 'Follow redirects', true)
+            ->addOption('output-format', 'o', InputOption::VALUE_OPTIONAL, 'Output format', 'console')
             ->addOption('target-score', 't', InputOption::VALUE_OPTIONAL, 'Target score', '5')
             // Ideas...
             ->addOption('raw-headers', 'r', InputOption::VALUE_OPTIONAL, 'Show raw headers', false)
@@ -49,7 +50,7 @@ final class SecHeadersCheckCommand extends Command
     {
         $scanRequest = new ScanSecurityHeadersRequest();
         $scanRequest->url = $input->getArgument('url');
-        $scanRequest->outputFormat = $input->getOption('format');
+        $scanRequest->outputFormat = $input->getOption('output-format');
 
         $scanResult = $this->scanSecurityHeadersUseCase->execute($scanRequest);
 

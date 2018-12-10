@@ -34,7 +34,7 @@ final class HeaderBag implements ArrayAccess, Iterator
         return $this->has($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): HttpHeader
     {
         return $this->get($offset);
     }
@@ -49,6 +49,7 @@ final class HeaderBag implements ArrayAccess, Iterator
         unset($this->headers[$offset]);
     }
 
+    /** @return HttpHeader|bool */
     public function current()
     {
         return current($this->headers);

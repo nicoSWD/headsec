@@ -7,40 +7,39 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\Exception\TooManyRedirectsException;
+use nicoSWD\SecHeaderCheck\Domain\URL\URL;
+
 abstract class AbstractHeaderProvider
 {
-    private const ALLOWED_PROTOCOLS = ['http', 'https'];
+    /** @var int */
+    private $maxRedirects;
+    /** @var int */
+    protected $connectionTimeout;
 
-    abstract protected function getHeaders(string $url, bool $followRedirects): array;
+    abstract protected function getHeaders(URL $url): array;
 
-    public function getHeadersFromUrl(string $url, bool $followRedirects): HeaderBag
+    public function __construct(int $maxRedirects, int $connectionTimeout)
     {
-        if (!$this->isValidUrl($url)) {
-            throw new Exception\InvalidUrlException();
+        $this->maxRedirects = $maxRedirects;
+        $this->connectionTimeout = $connectionTimeout;
+    }
+
+    public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HeaderBag
+    {
+        $headers = $this->getHeaders($url);
+
+        if ($followRedirects) {
+            $headers = $this->getHeadersFromRedirectingUrl($url, $headers);
         }
 
         $headerBag = new HeaderBag();
 
-        foreach ($this->getHeaders($url, $followRedirects) as $headerName => $value) {
+        foreach ($headers as $headerName => $value) {
             $headerBag[$headerName] = $this->createHeader($headerName, $value);
         }
 
         return $headerBag;
-    }
-
-    protected function isValidUrl(string $url): bool
-    {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            return false;
-        }
-
-        $scheme = parse_url($url, PHP_URL_SCHEME);
-
-        if ($scheme === false || $scheme === null) {
-            return false;
-        }
-
-        return in_array($scheme, self::ALLOWED_PROTOCOLS, true);
     }
 
     private function createHeader($headerName, $value): HttpHeader
@@ -50,5 +49,20 @@ abstract class AbstractHeaderProvider
         }
 
         return new HttpHeader(strtolower(trim($headerName)), $value);
+    }
+
+    private function getHeadersFromRedirectingUrl(URL $url, array $headers): array
+    {
+        $numRedirects = 0;
+
+        while (!empty($headers['location'])) {
+            if (++$numRedirects > $this->maxRedirects) {
+                throw new TooManyRedirectsException();
+            }
+
+            $headers = $this->getHeaders($url->redirectTo($headers['location']));
+        }
+
+        return $headers;
     }
 }

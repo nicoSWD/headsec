@@ -8,6 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
@@ -16,37 +17,37 @@ final class SecurityScannerService
     /** @var AbstractHeaderProvider */
     private $headerProvider;
     /** @var HeaderValidatorFactory */
-    private $headerFactory;
+    private $scannerFactory;
 
     public function __construct(
         AbstractHeaderProvider $headerProvider,
-        HeaderValidatorFactory $headerFactory
+        HeaderValidatorFactory $scannerFactory
     ) {
         $this->headerProvider = $headerProvider;
-        $this->headerFactory = $headerFactory;
+        $this->scannerFactory = $scannerFactory;
     }
 
     public function scan(string $url, bool $followRedirects = true): ScanResult
     {
         $scanResult = new ScanResult();
 
-        foreach ($this->getHeaders($url, $followRedirects) as $header) {
+        foreach ($this->getHeaders(new URL($url), $followRedirects) as $header) {
             $scanner = $this->createScanner($header);
 
-            $scanResult->sumScore($header->getName(), $scanner->getCalculatedScore());
-            $scanResult->addWarnings($header->getName(), $scanner->getWarnings());
+            $scanResult->sumScore($header->name(), $scanner->getCalculatedScore());
+            $scanResult->addWarnings($header->name(), $scanner->getWarnings());
         }
 
         return $scanResult;
     }
 
-    private function getHeaders(string $url, bool $followRedirects): HeaderBag
+    private function getHeaders(URL $url, bool $followRedirects): HeaderBag
     {
         return $this->headerProvider->getHeadersFromUrl($url, $followRedirects);
     }
 
     private function createScanner(HttpHeader $header): AbstractHeaderValidator
     {
-        return $this->headerFactory->createFromHeader($header);
+        return $this->scannerFactory->createFromHeader($header);
     }
 }
