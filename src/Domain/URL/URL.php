@@ -46,7 +46,7 @@ final class URL
 
     public function path(): string
     {
-        return $this->components['path'] ?? '';
+        return $this->components['path'] ?? '/';
     }
 
     public function query(): string

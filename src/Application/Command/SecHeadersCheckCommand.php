@@ -51,6 +51,8 @@ final class SecHeadersCheckCommand extends Command
         $scanRequest = new ScanSecurityHeadersRequest();
         $scanRequest->url = $input->getArgument('url');
         $scanRequest->outputFormat = $input->getOption('output-format');
+        $scanRequest->followRedirects = (bool) $input->getOption('follow-redirects');
+        $scanRequest->targetScore = (float) $input->getOption('target-score');
 
         $scanResult = $this->scanSecurityHeadersUseCase->execute($scanRequest);
 

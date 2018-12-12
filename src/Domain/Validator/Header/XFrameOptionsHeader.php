@@ -17,20 +17,22 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
 
     protected function scan(): void
     {
-        $value = strtolower($this->getUniqueValue());
-
-        if (!$this->isSecureOrigin($value) && !$this->hasAllowFrom($value)) {
+        if (!$this->isSecureOrigin() && !$this->hasAllowFrom()) {
             $this->addWarning(ErrorSeverity::VERY_HIGH, 'Insecure option');
         }
     }
 
-    private function isSecureOrigin(string $value): bool
+    private function isSecureOrigin(): bool
     {
+        $value = strtolower($this->getUniqueValue());
+
         return $value === self::OPTION_DENY || $value === self::OPTION_SAME_ORIGIN;
     }
 
-    private function hasAllowFrom(string $value): bool
+    private function hasAllowFrom(): bool
     {
+        $value = strtolower($this->getUniqueValue());
+
         return strpos($value, 'allow-from ') === 0;
     }
 }

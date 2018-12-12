@@ -31,7 +31,7 @@ final class ScanSecurityHeadersUseCase
         $result = new ScanSecurityHeadersResponse();
         $result->output = $outputPrinter->getOutput($scanResults);
         $result->score = $scanResults->getScore();
-        $result->hitTargetScore = $scanResults->getScore() >= (float) $request->targetScore;
+        $result->hitTargetScore = $scanResults->getScore() >= $request->targetScore;
 
         return $result;
     }

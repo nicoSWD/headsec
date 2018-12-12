@@ -14,23 +14,32 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 {
     public function getOutput(ScanResult $scanResults): string
     {
-        $output = 'Security Headers Check v1.2' . PHP_EOL ;
+        $output = '<fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
 
-        $output .= '╭'.str_repeat('─', 27) . "\u{2530}" . str_repeat('─', 55) . PHP_EOL;
-        $output .= '│ <options=bold>' . str_pad('Header', 25, ' ') . '</> │ ' .'<options=bold>Warning</>' . PHP_EOL;
-        $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
+//        $output .= '╭'.str_repeat('─', 27) . "\u{2530}" . str_repeat('─', 55) . PHP_EOL;
+//        $output .= '    <options=bold>' . str_pad('Header', 25, ' ') . '</>   ' .'<options=bold>Warning</>' . PHP_EOL;
+//        $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
 
-        foreach ($scanResults->getSortedWarnings() as $headerName => $warning) {
-            $hasWarnings = count($warning) > 0;
+        $maxHeaderLength = 0;
 
-            $line = '│ <fg=' . ($hasWarnings ? 'red' : 'green') . '>' . str_pad($this->prettyName($headerName), 25, ' ') . '</> │ ' . ($warning ? implode(', ', $warning) : 'None') . PHP_EOL;
-
-            $output .= $line;
-            $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
+        foreach (array_keys($scanResults->getWarnings()) as $name) {
+            $length = strlen($name);
+            if ($length > $maxHeaderLength) {
+                $maxHeaderLength = $length;
+            }
         }
 
-        $output .= '│ Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
-        $output .= '╰'.str_repeat('─', 28) . '' . str_repeat('─', 55) . PHP_EOL;
+        foreach ($scanResults->getWarnings() as $headerName => $warning) {
+            $hasWarnings = count($warning) > 0;
+
+            $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg='.($hasWarnings ? 'black' : '').'>' . str_pad($this->prettyName($headerName), $maxHeaderLength, ' ') . '</> : ' . ($warning ? implode(', ', $warning) : 'Okay') . PHP_EOL;
+
+            $output .= $line;
+//            $output .= '├'.str_repeat('─', 27) . '┼' . str_repeat('─', 55) . PHP_EOL;
+        }
+
+        $output .= PHP_EOL .'    Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
+//        $output .= '╰'.str_repeat('─', 28) . '' . str_repeat('─', 55) . PHP_EOL;
 
         return $output;
     }
