@@ -16,25 +16,25 @@ final class HeaderValidatorFactory
     {
         switch ($header->name()) {
             case SecurityHeader::STRICT_TRANSPORT_SECURITY:
-                return new Header\StrictTransportSecurityHeader($header->value());
+                return new Header\StrictTransportSecurityHeader($header->name(), $header->value());
             case SecurityHeader::X_FRAME_OPTIONS:
-                return new Header\XFrameOptionsHeader($header->value());
+                return new Header\XFrameOptionsHeader($header->name(), $header->value());
             case SecurityHeader::X_XSS_PROTECTION:
-                return new Header\XXSSProtectionHeader($header->value());
+                return new Header\XXSSProtectionHeader($header->name(), $header->value());
             case SecurityHeader::X_CONTENT_TYPE_OPTIONS:
-                return new Header\XContentTypeOptionsHeader($header->value());
+                return new Header\XContentTypeOptionsHeader($header->name(), $header->value());
             case SecurityHeader::REFERRER_POLICY:
-                return new Header\ReferrerPolicyHeader($header->value());
+                return new Header\ReferrerPolicyHeader($header->name(), $header->value());
             case SecurityHeader::SET_COOKIE:
-                return new Header\SetCookieHeader($header->value());
+                return new Header\SetCookieHeader($header->name(), $header->value());
             case SecurityHeader::SERVER:
-                return new Header\ServerHeader($header->value());
+                return new Header\ServerHeader($header->name(), $header->value());
             case SecurityHeader::X_POWERED_BY:
-                return new Header\XPoweredByHeader($header->value());
+                return new Header\XPoweredByHeader($header->name(), $header->value());
             case SecurityHeader::CONTENT_SECURITY_POLICY:
-                return new Header\ContentSecurityPolicyHeader($header->value());
+                return new Header\ContentSecurityPolicyHeader($header->name(), $header->value());
             default:
-                return new Header\NonSecurityHeader($header->value());
+                return new Header\NonSecurityHeader($header->name(), $header->value());
         }
     }
 }

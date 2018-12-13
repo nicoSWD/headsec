@@ -7,17 +7,17 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScannerService;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScanner;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
 
 final class ScanSecurityHeadersUseCase
 {
-    /** @var SecurityScannerService */
+    /** @var SecurityScanner */
     private $headerService;
     /** @var ResultPrinterFactory */
     private $resultPrinterFactory;
 
-    public function __construct(SecurityScannerService $headerService, ResultPrinterFactory $resultPrinterFactory)
+    public function __construct(SecurityScanner $headerService, ResultPrinterFactory $resultPrinterFactory)
     {
         $this->headerService = $headerService;
         $this->resultPrinterFactory = $resultPrinterFactory;

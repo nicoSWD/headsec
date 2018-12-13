@@ -11,7 +11,7 @@ services:
     public: true
     tags: [console.command]
 
-  nicoSWD\SecHeaderCheck\Domain\Header\SecurityScannerService:
+  nicoSWD\SecHeaderCheck\Domain\Header\SecurityScanner:
     arguments:
       - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
       - '@nicoswd.security_header_check.domain.validator.header_validator_factory'

@@ -17,7 +17,7 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
     private const ONE_KB = 1024;
     private const MAX_HEADER_SIZE = self::ONE_KB * 8;
 
-    protected function getHeaders(URL $url): array
+    protected function getRawHeaders(URL $url): array
     {
         if ($url->isHttps()) {
             $scheme = 'ssl://';

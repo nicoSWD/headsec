@@ -17,7 +17,7 @@ abstract class AbstractHeaderProvider
     /** @var int */
     protected $connectionTimeout;
 
-    abstract protected function getHeaders(URL $url): array;
+    abstract protected function getRawHeaders(URL $url): array;
 
     public function __construct(int $maxRedirects, int $connectionTimeout)
     {
@@ -27,10 +27,10 @@ abstract class AbstractHeaderProvider
 
     public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HeaderBag
     {
-        $headers = $this->getHeaders($url);
+        $headers = $this->getRawHeaders($url);
 
         if ($followRedirects) {
-            $headers = $this->getHeadersFromRedirectingUrl($url, $headers);
+            $headers = $this->getRawHeadersFromRedirectingUrl($url, $headers);
         }
 
         $headerBag = new HeaderBag();
@@ -51,7 +51,7 @@ abstract class AbstractHeaderProvider
         return new HttpHeader(strtolower(trim($headerName)), $value);
     }
 
-    private function getHeadersFromRedirectingUrl(URL $url, array $headers): array
+    private function getRawHeadersFromRedirectingUrl(URL $url, array $headers): array
     {
         $numRedirects = 0;
 
@@ -60,7 +60,7 @@ abstract class AbstractHeaderProvider
                 throw new TooManyRedirectsException();
             }
 
-            $headers = $this->getHeaders($url->redirectTo($headers['location']));
+            $headers = $this->getRawHeaders($url->redirectTo($headers['location']));
         }
 
         return $headers;

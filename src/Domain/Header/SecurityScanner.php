@@ -12,7 +12,7 @@ use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
-final class SecurityScannerService
+final class SecurityScanner
 {
     /** @var AbstractHeaderProvider */
     private $headerProvider;
@@ -30,12 +30,12 @@ final class SecurityScannerService
     public function scan(string $url, bool $followRedirects = true): ScanResult
     {
         $scanResult = new ScanResult();
+        $headers = $this->getHeaders(new URL($url), $followRedirects);
 
-        foreach ($this->getHeaders(new URL($url), $followRedirects) as $header) {
-            $scanner = $this->createScanner($header);
-
-            $scanResult->sumScore($header->name(), $scanner->getCalculatedScore());
-            $scanResult->addWarnings($header->name(), $scanner->getWarnings());
+        foreach ($headers as $header) {
+            $scanResult->addHeader(
+                $this->createScanner($header)->getEvaluatedHeader()
+            );
         }
 
         return $scanResult;

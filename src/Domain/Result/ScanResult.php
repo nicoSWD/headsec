@@ -9,41 +9,28 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 final class ScanResult
 {
-    /** @var float[] */
-    private $score = [];
-    /** @var array */
-    private $warnings = [];
+    /** @var EvaluatedHeader[] */
+    private $headers;
 
-    public function addWarnings(string $headerName, array $warnings): void
+    public function addHeader(EvaluatedHeader $header)
     {
-        $this->warnings[$headerName] = $warnings;
+        $this->headers[$header->name()] = $header;
     }
 
-    public function sumScore(string $headerName, float $score): void
+    /** @return EvaluatedHeader[] */
+    public function getHeaders(): array
     {
-        if (!isset($this->score[$headerName])) {
-            $this->score[$headerName] = 0;
-        }
-
-        $this->score[$headerName] += $score;
+        return $this->headers;
     }
 
     public function getScore(): float
     {
-        return array_sum($this->score);
-    }
+        $score = 0;
 
-    public function getWarnings(): array
-    {
-        return $this->warnings;
-    }
+        foreach ($this->headers as $header) {
+            $score += $header->score();
+        }
 
-    public function getSortedWarnings(): array
-    {
-        uasort($this->warnings, function ($a, $b) {
-            return -(count($a) <=> count($b));
-        });
-
-        return $this->warnings;
+        return $score;
     }
 }
