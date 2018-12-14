@@ -15,15 +15,13 @@ final class ServerHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
-        $server = $this->getValue();
-
-        if ($this->serverContainsVersionNumber($server)) {
+        if ($this->serverContainsVersionNumber()) {
             $this->addWarning(ErrorSeverity::LOW, ValidationError::SERVER_VERSION_DISCLOSURE);
         }
     }
 
-    private function serverContainsVersionNumber(string $server): bool
+    private function serverContainsVersionNumber(): bool
     {
-        return preg_match('~\d\.\d~', $server) === 1;
+        return preg_match('~\d\.\d~', $this->getValue()) === 1;
     }
 }
