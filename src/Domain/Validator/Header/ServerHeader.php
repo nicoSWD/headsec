@@ -22,6 +22,6 @@ final class ServerHeader extends AbstractHeaderValidator
 
     private function serverContainsVersionNumber(): bool
     {
-        return preg_match('~\d\.\d~', $this->getValue()) === 1;
+        return preg_match('~\d+\.\d+~', $this->getValue()) === 1;
     }
 }

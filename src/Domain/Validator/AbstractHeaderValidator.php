@@ -11,13 +11,12 @@ use nicoSWD\SecHeaderCheck\Domain\Result\EvaluatedHeader;
 
 abstract class AbstractHeaderValidator
 {
-    /** @var string|string[] */
-    private $value;
+    private $name = '';
+    private $value = '';
     private $warnings = [];
     private $penalty = .0;
-    private $name = '';
 
-    public function __construct(string $name, $value = '')
+    public function __construct(string $name, string $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -29,9 +28,12 @@ abstract class AbstractHeaderValidator
     {
         $this->scan();
 
-        $score = 1 - $this->getPenalty();
-
-        return new EvaluatedHeader($this->getName(), $this->getValue(), $score, $this->getWarnings());
+        return new EvaluatedHeader(
+            $this->getName(),
+            $this->getValue(),
+            $this->getScore(),
+            $this->getWarnings()
+        );
     }
 
     public function getWarnings(): array
@@ -48,6 +50,11 @@ abstract class AbstractHeaderValidator
     {
         $this->warnings[] = vsprintf($warning, $context);
         $this->penalty += $penalty;
+    }
+
+    private function getScore(): float
+    {
+        return 1 - $this->getPenalty();
     }
 
     private function getPenalty(): float
