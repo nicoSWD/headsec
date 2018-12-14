@@ -17,14 +17,15 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $output = '<fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
         $maxHeaderLength = 0;
 
-        foreach (array_keys($scanResults->getHeaders()) as $name) {
-            $length = strlen($name);
+        foreach ($scanResults->getHeaders() as $header) {
+            $length = strlen($header->name());
             if ($length > $maxHeaderLength) {
                 $maxHeaderLength = $length;
             }
         }
 
-        foreach ($scanResults->getHeaders() as $headerName => $header) {
+        foreach ($scanResults->getHeaders() as $header) {
+            $headerName = $header->name();
             $hasWarnings = count($header->warnings()) > 0;
             $warning = $header->warnings();
 

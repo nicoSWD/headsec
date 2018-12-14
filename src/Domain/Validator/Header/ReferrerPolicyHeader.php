@@ -15,7 +15,7 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
-        $policy = strtolower($this->getUniqueValue());
+        $policy = strtolower($this->getValue());
 
         if ($this->doesNotLeakReferrer($policy)) {
             // Good job

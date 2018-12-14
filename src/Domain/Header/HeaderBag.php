@@ -7,46 +7,15 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
-use ArrayAccess;
 use Iterator;
 
-final class HeaderBag implements ArrayAccess, Iterator
+final class HeaderBag implements Iterator
 {
     private $headers = [];
 
-    public function __construct(array $headers = [])
+    public function add(HttpHeader $headerValue)
     {
-        $this->headers = $headers;
-    }
-
-    public function has(string $headerName): bool
-    {
-        return array_key_exists($headerName, $this->headers);
-    }
-
-    public function get(string $headerName): HttpHeader
-    {
-        return $this->has($headerName) ? $this->headers[$headerName] : null;
-    }
-
-    public function offsetExists($offset)
-    {
-        return $this->has($offset);
-    }
-
-    public function offsetGet($offset): HttpHeader
-    {
-        return $this->get($offset);
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->headers[$offset] = $value;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->headers[$offset]);
+        $this->headers[] = $headerValue;
     }
 
     /** @return HttpHeader|bool */

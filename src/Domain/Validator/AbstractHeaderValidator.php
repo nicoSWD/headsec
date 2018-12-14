@@ -8,7 +8,6 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\EvaluatedHeader;
-use nicoSWD\SecHeaderCheck\Domain\Validator\Exception\DuplicateHeaderException;
 
 abstract class AbstractHeaderValidator
 {
@@ -24,33 +23,24 @@ abstract class AbstractHeaderValidator
         $this->value = $value;
     }
 
-    /** @throws DuplicateHeaderException */
     abstract protected function scan(): void;
 
     final public function getEvaluatedHeader(): EvaluatedHeader
     {
-        try {
-            $this->scan();
-        } catch (DuplicateHeaderException $e) {
-            $this->addWarning(1, ValidationError::HEADER_DUPLICATE);
-        }
+        $this->scan();
 
         $score = 1 - $this->getPenalty();
 
-        return new EvaluatedHeader($this->getName(), $score, $this->getWarnings(), (array) $this->getValue());
+        return new EvaluatedHeader($this->getName(), $this->getValue(), $score, $this->getWarnings());
     }
 
     public function getWarnings(): array
     {
-        return array_unique($this->warnings);
+        return $this->warnings;
     }
 
-    public function getValue()
+    public function getValue(): string
     {
-        if (is_array($this->value)) {
-            return array_map('trim', $this->value);
-        }
-
         return trim($this->value);
     }
 
@@ -58,16 +48,6 @@ abstract class AbstractHeaderValidator
     {
         $this->warnings[] = vsprintf($warning, $context);
         $this->penalty += $penalty;
-    }
-
-    /** @throws DuplicateHeaderException */
-    protected function getUniqueValue(): string
-    {
-        if (is_array($this->value)) {
-            throw new DuplicateHeaderException();
-        }
-
-        return trim($this->value);
     }
 
     private function getPenalty(): float

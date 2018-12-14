@@ -19,34 +19,17 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
 
     protected function getRawHeaders(URL $url): array
     {
-        if ($url->isHttps()) {
-            $scheme = 'ssl://';
-        } else {
-            $scheme = '';
-        }
-
-        $fp = @fsockopen($scheme . $url->host(), $url->port(), $errNo, $errStr, $this->connectionTimeout);
-
-        if (!$fp) {
-            throw new ConnectionTimeoutException();
-        }
-
-        $request = "GET {$url->path()}{$url->query()} HTTP/1.1\r\n";
-        $request .= "Host: {$url->host()}\r\n";
-        $request .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
-        $request .= "User-Agent: Security Headers Scanner/1.0 (https://github.com/nicoSWD)\r\n";
-        $request .= "Connection: Close\r\n\r\n";
-
-        fwrite($fp, $request);
+        $fp = $this->connect($url);
+        $this->sendRequest($url, $fp);
 
         $headers = [];
         $bytesRead = 0;
 
         while (!feof($fp)) {
-            $line = fgets($fp, self::ONE_KB * 2);
+            $line = $this->readLine($fp);
             $bytesRead += strlen($line);
 
-            if ($bytesRead > self::MAX_HEADER_SIZE) {
+            if ($this->hasExceededMaxSize($bytesRead)) {
                 throw new MaxHeaderSizeExceededException();
             }
 
@@ -54,20 +37,65 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
                 break;
             }
 
-            $parts = explode(':', $line, 2);
-            $headerName = trim(strtolower($parts[0]));
-            $headerValue = trim($parts[1] ?? '');
+            [$headerName, $headerValue] = $this->getNameAndValue($line);
 
-            if (!isset($headers[$headerName])) {
-                $headers[$headerName] = $headerValue;
-            } else {
-                $headers[$headerName] = (array) $headers[$headerName];
-                $headers[$headerName][] = $headerValue;
-            }
+            $headers[$headerName][] = $headerValue;
         }
 
         fclose($fp);
 
         return $headers;
+    }
+
+    private function getNameAndValue(string $line): array
+    {
+        $parts = explode(':', $line, 2);
+        $headerName = trim(strtolower($parts[0]));
+        $headerValue = trim($parts[1] ?? '');
+
+        return [$headerName, $headerValue];
+    }
+
+    private function readLine($fp)
+    {
+        return fgets($fp, self::ONE_KB * 2);
+    }
+
+    private function hasExceededMaxSize($bytesRead): bool
+    {
+        return $bytesRead > self::MAX_HEADER_SIZE;
+    }
+
+    private function getURL(URL $url): string
+    {
+        if ($url->isHttps()) {
+            $scheme = 'ssl://';
+        } else {
+            $scheme = '';
+        }
+
+        return $scheme . $url->host();
+    }
+
+    private function sendRequest(URL $url, $fp): void
+    {
+        $request = "GET {$url->path()}{$url->query()} HTTP/1.1\r\n";
+        $request .= "Host: {$url->host()}\r\n";
+        $request .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
+        $request .= "User-Agent: Security Headers Scanner/1.0 (https://github.com/nicoSWD)\r\n";
+        $request .= "Connection: Close\r\n\r\n";
+
+        fwrite($fp, $request);
+    }
+
+    private function connect(URL $url)
+    {
+        $fp = @fsockopen($this->getURL($url), $url->port(), $errNo, $errStr, $this->connectionTimeout);
+
+        if (!$fp) {
+            throw new ConnectionTimeoutException();
+        }
+
+        return $fp;
     }
 }

@@ -24,14 +24,14 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
 
     private function isSecureOrigin(): bool
     {
-        $value = strtolower($this->getUniqueValue());
+        $value = strtolower($this->getValue());
 
         return $value === self::OPTION_DENY || $value === self::OPTION_SAME_ORIGIN;
     }
 
     private function hasAllowFrom(): bool
     {
-        $value = strtolower($this->getUniqueValue());
+        $value = strtolower($this->getValue());
 
         return strpos($value, 'allow-from ') === 0;
     }

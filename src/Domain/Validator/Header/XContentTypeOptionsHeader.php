@@ -23,6 +23,6 @@ final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 
     private function isNoSniff(): bool
     {
-        return strtolower($this->getUniqueValue()) === self::NO_SNIFF;
+        return strtolower($this->getValue()) === self::NO_SNIFF;
     }
 }

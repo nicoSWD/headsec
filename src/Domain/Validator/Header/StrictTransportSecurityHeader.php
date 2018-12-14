@@ -17,7 +17,7 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 
     protected function scan(): void
     {
-        $value = $this->getUniqueValue();
+        $value = $this->getValue();
         $maxAge = $this->getMaxAge($value);
 
         if ($maxAge !== false) {

@@ -10,16 +10,16 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 final class EvaluatedHeader
 {
     private $name = '';
+    private $value = '';
     private $score = .0;
     private $warnings = [];
-    private $values = [];
 
-    public function __construct(string $name, float $score, array $warnings, array $values)
+    public function __construct(string $name, string $value, float $score, array $warnings)
     {
         $this->name = $name;
+        $this->value = $value;
         $this->score = $score;
         $this->warnings = $warnings;
-        $this->values = $values;
     }
 
     public function name(): string
@@ -35,10 +35,5 @@ final class EvaluatedHeader
     public function warnings(): array
     {
         return $this->warnings;
-    }
-
-    public function values(): array
-    {
-        return $this->values;
     }
 }

@@ -49,6 +49,6 @@ final class XXSSProtectionHeader extends AbstractHeaderValidator
 
     private function getOptions(): array
     {
-        return preg_split('~\s*;\s*~', $this->getUniqueValue(), -1, PREG_SPLIT_NO_EMPTY);
+        return preg_split('~\s*;\s*~', $this->getValue(), -1, PREG_SPLIT_NO_EMPTY);
     }
 }

@@ -29,8 +29,8 @@ final class SecurityScanner
 
     public function scan(string $url, bool $followRedirects = true): ScanResult
     {
-        $scanResult = new ScanResult();
         $headers = $this->getHeaders(new URL($url), $followRedirects);
+        $scanResult = new ScanResult();
 
         foreach ($headers as $header) {
             $scanResult->addHeader(

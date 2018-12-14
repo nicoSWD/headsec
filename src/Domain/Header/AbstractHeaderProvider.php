@@ -35,8 +35,10 @@ abstract class AbstractHeaderProvider
 
         $headerBag = new HeaderBag();
 
-        foreach ($headers as $headerName => $value) {
-            $headerBag[$headerName] = $this->createHeader($headerName, $value);
+        foreach ($headers as $headerName => $values) {
+            foreach ($values as $value) {
+                $headerBag->add($this->createHeader($headerName, $value));
+            }
         }
 
         return $headerBag;
@@ -55,12 +57,12 @@ abstract class AbstractHeaderProvider
     {
         $numRedirects = 0;
 
-        while (!empty($headers['location'])) {
+        while (!empty($headers['location'][0])) {
             if (++$numRedirects > $this->maxRedirects) {
                 throw new TooManyRedirectsException();
             }
 
-            $headers = $this->getRawHeaders($url->redirectTo($headers['location']));
+            $headers = $this->getRawHeaders($url->redirectTo($headers['location'][0]));
         }
 
         return $headers;

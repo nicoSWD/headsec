@@ -12,9 +12,9 @@ final class ScanResult
     /** @var EvaluatedHeader[] */
     private $headers;
 
-    public function addHeader(EvaluatedHeader $header)
+    public function addHeader(EvaluatedHeader $header): void
     {
-        $this->headers[$header->name()] = $header;
+        $this->headers[] = $header;
     }
 
     /** @return EvaluatedHeader[] */

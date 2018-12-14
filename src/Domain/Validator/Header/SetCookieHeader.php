@@ -18,20 +18,18 @@ final class SetCookieHeader extends AbstractHeaderValidator
 
     protected function scan(): void
     {
-        foreach ($this->getCookies() as $cookie) {
-            $flags = $this->getCookieFlags($cookie);
+        $flags = $this->getCookieFlags($this->getValue());
 
-            if (!$this->hasSecureFlag($flags)) {
-                $this->addWarning(ErrorSeverity::MEDIUM, 'Cookies should be set with the <Secure> flag');
-            }
+        if (!$this->hasSecureFlag($flags)) {
+            $this->addWarning(ErrorSeverity::MEDIUM, 'Cookies should be set with the <Secure> flag');
+        }
 
-            if (!$this->hasHttpOnlyFlag($flags)) {
-                $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <HttpOnly> flag');
-            }
+        if (!$this->hasHttpOnlyFlag($flags)) {
+            $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <HttpOnly> flag');
+        }
 
-            if (!$this->hasSameSiteFlag($flags)) {
-                $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <SameSite> flag to prevent CSRF');
-            }
+        if (!$this->hasSameSiteFlag($flags)) {
+            $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <SameSite> flag to prevent CSRF');
         }
     }
 
@@ -42,11 +40,6 @@ final class SetCookieHeader extends AbstractHeaderValidator
         };
 
         return array_map($callback, explode(';', $cookie));
-    }
-
-    private function getCookies(): array
-    {
-        return (array) $this->getValue();
     }
 
     private function hasSecureFlag(array $options): bool

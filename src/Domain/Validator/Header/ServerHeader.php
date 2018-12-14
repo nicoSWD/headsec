@@ -15,7 +15,7 @@ final class ServerHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
-        $server = $this->getUniqueValue();
+        $server = $this->getValue();
 
         if ($this->serverContainsVersionNumber($server)) {
             $this->addWarning(ErrorSeverity::LOW, ValidationError::SERVER_VERSION_DISCLOSURE);

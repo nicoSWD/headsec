@@ -35,29 +35,27 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 
     protected function scan(): void
     {
-        foreach ($this->getCSPHeaders() as $header) {
-            foreach ($this->getDirectives($header) as $directive) {
-                [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);
+        foreach ($this->getDirectives($this->getValue()) as $directive) {
+            [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);
 
-                switch ($directiveName) {
-                    case self::DEFAULT_SRC:
-                    case self::IMG_SRC:
-                    case self::SCRIPT_SRC:
-                    case self::FRAME_ANCESTORS:
-                    case self::REPORT_URI:
-                    case self::CONNECT_SRC:
-                    case self::STYLE_SRC:
-                    case self::SANDBOX:
-                        if ($this->hasValidPolicy($policy)) {
-                            $this->foundDirectives[] = $directiveName;
-                        } else {
-                            $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid policy');
-                        }
-                        break;
-                    default:
-                        $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid CSP directive: ' . $directiveName);
-                        break;
-                }
+            switch ($directiveName) {
+                case self::DEFAULT_SRC:
+                case self::IMG_SRC:
+                case self::SCRIPT_SRC:
+                case self::FRAME_ANCESTORS:
+                case self::REPORT_URI:
+                case self::CONNECT_SRC:
+                case self::STYLE_SRC:
+                case self::SANDBOX:
+                    if ($this->hasValidPolicy($policy)) {
+                        $this->foundDirectives[] = $directiveName;
+                    } else {
+                        $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid policy');
+                    }
+                    break;
+                default:
+                    $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid CSP directive: ' . $directiveName);
+                    break;
             }
         }
 
@@ -89,11 +87,6 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
     private function splitSkipEmpty(string $regex, string $header): array
     {
         return array_map('trim', preg_split($regex, $header, -1, PREG_SPLIT_NO_EMPTY));
-    }
-
-    private function getCSPHeaders(): array
-    {
-        return (array) $this->getValue();
     }
 
     private function getMissingDirectives(): array
