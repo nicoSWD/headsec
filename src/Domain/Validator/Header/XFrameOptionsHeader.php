@@ -7,8 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithInsecureValueWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XFrameOptionsHeader extends AbstractHeaderValidator
 {
@@ -18,7 +18,7 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
     protected function scan(): void
     {
         if (!$this->isSecureOrigin() && !$this->hasAllowFrom()) {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, 'Insecure option');
+            $this->addWarning(new XFrameOptionsWithInsecureValueWarning());
         }
     }
 

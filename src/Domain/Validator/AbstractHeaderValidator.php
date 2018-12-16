@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\EvaluatedHeader;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\Warning;
 
 abstract class AbstractHeaderValidator
 {
@@ -16,15 +18,15 @@ abstract class AbstractHeaderValidator
     private $warnings = [];
     private $penalty = .0;
 
-    public function __construct(string $name, string $value)
+    public function __construct(HttpHeader $header)
     {
-        $this->name = $name;
-        $this->value = $value;
+        $this->name = $header->name();
+        $this->value = $header->value();
     }
 
     abstract protected function scan(): void;
 
-    final public function getEvaluatedHeader(): EvaluatedHeader
+    final public function auditHeader(): EvaluatedHeader
     {
         $this->scan();
 
@@ -36,20 +38,19 @@ abstract class AbstractHeaderValidator
         );
     }
 
-    public function getWarnings(): array
-    {
-        return $this->warnings;
-    }
-
     public function getValue(): string
     {
         return trim($this->value);
     }
 
-    protected function addWarning(float $penalty, string $warning, array $context = []): void
+    protected function addWarning(Warning $warning): void
     {
-        $this->warnings[] = vsprintf($warning, $context);
-        $this->penalty += $penalty;
+        $this->warnings[] = $warning;
+    }
+
+    public function getWarnings(): array
+    {
+        return $this->warnings;
     }
 
     private function getScore(): float

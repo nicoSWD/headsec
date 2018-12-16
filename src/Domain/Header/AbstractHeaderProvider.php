@@ -25,7 +25,7 @@ abstract class AbstractHeaderProvider
         $this->connectionTimeout = $connectionTimeout;
     }
 
-    public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HeaderBag
+    public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HttpHeaderBag
     {
         $headers = $this->getRawHeaders($url);
 
@@ -33,7 +33,7 @@ abstract class AbstractHeaderProvider
             $headers = $this->getRawHeadersFromRedirectingUrl($url, $headers);
         }
 
-        $headerBag = new HeaderBag();
+        $headerBag = new HttpHeaderBag();
 
         foreach ($headers as $headerName => $values) {
             foreach ($values as $value) {
@@ -42,15 +42,6 @@ abstract class AbstractHeaderProvider
         }
 
         return $headerBag;
-    }
-
-    private function createHeader($headerName, $value): HttpHeader
-    {
-        if (is_int($headerName)) {
-            return new HttpHeader(trim($value), '');
-        }
-
-        return new HttpHeader(strtolower(trim($headerName)), $value);
     }
 
     private function getRawHeadersFromRedirectingUrl(URL $url, array $headers): array
@@ -66,5 +57,10 @@ abstract class AbstractHeaderProvider
         }
 
         return $headers;
+    }
+
+    private function createHeader(string $headerName, string $value): HttpHeader
+    {
+        return new HttpHeader(strtolower(trim($headerName)), $value);
     }
 }

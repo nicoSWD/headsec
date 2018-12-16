@@ -7,20 +7,32 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
+
 final class ScanResult
 {
-    /** @var EvaluatedHeader[] */
+    /** @var EvaluatedHeaderBag */
     private $headers;
 
-    public function addHeader(EvaluatedHeader $header): void
+    public function __construct()
     {
-        $this->headers[] = $header;
+        $this->headers = new EvaluatedHeaderBag();
     }
 
-    /** @return EvaluatedHeader[] */
-    public function getHeaders(): array
+    public function addHeaderResult(EvaluatedHeader $header): void
+    {
+        $this->headers->add($header);
+    }
+
+    public function getHeaders(): EvaluatedHeaderBag
     {
         return $this->headers;
+    }
+
+    /** @return ContentSecurityPolicyResult[] */
+    public function getContentSecurityPolicyResult()
+    {
+        return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);
     }
 
     public function getScore(): float

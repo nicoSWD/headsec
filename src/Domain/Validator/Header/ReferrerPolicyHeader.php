@@ -7,30 +7,24 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithInvalidValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithLeakingOriginWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
-        $policy = strtolower($this->getValue());
-
-        if ($this->doesNotLeakReferrer($policy)) {
+        if ($this->doesNotLeakReferrer()) {
             // Good job
-        } elseif ($this->mayLeakOrigin($policy)) {
-            $this->addWarning(
-                ErrorSeverity::MEDIUM,
-                ValidationError::OPTION_MAY_LEAK_PARTIAL_REFERRER_INFO,
-                [$policy]
-            );
+        } elseif ($this->mayLeakOrigin()) {
+            $this->addWarning(new ReferrerPolicyWithLeakingOriginWarning($this->getValue()));
         } else {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, ValidationError::INVALID_REFERRER_POLICY);
+            $this->addWarning(new ReferrerPolicyWithInvalidValueWarning());
         }
     }
 
-    private function doesNotLeakReferrer(string $value): bool
+    private function doesNotLeakReferrer(): bool
     {
         $secureReferrerOptions = [
             'no-referrer',
@@ -39,10 +33,12 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
             'strict-origin',
         ];
 
-        return in_array($value, $secureReferrerOptions, true);
+        $policy = strtolower($this->getValue());
+
+        return in_array($policy, $secureReferrerOptions, true);
     }
 
-    private function mayLeakOrigin(string $value): bool
+    private function mayLeakOrigin(): bool
     {
         $leakyReferrerOptions = [
             'origin',
@@ -50,6 +46,8 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
             'strict-origin-when-cross-origin',
         ];
 
-        return in_array($value, $leakyReferrerOptions, true);
+        $policy = strtolower($this->getValue());
+
+        return in_array($policy, $leakyReferrerOptions, true);
     }
 }

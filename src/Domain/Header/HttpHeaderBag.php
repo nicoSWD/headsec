@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 use Iterator;
 
-final class HeaderBag implements Iterator
+final class HttpHeaderBag implements Iterator
 {
     private $headers = [];
 

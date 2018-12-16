@@ -7,10 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\GenericHeaderAuditResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
 use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class SecurityScanner
 {
@@ -18,13 +18,17 @@ final class SecurityScanner
     private $headerProvider;
     /** @var HeaderValidatorFactory */
     private $scannerFactory;
+    /** @var PostSecurityScanner */
+    private $postSecurityScanner;
 
     public function __construct(
         AbstractHeaderProvider $headerProvider,
-        HeaderValidatorFactory $scannerFactory
+        HeaderValidatorFactory $scannerFactory,
+        PostSecurityScanner $postSecurityScanner
     ) {
         $this->headerProvider = $headerProvider;
         $this->scannerFactory = $scannerFactory;
+        $this->postSecurityScanner = $postSecurityScanner;
     }
 
     public function scan(string $url, bool $followRedirects = true): ScanResult
@@ -33,21 +37,30 @@ final class SecurityScanner
         $scanResult = new ScanResult();
 
         foreach ($headers as $header) {
-            $scanResult->addHeader(
-                $this->createScanner($header)->getEvaluatedHeader()
+            $scanner = $this->createScanner($header);
+
+            $scanResult->addHeaderResult(
+                $scanner->getEvaluatedHeader()
             );
         }
+
+        $this->postScan($scanResult);
 
         return $scanResult;
     }
 
-    private function getHeaders(URL $url, bool $followRedirects): HeaderBag
+    private function getHeaders(URL $url, bool $followRedirects): HttpHeaderBag
     {
         return $this->headerProvider->getHeadersFromUrl($url, $followRedirects);
     }
 
-    private function createScanner(HttpHeader $header): AbstractHeaderValidator
+    private function createScanner(HttpHeader $header): GenericHeaderAuditResult
     {
         return $this->scannerFactory->createFromHeader($header);
+    }
+
+    private function postScan(ScanResult $scanResult): void
+    {
+        $this->postSecurityScanner->postScan($scanResult);
     }
 }

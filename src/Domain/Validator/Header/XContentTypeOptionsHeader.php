@@ -7,8 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XContentTypeWithInvalidValueWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 {
@@ -17,7 +17,7 @@ final class XContentTypeOptionsHeader extends AbstractHeaderValidator
     protected function scan(): void
     {
         if (!$this->isNoSniff()) {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, 'nosniff is the expected value');
+            $this->addWarning(new XContentTypeWithInvalidValueWarning());
         }
     }
 

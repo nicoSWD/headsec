@@ -7,8 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithInsufficientMaxAgeWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingMaxAgeWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 {
@@ -22,14 +24,14 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 
         if ($maxAge !== false) {
             if (!$this->isMinRecommendedMaxAge($maxAge)) {
-                $this->addWarning(ErrorSeverity::MEDIUM, 'max-age should be at least 6 months (15768000 seconds)');
+                $this->addWarning(new StrictTransportSecurityWithInsufficientMaxAgeWarning());
             }
         } else {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, 'Missing or invalid max-age');
+            $this->addWarning(new StrictTransportSecurityWithMissingMaxAgeWarning());
         }
 
         if (!$this->hasIncludeSubDomainsFlag($value)) {
-            $this->addWarning(ErrorSeverity::NONE, 'The flag includeSubdomains should be set');
+            $this->addWarning(new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning());
         }
     }
 

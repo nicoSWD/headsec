@@ -7,8 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOffWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutModeBlockWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutReportURIWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class XXSSProtectionHeader extends AbstractHeaderValidator
 {
@@ -22,13 +24,13 @@ final class XXSSProtectionHeader extends AbstractHeaderValidator
         if ($this->protectionIsOn($options)) {
             if ($this->isBlocking($options)) {
                 if (!$this->hasReportUri($options)) {
-                    $this->addWarning(ErrorSeverity::NONE, 'Consider adding a report URI');
+                    $this->addWarning(new XXSSProtectionWithoutReportURIWarning());
                 }
             } else {
-                $this->addWarning(ErrorSeverity::MEDIUM, 'mode=block should be specified');
+                $this->addWarning(new XXSSProtectionWithoutModeBlockWarning());
             }
         } else {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, 'value should be set to 1');
+            $this->addWarning(new XXSSProtectionTurnedOffWarning());
         }
     }
 

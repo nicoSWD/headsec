@@ -29,7 +29,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             $hasWarnings = count($header->warnings()) > 0;
             $warning = $header->warnings();
 
-            $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg='.($hasWarnings ? 'black' : '').'>' . str_pad($this->prettyName($headerName), $maxHeaderLength, ' ') . '</> : ' . ($warning ? implode(', ', $warning) : 'No issues') . PHP_EOL;
+            $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg='.($hasWarnings ? 'black' : '').'>' . str_pad($this->prettyName($headerName), $maxHeaderLength, ' ') . '</> : ' . $this->getWarnings($warning) . PHP_EOL;
 
 
             $output .= $line;
@@ -43,5 +43,10 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
     private function prettyName($headerName)
     {
         return implode('-', array_map('ucfirst', explode('-', $headerName)));
+    }
+
+    private function getWarnings($warning): string
+    {
+        return ($warning ? get_class($warning[0]) : 'No issues');
     }
 }

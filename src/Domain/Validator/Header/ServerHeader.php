@@ -7,16 +7,15 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDisclosedVersionNumberWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ServerHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
         if ($this->serverContainsVersionNumber()) {
-            $this->addWarning(ErrorSeverity::LOW, ValidationError::SERVER_VERSION_DISCLOSURE);
+            $this->addWarning(new ServerDisclosedVersionNumberWarning());
         }
     }
 

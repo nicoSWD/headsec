@@ -61,20 +61,9 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
         return fgets($fp, self::ONE_KB * 2);
     }
 
-    private function hasExceededMaxSize($bytesRead): bool
+    private function hasExceededMaxSize(int $bytesRead): bool
     {
         return $bytesRead > self::MAX_HEADER_SIZE;
-    }
-
-    private function getURL(URL $url): string
-    {
-        if ($url->isHttps()) {
-            $scheme = 'ssl://';
-        } else {
-            $scheme = '';
-        }
-
-        return $scheme . $url->host();
     }
 
     private function sendRequest(URL $url, $fp): void
@@ -90,7 +79,13 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
 
     private function connect(URL $url)
     {
-        $fp = @fsockopen($this->getURL($url), $url->port(), $errNo, $errStr, $this->connectionTimeout);
+        if ($url->isHttps()) {
+            $scheme = 'ssl://';
+        } else {
+            $scheme = '';
+        }
+
+        $fp = @fsockopen($scheme . $url->host(), $url->port(), $errNo, $errStr, $this->connectionTimeout);
 
         if (!$fp) {
             throw new ConnectionTimeoutException();

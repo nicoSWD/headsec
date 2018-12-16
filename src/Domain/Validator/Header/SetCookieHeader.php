@@ -7,8 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSecureFlagWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 
 final class SetCookieHeader extends AbstractHeaderValidator
 {
@@ -21,15 +23,15 @@ final class SetCookieHeader extends AbstractHeaderValidator
         $flags = $this->getCookieFlags($this->getValue());
 
         if (!$this->hasSecureFlag($flags)) {
-            $this->addWarning(ErrorSeverity::MEDIUM, 'Cookies should be set with the <Secure> flag');
+            $this->addWarning(new CookieWithMissingSecureFlagWarning());
         }
 
         if (!$this->hasHttpOnlyFlag($flags)) {
-            $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <HttpOnly> flag');
+            $this->addWarning(new CookieWithMissingHttpOnlyFlagWarning());
         }
 
         if (!$this->hasSameSiteFlag($flags)) {
-            $this->addWarning(ErrorSeverity::NONE, 'Cookies should be set with the <SameSite> flag to prevent CSRF');
+            $this->addWarning(new CookieWithMissingSameSiteFlagWarning());
         }
     }
 

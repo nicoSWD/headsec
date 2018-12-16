@@ -7,6 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithInvalidDirectiveWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyInvalidWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithMissingDirectiveWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
 use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
@@ -50,11 +53,11 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
                     if ($this->hasValidPolicy($policy)) {
                         $this->foundDirectives[] = $directiveName;
                     } else {
-                        $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid policy');
+                        $this->addWarning(new ContentSecurityPolicyInvalidWarning());
                     }
                     break;
                 default:
-                    $this->addWarning(ErrorSeverity::VERY_HIGH, 'Invalid CSP directive: ' . $directiveName);
+                    $this->addWarning(new ContentSecurityPolicyWithInvalidDirectiveWarning($directiveName));
                     break;
             }
         }
@@ -62,7 +65,7 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
         $missingDirectives = $this->getMissingDirectives();
 
         if (count($missingDirectives) > 0) {
-            $this->addWarning(ErrorSeverity::VERY_HIGH, ValidationError::CSP_DIRECTIVE_MISSING . ': ' . implode(', ', $missingDirectives));
+            $this->addWarning(new ContentSecurityPolicyWithMissingDirectiveWarning(implode(', ', $missingDirectives)));
         }
     }
 
