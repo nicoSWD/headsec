@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class CookieWithMissingSameSiteFlagWarning extends Warning
 {
-
+    protected $message = 'Missing SameSite flag';
 }

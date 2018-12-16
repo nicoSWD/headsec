@@ -42,4 +42,4 @@ services:
     class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory
 
   nicoswd.security_header_check.domain.header.post_security_scanner:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\PostSecurityScanner
+    class: nicoSWD\SecHeaderCheck\Domain\Header\ScanResultProcessor

@@ -18,17 +18,17 @@ final class SecurityScanner
     private $headerProvider;
     /** @var HeaderValidatorFactory */
     private $scannerFactory;
-    /** @var PostSecurityScanner */
-    private $postSecurityScanner;
+    /** @var ScanResultProcessor */
+    private $scanResultProcessor;
 
     public function __construct(
         AbstractHeaderProvider $headerProvider,
         HeaderValidatorFactory $scannerFactory,
-        PostSecurityScanner $postSecurityScanner
+        ScanResultProcessor $scanResultProcessor
     ) {
         $this->headerProvider = $headerProvider;
         $this->scannerFactory = $scannerFactory;
-        $this->postSecurityScanner = $postSecurityScanner;
+        $this->scanResultProcessor = $scanResultProcessor;
     }
 
     public function scan(string $url, bool $followRedirects = true): ScanResult
@@ -37,14 +37,12 @@ final class SecurityScanner
         $scanResult = new ScanResult();
 
         foreach ($headers as $header) {
-            $scanner = $this->createScanner($header);
-
             $scanResult->addHeaderResult(
-                $scanner->getEvaluatedHeader()
+                $this->auditHeader($header)
             );
         }
 
-        $this->postScan($scanResult);
+        $this->processScanResults($scanResult);
 
         return $scanResult;
     }
@@ -54,13 +52,13 @@ final class SecurityScanner
         return $this->headerProvider->getHeadersFromUrl($url, $followRedirects);
     }
 
-    private function createScanner(HttpHeader $header): GenericHeaderAuditResult
+    private function auditHeader(HttpHeader $header): GenericHeaderAuditResult
     {
         return $this->scannerFactory->createFromHeader($header);
     }
 
-    private function postScan(ScanResult $scanResult): void
+    private function processScanResults(ScanResult $scanResult): void
     {
-        $this->postSecurityScanner->postScan($scanResult);
+        $this->scanResultProcessor->processScanResults($scanResult);
     }
 }

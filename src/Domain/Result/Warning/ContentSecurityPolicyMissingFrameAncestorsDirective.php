@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class CookieWithMissingHttpOnlyFlagWarning extends Warning
+final class ContentSecurityPolicyMissingFrameAncestorsDirective extends Warning
 {
-    protected $message = 'Missing HttpOnly flag';
+    protected $message = 'Missing frame-ancestors directive';
 }

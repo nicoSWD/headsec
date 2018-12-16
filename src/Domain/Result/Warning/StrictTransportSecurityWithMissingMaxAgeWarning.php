@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class StrictTransportSecurityWithMissingMaxAgeWarning extends Warning
 {
-
+    protected $message = 'max-age is missing or invalid';
 }

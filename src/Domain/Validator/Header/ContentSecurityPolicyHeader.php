@@ -8,11 +8,10 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithInvalidDirectiveWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyMissingFrameAncestorsDirective;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyInvalidWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithMissingDirectiveWarning;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ErrorSeverity;
-use nicoSWD\SecHeaderCheck\Domain\Validator\ValidationError;
 
 final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 {
@@ -65,7 +64,11 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
         $missingDirectives = $this->getMissingDirectives();
 
         if (count($missingDirectives) > 0) {
-            $this->addWarning(new ContentSecurityPolicyWithMissingDirectiveWarning(implode(', ', $missingDirectives)));
+            if (!in_array(self::FRAME_ANCESTORS, $missingDirectives, true)) {
+                $this->addWarning(new ContentSecurityPolicyMissingFrameAncestorsDirective());
+            } else {
+                $this->addWarning(new ContentSecurityPolicyWithMissingDirectiveWarning(implode(', ', $missingDirectives)));
+            }
         }
     }
 

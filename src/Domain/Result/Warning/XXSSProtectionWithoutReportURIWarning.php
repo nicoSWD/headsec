@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class XXSSProtectionWithoutReportURIWarning extends Warning
 {
-
+    protected $message = 'Consider adding a report URI';
 }

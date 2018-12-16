@@ -48,7 +48,7 @@ abstract class AbstractHeaderValidator
         $this->warnings[] = $warning;
     }
 
-    public function getWarnings(): array
+    private function getWarnings(): array
     {
         return $this->warnings;
     }

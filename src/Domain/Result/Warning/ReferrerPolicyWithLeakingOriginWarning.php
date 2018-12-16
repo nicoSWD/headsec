@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class ReferrerPolicyWithLeakingOriginWarning extends Warning
 {
-
+    protected $message = '%s leaks referrer information';
 }

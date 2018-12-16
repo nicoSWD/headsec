@@ -9,5 +9,4 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class XFrameOptionsWithInsecureValueWarning extends Warning
 {
-
 }

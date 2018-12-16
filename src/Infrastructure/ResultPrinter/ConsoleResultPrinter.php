@@ -26,13 +26,14 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
         foreach ($scanResults->getHeaders() as $header) {
             $headerName = $header->name();
-            $hasWarnings = count($header->warnings()) > 0;
-            $warning = $header->warnings();
+            $hasWarnings = count($header->getEvaluatedHeader()->warnings()) > 0;
+            $warning = $header->getEvaluatedHeader()->warnings();
 
-            $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg='.($hasWarnings ? 'black' : '').'>' . str_pad($this->prettyName($headerName), $maxHeaderLength, ' ') . '</> : ' . $this->getWarnings($warning) . PHP_EOL;
-
-
-            $output .= $line;
+//            if ($hasWarnings) {
+                $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg=' . ($hasWarnings ? 'white' : '') . '>' . str_pad($this->prettyName($headerName),
+                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($warning) . PHP_EOL;
+                $output .= $line;
+//            }
         }
 
         $output .= PHP_EOL .'    Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
@@ -47,6 +48,6 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
     private function getWarnings($warning): string
     {
-        return ($warning ? get_class($warning[0]) : 'No issues');
+        return ($warning ? '<bg=red;fg=black> ' . (string) ($warning[0]) . ' </>': '<bg=green;fg=black> No issues </>');
     }
 }

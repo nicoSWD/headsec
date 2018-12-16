@@ -15,12 +15,10 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
     protected function scan(): void
     {
-        if ($this->doesNotLeakReferrer()) {
-            // Good job
-        } elseif ($this->mayLeakOrigin()) {
+        if ($this->mayLeakOrigin()) {
             $this->addWarning(new ReferrerPolicyWithLeakingOriginWarning($this->getValue()));
-        } else {
-            $this->addWarning(new ReferrerPolicyWithInvalidValueWarning());
+        } elseif (!$this->doesNotLeakReferrer()) {
+            $this->addWarning(new ReferrerPolicyWithInvalidValueWarning($this->getValue()));
         }
     }
 
@@ -33,9 +31,7 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
             'strict-origin',
         ];
 
-        $policy = strtolower($this->getValue());
-
-        return in_array($policy, $secureReferrerOptions, true);
+        return $this->valueIsIn($secureReferrerOptions);
     }
 
     private function mayLeakOrigin(): bool
@@ -46,8 +42,11 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
             'strict-origin-when-cross-origin',
         ];
 
-        $policy = strtolower($this->getValue());
+        return $this->valueIsIn($leakyReferrerOptions);
+    }
 
-        return in_array($policy, $leakyReferrerOptions, true);
+    private function valueIsIn(array $options): bool
+    {
+        return in_array(strtolower($this->getValue()), $options, true);
     }
 }

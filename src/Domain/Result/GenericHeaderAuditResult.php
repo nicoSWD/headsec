@@ -7,11 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
-
 class GenericHeaderAuditResult
 {
-    /** @var AbstractHeaderValidator */
+    /** @var EvaluatedHeader */
     protected $headerValidator;
 
     public function __construct(EvaluatedHeader $headerValidator)
@@ -22,5 +20,10 @@ class GenericHeaderAuditResult
     public function getEvaluatedHeader(): EvaluatedHeader
     {
         return $this->headerValidator;
+    }
+
+    public function name(): string
+    {
+        return $this->headerValidator->name();
     }
 }

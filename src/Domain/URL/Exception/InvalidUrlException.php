@@ -9,4 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\URL\Exception;
 
 final class InvalidUrlException extends \Exception
 {
+    protected $message = 'Invalid URL supplied';
 }

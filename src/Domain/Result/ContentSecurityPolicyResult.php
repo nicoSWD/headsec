@@ -7,11 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyMissingFrameAncestorsDirective;
+
 final class ContentSecurityPolicyResult extends GenericHeaderAuditResult
 {
-    public function hasSecureFrameAncestorsDirective()
+    public function hasSecureFrameAncestorsDirective(): bool
     {
-        return true;
-//        $this->headerValidator->warnings();
+        return !$this->headerValidator->hasWarning(ContentSecurityPolicyMissingFrameAncestorsDirective::class);
     }
 }

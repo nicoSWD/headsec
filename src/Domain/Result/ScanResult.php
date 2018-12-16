@@ -19,7 +19,7 @@ final class ScanResult
         $this->headers = new EvaluatedHeaderBag();
     }
 
-    public function addHeaderResult(EvaluatedHeader $header): void
+    public function addHeaderResult(GenericHeaderAuditResult $header): void
     {
         $this->headers->add($header);
     }
@@ -35,12 +35,17 @@ final class ScanResult
         return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);
     }
 
+    public function getXFrameOptionsResult(): XFrameOptionsResult
+    {
+        return $this->headers->findOne(SecurityHeader::X_FRAME_OPTIONS);
+    }
+
     public function getScore(): float
     {
-        $score = 0;
+        $score = .0;
 
         foreach ($this->headers as $header) {
-            $score += $header->score();
+            $score += $header->getEvaluatedHeader()->score();
         }
 
         return $score;

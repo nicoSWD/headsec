@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class ContentSecurityPolicyWithMissingDirectiveWarning extends Warning
 {
-
+    protected $message = 'Missing directive %s';
 }

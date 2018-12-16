@@ -10,6 +10,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 final class SecurityHeader
 {
     public const CONTENT_SECURITY_POLICY = 'content-security-policy';
+    public const EXPECT_CT = 'expect-ct';
     public const REFERRER_POLICY = 'referrer-policy';
     public const SET_COOKIE = 'set-cookie';
     public const SERVER = 'server';

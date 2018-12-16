@@ -11,6 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\ContentSecurityPolicyResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\GenericHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\XFrameOptionsResult;
 
 final class HeaderValidatorFactory
 {
@@ -22,7 +23,7 @@ final class HeaderValidatorFactory
                     (new Header\StrictTransportSecurityHeader($header))->auditHeader()
                 );
             case SecurityHeader::X_FRAME_OPTIONS:
-                return new GenericHeaderAuditResult(
+                return new XFrameOptionsResult(
                     (new Header\XFrameOptionsHeader($header))->auditHeader()
                 );
             case SecurityHeader::X_XSS_PROTECTION:
@@ -53,6 +54,8 @@ final class HeaderValidatorFactory
                 return new ContentSecurityPolicyResult(
                     (new Header\ContentSecurityPolicyHeader($header))->auditHeader()
                 );
+            case SecurityHeader::EXPECT_CT:
+                // Pending
             default:
                 return new GenericHeaderAuditResult(
                     (new Header\NonSecurityHeader($header))->auditHeader()
