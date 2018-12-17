@@ -16,7 +16,7 @@ final class SetCookieHeaderTest extends TestCase
     {
         $header = new SetCookieHeader('foo=bar;Secure;HttpOnly;SameSite=strict');
 
-        $this->assertSame(.0, $header->scan());
+        $this->assertSame(.0, $header->audit());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -24,7 +24,7 @@ final class SetCookieHeaderTest extends TestCase
     {
         $header = new SetCookieHeader('foo=bar;HttpOnly;SameSite=strict');
 
-        $this->assertSame(.0, $header->scan());
+        $this->assertSame(.0, $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -32,7 +32,7 @@ final class SetCookieHeaderTest extends TestCase
     {
         $header = new SetCookieHeader('foo=bar;Secure;SameSite=strict');
 
-        $this->assertSame(.0, $header->scan());
+        $this->assertSame(.0, $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -40,7 +40,7 @@ final class SetCookieHeaderTest extends TestCase
     {
         $header = new SetCookieHeader('foo=bar;Secure;HttpOnly');
 
-        $this->assertSame(.0, $header->scan());
+        $this->assertSame(.0, $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 }

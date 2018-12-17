@@ -7,12 +7,33 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithInsecureValueWarning;
-
-final class XFrameOptionsResult extends GenericHeaderAuditResult
+final class XFrameOptionsResult extends AbstractHeaderAuditResult
 {
+    private $hasSecureOrigin = false;
+    private $hasAllowFrom = false;
+
     public function isSecure(): bool
     {
-        return !$this->headerValidator->hasWarning(XFrameOptionsWithInsecureValueWarning::class);
+        return $this->getHasSecureOrigin() || $this->hasAllowFrom();
+    }
+
+    public function getHasSecureOrigin(): bool
+    {
+        return $this->hasSecureOrigin;
+    }
+
+    public function setHasSecureOrigin(bool $hasSecureOrigin): void
+    {
+        $this->hasSecureOrigin = $hasSecureOrigin;
+    }
+
+    public function hasAllowFrom(): bool
+    {
+        return $this->hasAllowFrom;
+    }
+
+    public function setHasAllowFrom(bool $hasAllowFrom): void
+    {
+        $this->hasAllowFrom = $hasAllowFrom;
     }
 }

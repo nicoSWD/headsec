@@ -7,9 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOffWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutModeBlockWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutReportURIWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\XXSSProtectionHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class XXSSProtectionHeader extends AbstractHeaderValidator
@@ -17,21 +16,16 @@ final class XXSSProtectionHeader extends AbstractHeaderValidator
     private const MODE_ON = '1';
     private const MODE_BLOCK = 'mode=block';
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
         $options = $this->getOptions();
 
-        if ($this->protectionIsOn($options)) {
-            if ($this->isBlocking($options)) {
-                if (!$this->hasReportUri($options)) {
-                    $this->addWarning(new XXSSProtectionWithoutReportURIWarning());
-                }
-            } else {
-                $this->addWarning(new XXSSProtectionWithoutModeBlockWarning());
-            }
-        } else {
-            $this->addWarning(new XXSSProtectionTurnedOffWarning());
-        }
+        $XXSSProtectionHeaderResult = new XXSSProtectionHeaderResult($this->getName());
+        $XXSSProtectionHeaderResult->setProtectionIsOn($this->protectionIsOn($options));
+        $XXSSProtectionHeaderResult->setIsBlocking($this->isBlocking($options));
+        $XXSSProtectionHeaderResult->setHasReportUri($this->hasReportUri($options));
+
+        return $XXSSProtectionHeaderResult;
     }
 
     private function protectionIsOn(array $options): bool

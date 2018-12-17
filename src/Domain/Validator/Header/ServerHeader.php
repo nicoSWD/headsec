@@ -7,16 +7,18 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDisclosedVersionNumberWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\ServerResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class ServerHeader extends AbstractHeaderValidator
 {
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        if ($this->serverContainsVersionNumber()) {
-            $this->addWarning(new ServerDisclosedVersionNumberWarning());
-        }
+        $serverResult = new ServerResult($this->getName());
+        $serverResult->setLeaksServerVersion($this->serverContainsVersionNumber());
+
+        return $serverResult;
     }
 
     private function serverContainsVersionNumber(): bool

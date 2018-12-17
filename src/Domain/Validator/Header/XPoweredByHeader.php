@@ -7,13 +7,14 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XPoweredByDisclosesTechnologyWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\XPoweredByHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class XPoweredByHeader extends AbstractHeaderValidator
 {
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        $this->addWarning(new XPoweredByDisclosesTechnologyWarning());
+        return new XPoweredByHeaderResult($this->getName());
     }
 }

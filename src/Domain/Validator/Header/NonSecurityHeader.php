@@ -7,11 +7,14 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\NonSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class NonSecurityHeader extends AbstractHeaderValidator
 {
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
+        return new NonSecurityHeaderResult($this->getName());
     }
 }

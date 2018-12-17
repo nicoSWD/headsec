@@ -16,7 +16,7 @@ final class XXSSProtectionHeaderTest extends TestCase
     {
         $header = new XXSSProtectionHeader('1; mode=block; report=/xss/report');
 
-        $this->assertSame(1., $header->scan());
+        $this->assertSame(1., $header->audit());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -24,7 +24,7 @@ final class XXSSProtectionHeaderTest extends TestCase
     {
         $header = new XXSSProtectionHeader('1; mode=block');
 
-        $this->assertSame(1., $header->scan());
+        $this->assertSame(1., $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -32,7 +32,7 @@ final class XXSSProtectionHeaderTest extends TestCase
     {
         $header = new XXSSProtectionHeader('1');
 
-        $this->assertSame(.5, $header->scan());
+        $this->assertSame(.5, $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -40,7 +40,7 @@ final class XXSSProtectionHeaderTest extends TestCase
     {
         $header = new XXSSProtectionHeader('0');
 
-        $this->assertSame(.0, $header->scan());
+        $this->assertSame(.0, $header->audit());
         $this->assertCount(1, $header->getWarnings());
     }
 }

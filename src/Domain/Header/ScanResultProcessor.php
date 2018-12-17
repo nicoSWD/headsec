@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ScoreCalculator;
 
 final class ScanResultProcessor
@@ -20,7 +20,7 @@ final class ScanResultProcessor
         $this->scoreCalculator = $scoreCalculator;
     }
 
-    public function processScanResults(ScanResult $scanResult): void
+    public function processScanResults(UnprocessedAuditionResult $scanResult): void
     {
         $scanResult->setScore($this->scoreCalculator->calculateScore($scanResult));
 
@@ -29,18 +29,18 @@ final class ScanResultProcessor
         }
     }
 
-    private function hasSecureContentSecurityPolicyOrXFrameOptions(ScanResult $scanResult): bool
+    private function hasSecureContentSecurityPolicyOrXFrameOptions(UnprocessedAuditionResult $scanResult): bool
     {
         $contentSecurityPolicyHeaders = $scanResult->getContentSecurityPolicyResult();
         $hasSecureFrameAncestors = false;
         $hasSecureXFrameOptions = false;
 
-        foreach ($contentSecurityPolicyHeaders as $contentSecurityPolicyHeader) {
-            if ($contentSecurityPolicyHeader->hasSecureFrameAncestorsDirective()) {
-                $hasSecureFrameAncestors = true;
-                break;
-            }
-        }
+//        foreach ($contentSecurityPolicyHeaders as $contentSecurityPolicyHeader) {
+//            if ($contentSecurityPolicyHeader->hasSecureFrameAncestorsDirective()) {
+//                $hasSecureFrameAncestors = true;
+//                break;
+//            }
+//        }
 
         $xFrameOptionsHeader = $scanResult->getXFrameOptionsResult();
 

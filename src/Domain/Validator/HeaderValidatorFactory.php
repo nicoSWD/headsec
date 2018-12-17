@@ -9,57 +9,34 @@ namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\ContentSecurityPolicyResult;
-use nicoSWD\SecHeaderCheck\Domain\Result\GenericHeaderAuditResult;
-use nicoSWD\SecHeaderCheck\Domain\Result\XFrameOptionsResult;
 
 final class HeaderValidatorFactory
 {
-    public function createFromHeader(HttpHeader $header): GenericHeaderAuditResult
+    public function createFromHeader(HttpHeader $header): AbstractHeaderValidator
     {
-        switch ($header->name()){
+        switch ($header->name()) {
             case SecurityHeader::STRICT_TRANSPORT_SECURITY:
-                return new GenericHeaderAuditResult(
-                    (new Header\StrictTransportSecurityHeader($header))->auditHeader()
-                );
+                return new Header\StrictTransportSecurityHeader($header);
             case SecurityHeader::X_FRAME_OPTIONS:
-                return new XFrameOptionsResult(
-                    (new Header\XFrameOptionsHeader($header))->auditHeader()
-                );
+                return new Header\XFrameOptionsHeader($header);
             case SecurityHeader::X_XSS_PROTECTION:
-                return new GenericHeaderAuditResult(
-                    (new Header\XXSSProtectionHeader($header))->auditHeader()
-                );
+                return new Header\XXSSProtectionHeader($header);
             case SecurityHeader::X_CONTENT_TYPE_OPTIONS:
-                return new GenericHeaderAuditResult(
-                    (new Header\XContentTypeOptionsHeader($header))->auditHeader()
-                );
+                return new Header\XContentTypeOptionsHeader($header);
             case SecurityHeader::REFERRER_POLICY:
-                return new GenericHeaderAuditResult(
-                    (new Header\ReferrerPolicyHeader($header))->auditHeader()
-                );
+                return new Header\ReferrerPolicyHeader($header);
             case SecurityHeader::SET_COOKIE:
-                return new GenericHeaderAuditResult(
-                    (new Header\SetCookieHeader($header))->auditHeader()
-                );
+                return new Header\SetCookieHeader($header);
             case SecurityHeader::SERVER:
-                return new GenericHeaderAuditResult(
-                    (new Header\ServerHeader($header))->auditHeader()
-                );
+                return new Header\ServerHeader($header);
             case SecurityHeader::X_POWERED_BY:
-                return new GenericHeaderAuditResult(
-                    (new Header\XPoweredByHeader($header))->auditHeader()
-                );
+                return new Header\XPoweredByHeader($header);
             case SecurityHeader::CONTENT_SECURITY_POLICY:
-                return new ContentSecurityPolicyResult(
-                    (new Header\ContentSecurityPolicyHeader($header))->auditHeader()
-                );
+                return new Header\ContentSecurityPolicyHeader($header);
             case SecurityHeader::EXPECT_CT:
                 // Pending
             default:
-                return new GenericHeaderAuditResult(
-                    (new Header\NonSecurityHeader($header))->auditHeader()
-                );
+                return new Header\NonSecurityHeader($header);
         }
     }
 }

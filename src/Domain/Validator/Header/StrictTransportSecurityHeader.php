@@ -7,9 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithInsufficientMaxAgeWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingMaxAgeWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\StrictTransportSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class StrictTransportSecurityHeader extends AbstractHeaderValidator
@@ -17,33 +16,31 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
     private const SIX_MONTHS_IN_SECONDS = 15768000;
     private const FLAG_INCLUDE_SUB_DOMAINS = 'includesubdomains';
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        $value = $this->getValue();
-        $maxAge = $this->getMaxAge($value);
+        $strictTransportSecurityHeaderResult = new StrictTransportSecurityHeaderResult($this->getName());
+        $strictTransportSecurityHeaderResult->setHasSecureMaxAge($this->isMinRecommendedMaxAge());
+        $strictTransportSecurityHeaderResult->setHasFlagIncludeSubdomains($this->hasIncludeSubDomainsFlag());
 
-        if ($maxAge !== false) {
-            if (!$this->isMinRecommendedMaxAge($maxAge)) {
-                $this->addWarning(new StrictTransportSecurityWithInsufficientMaxAgeWarning((string) $maxAge));
-            }
-        } else {
-            $this->addWarning(new StrictTransportSecurityWithMissingMaxAgeWarning());
-        }
-
-        if (!$this->hasIncludeSubDomainsFlag($value)) {
-            $this->addWarning(new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning());
-        }
+        return $strictTransportSecurityHeaderResult;
     }
 
-    private function hasIncludeSubDomainsFlag(string $value): bool
+    private function hasIncludeSubDomainsFlag(): bool
     {
         $callback = function (string $option): string {
             return strtolower(trim($option));
         };
 
-        $options = array_map($callback, explode(';', $value));
+        $options = array_map($callback, explode(';', $this->getValue()));
 
         return in_array(self::FLAG_INCLUDE_SUB_DOMAINS, $options, true);
+    }
+
+    private function isMinRecommendedMaxAge(): bool
+    {
+        $maxAge = $this->getMaxAge($this->getValue());
+
+        return $maxAge !== false && $maxAge >= self::SIX_MONTHS_IN_SECONDS;
     }
 
     private function getMaxAge(string $value)
@@ -53,10 +50,5 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
         }
 
         return false;
-    }
-
-    private function isMinRecommendedMaxAge($maxAge): bool
-    {
-        return $maxAge >= self::SIX_MONTHS_IN_SECONDS;
     }
 }

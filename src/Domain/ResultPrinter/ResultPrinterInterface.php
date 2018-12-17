@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
 
 interface ResultPrinterInterface
 {
-    public function getOutput(ScanResult $scanResults): string;
+    public function getOutput(UnprocessedAuditionResult $scanResults): string;
 }

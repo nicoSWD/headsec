@@ -7,19 +7,19 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithInvalidValueWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithLeakingOriginWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\ReferrerPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        if ($this->mayLeakOrigin()) {
-            $this->addWarning(new ReferrerPolicyWithLeakingOriginWarning($this->getValue()));
-        } elseif (!$this->doesNotLeakReferrer()) {
-            $this->addWarning(new ReferrerPolicyWithInvalidValueWarning($this->getValue()));
-        }
+        $referrerPolicyResult = new ReferrerPolicyHeaderResult($this->getName());
+        $referrerPolicyResult->setMayLeakOrigin($this->mayLeakOrigin());
+        $referrerPolicyResult->setDoesNotLeakReferrer($this->doesNotLeakReferrer());
+
+        return $referrerPolicyResult;
     }
 
     private function doesNotLeakReferrer(): bool

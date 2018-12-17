@@ -7,9 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSecureFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\SetCookieResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class SetCookieHeader extends AbstractHeaderValidator
@@ -18,30 +17,25 @@ final class SetCookieHeader extends AbstractHeaderValidator
     private const FLAG_HTTP_ONLY = 'httponly';
     private const FLAG_SAME_SITE_STRICT = 'samesite=strict';
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        $flags = $this->getCookieFlags($this->getValue());
+        $flags = $this->getCookieFlags();
 
-        if (!$this->hasSecureFlag($flags)) {
-            $this->addWarning(new CookieWithMissingSecureFlagWarning($this->getCookieName()));
-        }
+        $setCookieResult = new SetCookieResult($this->getName());
+        $setCookieResult->setHasFlagHttpOnly($this->hasHttpOnlyFlag($flags));
+        $setCookieResult->setHasFlagSecure($this->hasSecureFlag($flags));
+        $setCookieResult->setHasFlagSameSite($this->hasSameSiteFlag($flags));
 
-        if (!$this->hasHttpOnlyFlag($flags)) {
-            $this->addWarning(new CookieWithMissingHttpOnlyFlagWarning($this->getCookieName()));
-        }
-
-        if (!$this->hasSameSiteFlag($flags)) {
-            $this->addWarning(new CookieWithMissingSameSiteFlagWarning($this->getCookieName()));
-        }
+        return $setCookieResult;
     }
 
-    private function getCookieFlags(string $cookie): array
+    private function getCookieFlags(): array
     {
         $callback = function (string $value): string {
             return strtolower(trim($value));
         };
 
-        return array_map($callback, explode(';', $cookie));
+        return array_map($callback, explode(';', $this->getValue()));
     }
 
     private function hasSecureFlag(array $options): bool

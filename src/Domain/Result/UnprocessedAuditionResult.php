@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
-final class ScanResult
+final class UnprocessedAuditionResult
 {
     /** @var EvaluatedHeaderBag */
     private $headers;
@@ -20,7 +20,7 @@ final class ScanResult
         $this->headers = new EvaluatedHeaderBag();
     }
 
-    public function addHeaderResult(GenericHeaderAuditResult $header): void
+    public function add(AbstractHeaderAuditResult $header): void
     {
         $this->headers->add($header);
     }
@@ -30,7 +30,7 @@ final class ScanResult
         return $this->headers;
     }
 
-    /** @return ContentSecurityPolicyResult[] */
+    /** @return ContentSecurityPolicyHeaderResult[] */
     public function getContentSecurityPolicyResult()
     {
         return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);

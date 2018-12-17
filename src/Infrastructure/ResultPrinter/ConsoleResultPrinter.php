@@ -7,36 +7,26 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class ConsoleResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(ScanResult $scanResults): string
+    public function getOutput(UnprocessedAuditionResult $scanResults): string
     {
         $output = '  <fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
-        $maxHeaderLength = 0;
-
-        foreach ($scanResults->getHeaders() as $header) {
-            $length = strlen($header->name());
-            if ($length > $maxHeaderLength) {
-                $maxHeaderLength = $length;
-            }
-        }
+        $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
 
         $totalWarnings = 0;
 
         foreach ($scanResults->getHeaders() as $header) {
             $headerName = $header->name();
-            $warnings = $header->getEvaluatedHeader()->warnings();
-            $numWarnings = count($warnings);
-            $hasWarnings = $numWarnings > 0;
-            $warning = $warnings;
-            $totalWarnings += $numWarnings;
 
-            if ($hasWarnings) {
-                $line = '  <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg=' . ($hasWarnings ? 'black' : '') . '> ' . str_pad($this->prettyName($headerName),
-                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($warning) . PHP_EOL;
+            if (!$header->isSecure()) {
+                $totalWarnings++;
+
+                $line = '  <bg=' . (true ? 'red' : 'default') . ';fg=' . (true ? 'black' : '') . '> ' . str_pad($this->prettyName($headerName),
+                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings('Oh no') . PHP_EOL;
                 $output .= $line;
             }
         }
@@ -59,6 +49,20 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
     private function getWarnings($warning): string
     {
-        return ($warning ? '<bg=red;fg=black> ' . (string) ($warning[0]) . ' </>': '<bg=green;fg=black> No issues </>');
+        return ($warning ? '<bg=red;fg=black> ' . (string) $warning . ' </>': '<bg=green;fg=black> No issues </>');
+    }
+
+    private function getHeaderMaxLength(UnprocessedAuditionResult $scanResults): int
+    {
+        $maxHeaderLength = 0;
+
+        foreach ($scanResults->getHeaders() as $header) {
+            $length = strlen($header->name());
+            if (!$header->isSecure() && $length > $maxHeaderLength) {
+                $maxHeaderLength = $length;
+            }
+        }
+
+        return $maxHeaderLength;
     }
 }

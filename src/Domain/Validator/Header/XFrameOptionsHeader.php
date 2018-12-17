@@ -7,7 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithInsecureValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\XFrameOptionsResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class XFrameOptionsHeader extends AbstractHeaderValidator
@@ -15,11 +16,13 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
     private const OPTION_DENY = 'deny';
     private const OPTION_SAME_ORIGIN = 'sameorigin';
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        if (!$this->isSecureOrigin() && !$this->hasAllowFrom()) {
-            $this->addWarning(new XFrameOptionsWithInsecureValueWarning());
-        }
+        $XFrameOptionsResult = new XFrameOptionsResult($this->getName());
+        $XFrameOptionsResult->setHasSecureOrigin($this->isSecureOrigin());
+        $XFrameOptionsResult->setHasAllowFrom($this->hasAllowFrom());
+
+        return $XFrameOptionsResult;
     }
 
     private function isSecureOrigin(): bool
@@ -31,8 +34,6 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
 
     private function hasAllowFrom(): bool
     {
-        $value = strtolower($this->getValue());
-
-        return strpos($value, 'allow-from ') === 0;
+        return strpos(strtolower($this->getValue()), 'allow-from ') === 0;
     }
 }

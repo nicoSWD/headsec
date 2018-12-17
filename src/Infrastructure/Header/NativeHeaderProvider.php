@@ -17,7 +17,7 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
     private const ONE_KB = 1024;
     private const MAX_HEADER_SIZE = self::ONE_KB * 8;
 
-    protected function getRawHeaders(URL $url): array
+    public function getRawHeaders(URL $url): array
     {
         $fp = $this->connect($url);
         $this->sendRequest($url, $fp);

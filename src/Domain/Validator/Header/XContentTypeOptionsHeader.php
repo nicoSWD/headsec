@@ -7,18 +7,20 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XContentTypeWithInvalidValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\XContentTypeOptionsHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 {
     private const NO_SNIFF = 'nosniff';
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
-        if (!$this->isNoSniff()) {
-            $this->addWarning(new XContentTypeWithInvalidValueWarning());
-        }
+        $XContentTypeOptionsHeaderResult = new XContentTypeOptionsHeaderResult($this->getName());
+        $XContentTypeOptionsHeaderResult->setIsNoSniff($this->isNoSniff());
+
+        return $XContentTypeOptionsHeaderResult;
     }
 
     private function isNoSniff(): bool

@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 final class ScoreCalculator
 {
-    public function calculateScore(ScanResult $scanResult)
+    public function calculateScore(UnprocessedAuditionResult $scanResult)
     {
         $possibleScore = 0;
         $penalties = 0;
@@ -17,8 +17,8 @@ final class ScoreCalculator
         foreach ($scanResult->getHeaders() as $header) {
             $possibleScore++;
 
-            if ($header->hasWarnings()) {
-                $penalties += count($header->getEvaluatedHeader()->warnings()) / 10;
+            if (!$header->isSecure()) {
+                $penalties += 0.3;
             }
         }
 

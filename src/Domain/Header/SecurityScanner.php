@@ -7,14 +7,14 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\GenericHeaderAuditResult;
-use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
 
 final class SecurityScanner
 {
-    /** @var AbstractHeaderProvider */
+    /** @var HeaderProviderInterface */
     private $headerProvider;
     /** @var HeaderValidatorFactory */
     private $scannerFactory;
@@ -22,7 +22,7 @@ final class SecurityScanner
     private $scanResultProcessor;
 
     public function __construct(
-        AbstractHeaderProvider $headerProvider,
+        HeaderProviderInterface $headerProvider,
         HeaderValidatorFactory $scannerFactory,
         ScanResultProcessor $scanResultProcessor
     ) {
@@ -31,20 +31,18 @@ final class SecurityScanner
         $this->scanResultProcessor = $scanResultProcessor;
     }
 
-    public function scan(string $url, bool $followRedirects = true): ScanResult
+    public function scan(string $url, bool $followRedirects = true): UnprocessedAuditionResult
     {
         $headers = $this->getHeaders($url, $followRedirects);
-        $scanResult = new ScanResult();
+        $auditionResult = new UnprocessedAuditionResult();
 
         foreach ($headers as $header) {
-            $scanResult->addHeaderResult(
+            $auditionResult->add(
                 $this->auditHeader($header)
             );
         }
 
-        $this->processScanResults($scanResult);
-
-        return $scanResult;
+        return $this->processScanResults($auditionResult);
     }
 
     private function getHeaders(string $url, bool $followRedirects): HttpHeaderBag
@@ -52,13 +50,15 @@ final class SecurityScanner
         return $this->headerProvider->getHeadersFromUrl(new URL($url), $followRedirects);
     }
 
-    private function auditHeader(HttpHeader $header): GenericHeaderAuditResult
+    private function auditHeader(HttpHeader $header): AbstractHeaderAuditResult
     {
-        return $this->scannerFactory->createFromHeader($header);
+        return $this->scannerFactory->createFromHeader($header)->audit();
     }
 
-    private function processScanResults(ScanResult $scanResult): void
+    private function processScanResults(UnprocessedAuditionResult $scanResult): UnprocessedAuditionResult
     {
         $this->scanResultProcessor->processScanResults($scanResult);
+
+        return $scanResult;
     }
 }

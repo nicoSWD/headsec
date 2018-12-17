@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class ContentSecurityPolicyMissingFrameAncestorsDirective extends Warning
+final class ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning extends Warning
 {
     protected $message = 'Missing frame-ancestors directive';
 }

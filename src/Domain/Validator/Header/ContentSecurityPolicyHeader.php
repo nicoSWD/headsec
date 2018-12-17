@@ -7,10 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithInvalidDirectiveWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyMissingFrameAncestorsDirective;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyInvalidWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyWithMissingDirectiveWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\ContentSecurityPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
 
 final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
@@ -35,7 +33,7 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 
     private $foundDirectives = [];
 
-    protected function scan(): void
+    public function audit(): AbstractHeaderAuditResult
     {
         foreach ($this->getDirectives($this->getValue()) as $directive) {
             [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);
@@ -52,11 +50,11 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
                     if ($this->hasValidPolicy($policy)) {
                         $this->foundDirectives[] = $directiveName;
                     } else {
-                        $this->addWarning(new ContentSecurityPolicyInvalidWarning());
+//                        $this->addWarning(new ContentSecurityPolicyInvalidWarning());
                     }
                     break;
                 default:
-                    $this->addWarning(new ContentSecurityPolicyWithInvalidDirectiveWarning($directiveName));
+//                    $this->addWarning(new ContentSecurityPolicyWithInvalidDirectiveWarning($directiveName));
                     break;
             }
         }
@@ -65,11 +63,16 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 
         if (count($missingDirectives) > 0) {
             if (!in_array(self::FRAME_ANCESTORS, $missingDirectives, true)) {
-                $this->addWarning(new ContentSecurityPolicyMissingFrameAncestorsDirective());
+//                $this->addWarning(new ContentSecurityPolicyMissingFrameAncestorsDirective());
             } else {
-                $this->addWarning(new ContentSecurityPolicyWithMissingDirectiveWarning(implode(', ', $missingDirectives)));
+//                $this->addWarning(new ContentSecurityPolicyWithMissingDirectiveWarning(implode(', ', $missingDirectives)));
             }
         }
+
+        $contentSecurityPolicyResult = new ContentSecurityPolicyHeaderResult($this->getName());
+
+        return $contentSecurityPolicyResult;
+
     }
 
     private function parseDirectiveNameAndPolicy(string $directiveAndValues): array
