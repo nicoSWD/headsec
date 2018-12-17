@@ -13,6 +13,7 @@ final class ScanResult
 {
     /** @var EvaluatedHeaderBag */
     private $headers;
+    private $score = .0;
 
     public function __construct()
     {
@@ -35,19 +36,18 @@ final class ScanResult
         return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);
     }
 
-    public function getXFrameOptionsResult(): XFrameOptionsResult
+    public function getXFrameOptionsResult(): ?XFrameOptionsResult
     {
         return $this->headers->findOne(SecurityHeader::X_FRAME_OPTIONS);
     }
 
     public function getScore(): float
     {
-        $score = .0;
+        return $this->score;
+    }
 
-        foreach ($this->headers as $header) {
-            $score += $header->getEvaluatedHeader()->score();
-        }
-
-        return $score;
+    public function setScore(float $score)
+    {
+        $this->score = $score;
     }
 }

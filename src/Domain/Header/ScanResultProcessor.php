@@ -8,11 +8,22 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\ScanResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\ScoreCalculator;
 
 final class ScanResultProcessor
 {
+    /** @var ScoreCalculator */
+    private $scoreCalculator;
+
+    public function __construct(ScoreCalculator $scoreCalculator)
+    {
+        $this->scoreCalculator = $scoreCalculator;
+    }
+
     public function processScanResults(ScanResult $scanResult): void
     {
+        $scanResult->setScore($this->scoreCalculator->calculateScore($scanResult));
+
         if (!$this->hasSecureContentSecurityPolicyOrXFrameOptions($scanResult)) {
 
         }

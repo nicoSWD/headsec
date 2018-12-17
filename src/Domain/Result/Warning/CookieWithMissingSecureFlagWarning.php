@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class CookieWithMissingSecureFlagWarning extends Warning
 {
-    protected $message = 'Missing Secure flag';
+    protected $message = 'Cookie \'%s\' misses Secure flag';
 }

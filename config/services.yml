@@ -43,3 +43,8 @@ services:
 
   nicoswd.security_header_check.domain.header.post_security_scanner:
     class: nicoSWD\SecHeaderCheck\Domain\Header\ScanResultProcessor
+    arguments:
+      - '@nicoswd.security_header_check.domain.result.score_calculator'
+
+  nicoswd.security_header_check.domain.result.score_calculator:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ScoreCalculator

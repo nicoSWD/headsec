@@ -33,10 +33,6 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
                 throw new MaxHeaderSizeExceededException();
             }
 
-            if (trim($line) === '') {
-                break;
-            }
-
             [$headerName, $headerValue] = $this->getNameAndValue($line);
 
             $headers[$headerName][] = $headerValue;
@@ -68,7 +64,7 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
 
     private function sendRequest(URL $url, $fp): void
     {
-        $request = "GET {$url->path()}{$url->query()} HTTP/1.1\r\n";
+        $request = "HEAD {$url->path()}{$url->query()} HTTP/1.1\r\n";
         $request .= "Host: {$url->host()}\r\n";
         $request .= "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
         $request .= "User-Agent: Security Headers Scanner/1.0 (https://github.com/nicoSWD)\r\n";

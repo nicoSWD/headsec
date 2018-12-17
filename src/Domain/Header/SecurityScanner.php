@@ -33,7 +33,7 @@ final class SecurityScanner
 
     public function scan(string $url, bool $followRedirects = true): ScanResult
     {
-        $headers = $this->getHeaders(new URL($url), $followRedirects);
+        $headers = $this->getHeaders($url, $followRedirects);
         $scanResult = new ScanResult();
 
         foreach ($headers as $header) {
@@ -47,9 +47,9 @@ final class SecurityScanner
         return $scanResult;
     }
 
-    private function getHeaders(URL $url, bool $followRedirects): HttpHeaderBag
+    private function getHeaders(string $url, bool $followRedirects): HttpHeaderBag
     {
-        return $this->headerProvider->getHeadersFromUrl($url, $followRedirects);
+        return $this->headerProvider->getHeadersFromUrl(new URL($url), $followRedirects);
     }
 
     private function auditHeader(HttpHeader $header): GenericHeaderAuditResult

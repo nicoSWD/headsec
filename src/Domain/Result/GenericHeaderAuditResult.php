@@ -26,4 +26,9 @@ class GenericHeaderAuditResult
     {
         return $this->headerValidator->name();
     }
+
+    public function hasWarnings(): bool
+    {
+        return count($this->headerValidator->warnings()) > 0;
+    }
 }

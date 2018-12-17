@@ -23,15 +23,15 @@ final class SetCookieHeader extends AbstractHeaderValidator
         $flags = $this->getCookieFlags($this->getValue());
 
         if (!$this->hasSecureFlag($flags)) {
-            $this->addWarning(new CookieWithMissingSecureFlagWarning());
+            $this->addWarning(new CookieWithMissingSecureFlagWarning($this->getCookieName()));
         }
 
         if (!$this->hasHttpOnlyFlag($flags)) {
-            $this->addWarning(new CookieWithMissingHttpOnlyFlagWarning());
+            $this->addWarning(new CookieWithMissingHttpOnlyFlagWarning($this->getCookieName()));
         }
 
         if (!$this->hasSameSiteFlag($flags)) {
-            $this->addWarning(new CookieWithMissingSameSiteFlagWarning());
+            $this->addWarning(new CookieWithMissingSameSiteFlagWarning($this->getCookieName()));
         }
     }
 
@@ -57,5 +57,12 @@ final class SetCookieHeader extends AbstractHeaderValidator
     private function hasSameSiteFlag(array $options): bool
     {
         return in_array(self::FLAG_SAME_SITE_STRICT, $options, true);
+    }
+
+    private function getCookieName(): string
+    {
+        parse_str(explode(';', $this->getValue(), 2)[0], $components);
+
+        return key($components) ?? '';
     }
 }

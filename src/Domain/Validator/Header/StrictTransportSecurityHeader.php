@@ -24,7 +24,7 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 
         if ($maxAge !== false) {
             if (!$this->isMinRecommendedMaxAge($maxAge)) {
-                $this->addWarning(new StrictTransportSecurityWithInsufficientMaxAgeWarning());
+                $this->addWarning(new StrictTransportSecurityWithInsufficientMaxAgeWarning((string) $maxAge));
             }
         } else {
             $this->addWarning(new StrictTransportSecurityWithMissingMaxAgeWarning());

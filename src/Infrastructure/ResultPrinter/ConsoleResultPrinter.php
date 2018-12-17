@@ -14,7 +14,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 {
     public function getOutput(ScanResult $scanResults): string
     {
-        $output = '<fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
+        $output = '  <fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
         $maxHeaderLength = 0;
 
         foreach ($scanResults->getHeaders() as $header) {
@@ -24,19 +24,30 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             }
         }
 
+        $totalWarnings = 0;
+
         foreach ($scanResults->getHeaders() as $header) {
             $headerName = $header->name();
-            $hasWarnings = count($header->getEvaluatedHeader()->warnings()) > 0;
-            $warning = $header->getEvaluatedHeader()->warnings();
+            $warnings = $header->getEvaluatedHeader()->warnings();
+            $numWarnings = count($warnings);
+            $hasWarnings = $numWarnings > 0;
+            $warning = $warnings;
+            $totalWarnings += $numWarnings;
 
-//            if ($hasWarnings) {
-                $line = '[<fg=' . ($hasWarnings ? 'red>-' : 'green>+') . '</>] <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg=' . ($hasWarnings ? 'white' : '') . '>' . str_pad($this->prettyName($headerName),
+            if ($hasWarnings) {
+                $line = '  <bg=' . ($hasWarnings ? 'red' : 'default') . ';fg=' . ($hasWarnings ? 'black' : '') . '> ' . str_pad($this->prettyName($headerName),
                         $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($warning) . PHP_EOL;
                 $output .= $line;
-//            }
+            }
         }
 
-        $output .= PHP_EOL .'    Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
+        if ($totalWarnings === 0) {
+            $output .= '  <bg=green;fg=black>                            </>' . PHP_EOL ;
+            $output .= '  <bg=green;fg=black>   Congrats, no warnings!   </>' . PHP_EOL ;
+            $output .= '  <bg=green;fg=black>                            </>' . PHP_EOL ;
+        }
+
+        $output .= PHP_EOL .'  Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
 
         return $output;
     }
