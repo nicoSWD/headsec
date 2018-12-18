@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning extends Warning
 {
-    protected $message = 'The flag \'includeSubdomains\' should be set';
+    protected $message = 'Missing flag \'includeSubdomains\'';
 }

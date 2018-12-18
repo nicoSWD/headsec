@@ -7,16 +7,16 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class JSONResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(UnprocessedAuditionResult $scanResults): string
+    public function getOutput(AuditionResult $scanResults): string
     {
         $data = [
-            'score'    => $scanResults->getScore(),
-            'warnings' => $scanResults->getWarnings(),
+            'score'    => '',
+            'warnings' => '',
         ];
 
         return json_encode($data, JSON_PRETTY_PRINT);

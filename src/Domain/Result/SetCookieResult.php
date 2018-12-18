@@ -12,6 +12,7 @@ final class SetCookieResult extends AbstractHeaderAuditResult
     private $hasFlagSecure = false;
     private $hasFlagHttpOnly = false;
     private $hasFlagSameSite = false;
+    private $cookieName = '';
 
     public function isSecure(): bool
     {
@@ -23,9 +24,11 @@ final class SetCookieResult extends AbstractHeaderAuditResult
         return $this->hasFlagSecure;
     }
 
-    public function setHasFlagSecure(bool $hasFlagSecure): void
+    public function setHasFlagSecure(bool $hasFlagSecure): self
     {
         $this->hasFlagSecure = $hasFlagSecure;
+
+        return $this;
     }
 
     public function hasFlagHttpOnly(): bool
@@ -33,9 +36,11 @@ final class SetCookieResult extends AbstractHeaderAuditResult
         return $this->hasFlagHttpOnly;
     }
 
-    public function setHasFlagHttpOnly(bool $hasFlagHttpOnly): void
+    public function setHasFlagHttpOnly(bool $hasFlagHttpOnly): self
     {
         $this->hasFlagHttpOnly = $hasFlagHttpOnly;
+
+        return $this;
     }
 
     public function hasFlagSameSite(): bool
@@ -43,8 +48,17 @@ final class SetCookieResult extends AbstractHeaderAuditResult
         return $this->hasFlagSameSite;
     }
 
-    public function setHasFlagSameSite(bool $hasFlagSameSite): void
+    public function setHasFlagSameSite(bool $hasFlagSameSite): self
     {
         $this->hasFlagSameSite = $hasFlagSameSite;
+
+        return $this;
+    }
+
+    public function setCookieName(string $cookieName): self
+    {
+        $this->cookieName = $cookieName;
+
+        return $this;
     }
 }

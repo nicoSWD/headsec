@@ -20,12 +20,10 @@ final class XXSSProtectionHeader extends AbstractHeaderValidator
     {
         $options = $this->getOptions();
 
-        $XXSSProtectionHeaderResult = new XXSSProtectionHeaderResult($this->getName());
-        $XXSSProtectionHeaderResult->setProtectionIsOn($this->protectionIsOn($options));
-        $XXSSProtectionHeaderResult->setIsBlocking($this->isBlocking($options));
-        $XXSSProtectionHeaderResult->setHasReportUri($this->hasReportUri($options));
-
-        return $XXSSProtectionHeaderResult;
+        return (new XXSSProtectionHeaderResult($this->getName(), $this->getValue()))
+            ->setProtectionIsOn($this->protectionIsOn($options))
+            ->setIsBlocking($this->isBlocking($options))
+            ->setHasReportUri($this->hasReportUri($options));
     }
 
     private function protectionIsOn(array $options): bool

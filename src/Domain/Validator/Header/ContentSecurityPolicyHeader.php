@@ -69,7 +69,7 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
             }
         }
 
-        $contentSecurityPolicyResult = new ContentSecurityPolicyHeaderResult($this->getName());
+        $contentSecurityPolicyResult = new ContentSecurityPolicyHeaderResult($this->getName(), $this->getValue());
 
         return $contentSecurityPolicyResult;
 

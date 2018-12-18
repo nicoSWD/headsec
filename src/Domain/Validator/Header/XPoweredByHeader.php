@@ -15,6 +15,6 @@ final class XPoweredByHeader extends AbstractHeaderValidator
 {
     public function audit(): AbstractHeaderAuditResult
     {
-        return new XPoweredByHeaderResult($this->getName());
+        return new XPoweredByHeaderResult($this->getName(), $this->getValue());
     }
 }

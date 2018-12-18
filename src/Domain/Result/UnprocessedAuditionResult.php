@@ -11,13 +11,13 @@ use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
 final class UnprocessedAuditionResult
 {
-    /** @var EvaluatedHeaderBag */
+    /** @var ParsedHeaderBag */
     private $headers;
     private $score = .0;
 
     public function __construct()
     {
-        $this->headers = new EvaluatedHeaderBag();
+        $this->headers = new ParsedHeaderBag();
     }
 
     public function add(AbstractHeaderAuditResult $header): void
@@ -25,7 +25,7 @@ final class UnprocessedAuditionResult
         $this->headers->add($header);
     }
 
-    public function getHeaders(): EvaluatedHeaderBag
+    public function getHeaders(): ParsedHeaderBag
     {
         return $this->headers;
     }
@@ -36,9 +36,25 @@ final class UnprocessedAuditionResult
         return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);
     }
 
+    /** @return SetCookieResult[] */
+    public function getSetCookieResult()
+    {
+        return $this->headers->findMultiple(SecurityHeader::SET_COOKIE);
+    }
+
     public function getXFrameOptionsResult(): ?XFrameOptionsResult
     {
         return $this->headers->findOne(SecurityHeader::X_FRAME_OPTIONS);
+    }
+
+    public function getStrictTransportSecurityResult(): ?StrictTransportSecurityHeaderResult
+    {
+        return $this->headers->findOne(SecurityHeader::STRICT_TRANSPORT_SECURITY);
+    }
+
+    public function getReferrerPolicyResult(): ?ReferrerPolicyHeaderResult
+    {
+        return $this->headers->findOne(SecurityHeader::REFERRER_POLICY);
     }
 
     public function getScore(): float

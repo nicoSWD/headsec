@@ -16,9 +16,11 @@ final class XContentTypeOptionsHeaderResult extends AbstractHeaderAuditResult
         return $this->isNoSniff();
     }
 
-    public function setIsNoSniff(bool $isNoSniff): void
+    public function setIsNoSniff(bool $isNoSniff): self
     {
         $this->isNoSniff = $isNoSniff;
+
+        return $this;
     }
 
     public function isNoSniff(): bool

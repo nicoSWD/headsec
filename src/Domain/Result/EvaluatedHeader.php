@@ -36,15 +36,4 @@ final class EvaluatedHeader
     {
         return $this->warnings;
     }
-
-    public function hasWarning(string $className): bool
-    {
-        foreach ($this->warnings as $warning) {
-            if ($warning instanceof $className) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

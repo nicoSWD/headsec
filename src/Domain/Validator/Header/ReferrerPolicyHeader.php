@@ -15,11 +15,9 @@ final class ReferrerPolicyHeader extends AbstractHeaderValidator
 {
     public function audit(): AbstractHeaderAuditResult
     {
-        $referrerPolicyResult = new ReferrerPolicyHeaderResult($this->getName());
-        $referrerPolicyResult->setMayLeakOrigin($this->mayLeakOrigin());
-        $referrerPolicyResult->setDoesNotLeakReferrer($this->doesNotLeakReferrer());
-
-        return $referrerPolicyResult;
+        return (new ReferrerPolicyHeaderResult($this->getName(), $this->getValue()))
+            ->setMayLeakOrigin($this->mayLeakOrigin())
+            ->setDoesNotLeakReferrer($this->doesNotLeakReferrer());
     }
 
     private function doesNotLeakReferrer(): bool

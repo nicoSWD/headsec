@@ -15,10 +15,8 @@ final class ServerHeader extends AbstractHeaderValidator
 {
     public function audit(): AbstractHeaderAuditResult
     {
-        $serverResult = new ServerResult($this->getName());
-        $serverResult->setLeaksServerVersion($this->serverContainsVersionNumber());
-
-        return $serverResult;
+        return (new ServerResult($this->getName(), $this->getValue()))
+            ->setLeaksServerVersion($this->serverContainsVersionNumber());
     }
 
     private function serverContainsVersionNumber(): bool

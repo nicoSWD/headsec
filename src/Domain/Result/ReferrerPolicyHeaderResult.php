@@ -22,9 +22,11 @@ final class ReferrerPolicyHeaderResult extends AbstractHeaderAuditResult
         return $this->mayLeakOrigin;
     }
 
-    public function setMayLeakOrigin(bool $mayLeakOrigin): void
+    public function setMayLeakOrigin(bool $mayLeakOrigin): self
     {
         $this->mayLeakOrigin = $mayLeakOrigin;
+
+        return $this;
     }
 
     public function doesNotLeakReferrer(): bool
@@ -32,8 +34,10 @@ final class ReferrerPolicyHeaderResult extends AbstractHeaderAuditResult
         return $this->doesNotLeakReferrer;
     }
 
-    public function setDoesNotLeakReferrer(bool $doesNotLeakReferrer): void
+    public function setDoesNotLeakReferrer(bool $doesNotLeakReferrer): self
     {
         $this->doesNotLeakReferrer = $doesNotLeakReferrer;
+
+        return $this;
     }
 }

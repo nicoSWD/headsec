@@ -17,10 +17,8 @@ final class XContentTypeOptionsHeader extends AbstractHeaderValidator
 
     public function audit(): AbstractHeaderAuditResult
     {
-        $XContentTypeOptionsHeaderResult = new XContentTypeOptionsHeaderResult($this->getName());
-        $XContentTypeOptionsHeaderResult->setIsNoSniff($this->isNoSniff());
-
-        return $XContentTypeOptionsHeaderResult;
+        return (new XContentTypeOptionsHeaderResult($this->getName(), $this->getValue()))
+            ->setIsNoSniff($this->isNoSniff());
     }
 
     private function isNoSniff(): bool

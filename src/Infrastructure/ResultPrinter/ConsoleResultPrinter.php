@@ -7,28 +7,31 @@
  */
 namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class ConsoleResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(UnprocessedAuditionResult $scanResults): string
+    public function getOutput(AuditionResult $scanResults): string
     {
-        $output = '  <fg=white>Security Headers Check v1.2</>' . PHP_EOL . PHP_EOL;
         $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
 
+        $output = '';
         $totalWarnings = 0;
 
-        foreach ($scanResults->getHeaders() as $header) {
-            $headerName = $header->name();
-
-            if (!$header->isSecure()) {
+        foreach ($scanResults->getObservations() as [$headerName, $headerValue, $observations]) {
                 $totalWarnings++;
 
-                $line = '  <bg=' . (true ? 'red' : 'default') . ';fg=' . (true ? 'black' : '') . '> ' . str_pad($this->prettyName($headerName),
-                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings('Oh no') . PHP_EOL;
-                $output .= $line;
-            }
+                $output .= '(' . $totalWarnings . ') <bg=' . (true ? 'default' : 'default') . ';fg=' . (true ? 'white' : '') . '>' . str_pad($this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue),
+                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL ;
+        }
+
+        foreach ($scanResults->getMissingHeaders() as $headerName) {
+            $totalWarnings++;
+
+            $output .= '(' . $totalWarnings . ') <bg=' . (true ? 'default' : 'default') . ';fg=' . (true ? 'white' : '') . '>' . str_pad($this->prettyName($headerName),
+                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings(['Header is missing']) . PHP_EOL ;
         }
 
         if ($totalWarnings === 0) {
@@ -37,7 +40,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             $output .= '  <bg=green;fg=black>                            </>' . PHP_EOL ;
         }
 
-        $output .= PHP_EOL .'  Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)' . PHP_EOL;
+        $output .= PHP_EOL .'Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)';
 
         return $output;
     }
@@ -47,22 +50,52 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         return implode('-', array_map('ucfirst', explode('-', $headerName)));
     }
 
-    private function getWarnings($warning): string
+    private function getWarnings(array $observations): string
     {
-        return ($warning ? '<bg=red;fg=black> ' . (string) $warning . ' </>': '<bg=green;fg=black> No issues </>');
+        $out = PHP_EOL . '    ';
+
+        foreach ($observations as $observation) {
+            $out .= '<bg=red;fg=white> ' . (string) $observation . ' </> ';
+        }
+
+        return $out;
     }
 
-    private function getHeaderMaxLength(UnprocessedAuditionResult $scanResults): int
+    private function getHeaderMaxLength(AuditionResult $scanResults): int
     {
         $maxHeaderLength = 0;
 
-        foreach ($scanResults->getHeaders() as $header) {
-            $length = strlen($header->name());
-            if (!$header->isSecure() && $length > $maxHeaderLength) {
+        foreach ($scanResults->getObservations() as [$headerName, $headerValue, $observations]) {
+            $length = strlen($headerName);
+            if ($length > $maxHeaderLength) {
                 $maxHeaderLength = $length;
             }
         }
 
         return $maxHeaderLength;
+    }
+
+    private function shortenHeaderValue(string $headerName, string $headerValue): string
+    {
+        $width = (int) `tput cols`;
+
+        if ($headerName === SecurityHeader::SET_COOKIE) {
+            $callback = function (array $match): string {
+                if  (strlen($match['value']) < 20) {
+                    return $match['name'] . $match['value'];
+                }
+
+                return sprintf(
+                    '%s%s[...]%s',
+                    $match['name'],
+                    substr($match['value'], 0, 8),
+                    substr($match['value'], -8)
+                );
+            };
+
+            return preg_replace_callback('~^(?<name>.*?=)(?<value>.*?;)~', $callback, $headerValue);
+        }
+
+        return $headerValue;
     }
 }

@@ -15,6 +15,6 @@ final class NonSecurityHeader extends AbstractHeaderValidator
 {
     public function audit(): AbstractHeaderAuditResult
     {
-        return new NonSecurityHeaderResult($this->getName());
+        return new NonSecurityHeaderResult($this->getName(), $this->getValue());
     }
 }

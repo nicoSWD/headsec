@@ -21,8 +21,10 @@ final class ServerResult extends AbstractHeaderAuditResult
         return $this->leaksServerVersion;
     }
 
-    public function setLeaksServerVersion(bool $leaksServerVersion): void
+    public function setLeaksServerVersion(bool $leaksServerVersion): self
     {
         $this->leaksServerVersion = $leaksServerVersion;
+
+        return $this;
     }
 }

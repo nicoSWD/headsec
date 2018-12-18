@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 use Iterator;
 
-final class EvaluatedHeaderBag implements Iterator
+final class ParsedHeaderBag implements Iterator
 {
     /** @var AbstractHeaderAuditResult[] */
     private $headers = [];

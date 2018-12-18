@@ -18,9 +18,9 @@ final class StrictTransportSecurityHeader extends AbstractHeaderValidator
 
     public function audit(): AbstractHeaderAuditResult
     {
-        $strictTransportSecurityHeaderResult = new StrictTransportSecurityHeaderResult($this->getName());
+        $strictTransportSecurityHeaderResult = new StrictTransportSecurityHeaderResult($this->getName(), $this->getValue());
         $strictTransportSecurityHeaderResult->setHasSecureMaxAge($this->isMinRecommendedMaxAge());
-        $strictTransportSecurityHeaderResult->setHasFlagIncludeSubdomains($this->hasIncludeSubDomainsFlag());
+        $strictTransportSecurityHeaderResult->setHasFlagIncludeSubDomains($this->hasIncludeSubDomainsFlag());
 
         return $strictTransportSecurityHeaderResult;
     }

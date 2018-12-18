@@ -22,9 +22,11 @@ final class XFrameOptionsResult extends AbstractHeaderAuditResult
         return $this->hasSecureOrigin;
     }
 
-    public function setHasSecureOrigin(bool $hasSecureOrigin): void
+    public function setHasSecureOrigin(bool $hasSecureOrigin): self
     {
         $this->hasSecureOrigin = $hasSecureOrigin;
+
+        return $this;
     }
 
     public function hasAllowFrom(): bool
@@ -32,8 +34,10 @@ final class XFrameOptionsResult extends AbstractHeaderAuditResult
         return $this->hasAllowFrom;
     }
 
-    public function setHasAllowFrom(bool $hasAllowFrom): void
+    public function setHasAllowFrom(bool $hasAllowFrom): self
     {
         $this->hasAllowFrom = $hasAllowFrom;
+
+        return $this;
     }
 }

@@ -10,16 +10,23 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 abstract class AbstractHeaderAuditResult
 {
     private $name = '';
+    private $value = '';
 
     abstract public function isSecure(): bool;
 
-    public function __construct(string $name)
+    public function __construct(string $name, string $value)
     {
         $this->name = $name;
+        $this->value = $value;
     }
 
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function value(): string
+    {
+        return $this->value;
     }
 }

@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class ReferrerPolicyWithInvalidValueWarning extends Warning
 {
-    protected $message = 'Invalid value %s';
+    protected $message = 'Invalid value';
 }

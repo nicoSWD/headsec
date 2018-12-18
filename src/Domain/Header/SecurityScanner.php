@@ -8,6 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\UnprocessedAuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory;
@@ -31,7 +32,7 @@ final class SecurityScanner
         $this->scanResultProcessor = $scanResultProcessor;
     }
 
-    public function scan(string $url, bool $followRedirects = true): UnprocessedAuditionResult
+    public function scan(string $url, bool $followRedirects = true): AuditionResult
     {
         $headers = $this->getHeaders($url, $followRedirects);
         $auditionResult = new UnprocessedAuditionResult();
@@ -55,10 +56,8 @@ final class SecurityScanner
         return $this->scannerFactory->createFromHeader($header)->audit();
     }
 
-    private function processScanResults(UnprocessedAuditionResult $scanResult): UnprocessedAuditionResult
+    private function processScanResults(UnprocessedAuditionResult $scanResult): AuditionResult
     {
-        $this->scanResultProcessor->processScanResults($scanResult);
-
-        return $scanResult;
+        return $this->scanResultProcessor->processScanResults($scanResult);
     }
 }

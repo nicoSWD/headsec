@@ -27,6 +27,11 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
 
         while (!feof($fp)) {
             $line = $this->readLine($fp);
+
+            if ($line === false || trim($line) === '') {
+                break;
+            }
+
             $bytesRead += strlen($line);
 
             if ($this->hasExceededMaxSize($bytesRead)) {

@@ -21,21 +21,11 @@ final class SetCookieHeader extends AbstractHeaderValidator
     {
         $flags = $this->getCookieFlags();
 
-        $setCookieResult = new SetCookieResult($this->getName());
-        $setCookieResult->setHasFlagHttpOnly($this->hasHttpOnlyFlag($flags));
-        $setCookieResult->setHasFlagSecure($this->hasSecureFlag($flags));
-        $setCookieResult->setHasFlagSameSite($this->hasSameSiteFlag($flags));
-
-        return $setCookieResult;
-    }
-
-    private function getCookieFlags(): array
-    {
-        $callback = function (string $value): string {
-            return strtolower(trim($value));
-        };
-
-        return array_map($callback, explode(';', $this->getValue()));
+        return (new SetCookieResult($this->getName(), $this->getValue()))
+            ->setCookieName($this->getCookieName())
+            ->setHasFlagHttpOnly($this->hasHttpOnlyFlag($flags))
+            ->setHasFlagSecure($this->hasSecureFlag($flags))
+            ->setHasFlagSameSite($this->hasSameSiteFlag($flags));
     }
 
     private function hasSecureFlag(array $options): bool
@@ -51,6 +41,15 @@ final class SetCookieHeader extends AbstractHeaderValidator
     private function hasSameSiteFlag(array $options): bool
     {
         return in_array(self::FLAG_SAME_SITE_STRICT, $options, true);
+    }
+
+    private function getCookieFlags(): array
+    {
+        $callback = function (string $value): string {
+            return strtolower(trim($value));
+        };
+
+        return array_map($callback, explode(';', $this->getValue()));
     }
 
     private function getCookieName(): string

@@ -9,8 +9,10 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 final class ContentSecurityPolicyHeaderResult extends AbstractHeaderAuditResult
 {
+    const LIE_ABOUT_RESULT = false;
+
     public function isSecure(): bool
     {
-        return true;
+        return self::LIE_ABOUT_RESULT;
     }
 }

@@ -18,11 +18,9 @@ final class XFrameOptionsHeader extends AbstractHeaderValidator
 
     public function audit(): AbstractHeaderAuditResult
     {
-        $XFrameOptionsResult = new XFrameOptionsResult($this->getName());
-        $XFrameOptionsResult->setHasSecureOrigin($this->isSecureOrigin());
-        $XFrameOptionsResult->setHasAllowFrom($this->hasAllowFrom());
-
-        return $XFrameOptionsResult;
+        return (new XFrameOptionsResult($this->getName(), $this->getValue()))
+            ->setHasSecureOrigin($this->isSecureOrigin())
+            ->setHasAllowFrom($this->hasAllowFrom());
     }
 
     private function isSecureOrigin(): bool

@@ -23,9 +23,11 @@ final class XXSSProtectionHeaderResult extends AbstractHeaderAuditResult
         return $this->protectionIsOn;
     }
 
-    public function setProtectionIsOn(bool $protectionIsOn): void
+    public function setProtectionIsOn(bool $protectionIsOn): self
     {
         $this->protectionIsOn = $protectionIsOn;
+
+        return $this;
     }
 
     public function isBlocking(): bool
@@ -33,9 +35,11 @@ final class XXSSProtectionHeaderResult extends AbstractHeaderAuditResult
         return $this->isBlocking;
     }
 
-    public function setIsBlocking(bool $isBlocking): void
+    public function setIsBlocking(bool $isBlocking): self
     {
         $this->isBlocking = $isBlocking;
+
+        return $this;
     }
 
     public function hasReportUri(): bool
@@ -43,8 +47,10 @@ final class XXSSProtectionHeaderResult extends AbstractHeaderAuditResult
         return $this->hasReportUri;
     }
 
-    public function setHasReportUri(bool $hasReportUri): void
+    public function setHasReportUri(bool $hasReportUri): self
     {
         $this->hasReportUri = $hasReportUri;
+
+        return $this;
     }
 }
