@@ -7,6 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning;
+
 final class StrictTransportSecurityWithInsufficientMaxAgeWarning extends Warning
 {
     protected $message = 'Recommended max-age is \'31536000\' (one year)';

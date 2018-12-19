@@ -10,6 +10,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSecureFlagWarning;
 
 final class SetCookieProcessor extends AbstractProcessor
@@ -24,6 +25,10 @@ final class SetCookieProcessor extends AbstractProcessor
 
         if (!$this->header()->hasFlagSecure()) {
             $observations[] = new CookieWithMissingSecureFlagWarning();
+        }
+
+        if (!$this->header()->hasFlagSameSite()) {
+            $observations[] = new CookieWithMissingSameSiteFlagWarning();
         }
 
         $this->addResult($observations);

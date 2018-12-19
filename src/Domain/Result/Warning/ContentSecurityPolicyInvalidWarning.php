@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class ContentSecurityPolicyInvalidWarning extends Warning
+use nicoSWD\SecHeaderCheck\Domain\Result\Error;
+
+final class ContentSecurityPolicyInvalidWarning extends Error
 {
     protected $message = 'Invalid policy %s';
 }

@@ -7,6 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class XFrameOptionsWithInsecureValueWarning extends Warning
+use nicoSWD\SecHeaderCheck\Domain\Result\Error;
+
+final class XFrameOptionsWithInsecureValueWarning extends Error
 {
+    protected $message = "Either 'sameorigin', 'deny' or 'allow-from' are expected";
 }

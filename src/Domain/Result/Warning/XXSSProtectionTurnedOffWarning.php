@@ -7,6 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning;
+
 final class XXSSProtectionTurnedOffWarning extends Warning
 {
     protected $message = 'XSS protection is turned off';

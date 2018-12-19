@@ -7,6 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning;
+
 final class ContentSecurityPolicyWithInvalidDirectiveWarning extends Warning
 {
     protected $message = 'Invalid directive %s';

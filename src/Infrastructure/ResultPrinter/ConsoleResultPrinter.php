@@ -32,7 +32,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             $totalWarnings++;
 
             $output .= sprintf("(%{$padding}s)", $totalWarnings) . ' <bg=default;fg=white>' . str_pad($this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue),
-                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL ;
+                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL;
         }
 
         $missingHeaders = $scanResults->getMissingHeaders();
@@ -71,7 +71,11 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $out = PHP_EOL . '     ';
 
         foreach ($observations as $observation) {
-            $out .= '<bg=red;fg=black> ' . (string) $observation . ' </> ';
+            if ($observation->getPenalty() === .0) {
+                $out .= '<bg=yellow;fg=black> ' . (string) $observation . ' </> ';
+            } else {
+                $out .= '<bg=red;fg=black> ' . (string) $observation . ' </> ';
+            }
         }
 
         if (empty($observations)) {

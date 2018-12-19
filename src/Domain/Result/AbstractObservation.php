@@ -5,22 +5,18 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
+namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-abstract class Warning
+abstract class AbstractObservation
 {
     private $context = [];
-    private $penalty = .0;
     protected $message = '';
+
+    abstract public function getPenalty(): float;
 
     public function __construct(?string ...$context)
     {
         $this->context = $context;
-    }
-
-    public function getPenalty(): float
-    {
-        return $this->penalty;
     }
 
     public function getMessage(): string

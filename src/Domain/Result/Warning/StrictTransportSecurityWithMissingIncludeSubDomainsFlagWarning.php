@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning extends Warning
+use nicoSWD\SecHeaderCheck\Domain\Result\Info;
+
+final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning extends Info
 {
     protected $message = 'Missing flag \'includeSubdomains\'';
 }

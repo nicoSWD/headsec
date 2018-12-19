@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class XPoweredByDisclosesTechnologyWarning extends Warning
-{
+use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
+final class XPoweredByDisclosesTechnologyWarning extends Info
+{
+    protected $message = 'Header may disclose technology';
 }

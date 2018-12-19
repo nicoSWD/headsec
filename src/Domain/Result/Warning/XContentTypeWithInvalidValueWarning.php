@@ -7,7 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-final class XContentTypeWithInvalidValueWarning extends Warning
-{
+use nicoSWD\SecHeaderCheck\Domain\Result\Error;
 
+final class XContentTypeWithInvalidValueWarning extends Error
+{
+    protected $message = '\'nosniff\' is the only allowed value';
 }
