@@ -5,7 +5,9 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Result;
+namespace nicoSWD\SecHeaderCheck\Domain\Result\Result;
+
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 
 final class XContentTypeOptionsHeaderResult extends AbstractParsedHeader
 {

@@ -8,7 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\SetCookieResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class SetCookieHeader extends AbstractHeaderParser
@@ -21,7 +21,7 @@ final class SetCookieHeader extends AbstractHeaderParser
     {
         $flags = $this->getCookieFlags();
 
-        return (new SetCookieResult($this->getName(), $this->getValue()))
+        return (new SetCookieHeaderResult($this->getName(), $this->getValue()))
             ->setCookieName($this->getCookieName())
             ->setHasFlagHttpOnly($this->hasHttpOnlyFlag($flags))
             ->setHasFlagSecure($this->hasSecureFlag($flags))

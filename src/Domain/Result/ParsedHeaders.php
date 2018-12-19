@@ -8,6 +8,8 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\ContentSecurityPolicyHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XFrameOptionsHeaderResult;
 
 final class ParsedHeaders
 {
@@ -24,7 +26,7 @@ final class ParsedHeaders
         $this->headers->add($header);
     }
 
-    public function getHeaders(): ParsedHeaderBag
+    public function all(): ParsedHeaderBag
     {
         return $this->headers;
     }
@@ -35,44 +37,8 @@ final class ParsedHeaders
         return $this->headers->findMultiple(SecurityHeader::CONTENT_SECURITY_POLICY);
     }
 
-    /** @return SetCookieResult[] */
-    public function getSetCookieResult()
-    {
-        return $this->headers->findMultiple(SecurityHeader::SET_COOKIE);
-    }
-
-    public function getXPoweredByResult(): ?XPoweredByHeaderResult
-    {
-        return $this->headers->findOne(SecurityHeader::X_POWERED_BY);
-    }
-
-    public function getXFrameOptionsResult(): ?XFrameOptionsResult
+    public function getXFrameOptionsResult(): ?XFrameOptionsHeaderResult
     {
         return $this->headers->findOne(SecurityHeader::X_FRAME_OPTIONS);
-    }
-
-    public function getServerResult(): ?ServerResult
-    {
-        return $this->headers->findOne(SecurityHeader::SERVER);
-    }
-
-    public function getStrictTransportSecurityResult(): ?StrictTransportSecurityHeaderResult
-    {
-        return $this->headers->findOne(SecurityHeader::STRICT_TRANSPORT_SECURITY);
-    }
-
-    public function getReferrerPolicyResult(): ?ReferrerPolicyHeaderResult
-    {
-        return $this->headers->findOne(SecurityHeader::REFERRER_POLICY);
-    }
-
-    public function getXXSSProtectionResult(): ?XXSSProtectionHeaderResult
-    {
-        return $this->headers->findOne(SecurityHeader::X_XSS_PROTECTION);
-    }
-
-    public function getXContentTypeOptionsResult(): ?XContentTypeOptionsHeaderResult
-    {
-        return $this->headers->findOne(SecurityHeader::X_CONTENT_TYPE_OPTIONS);
     }
 }

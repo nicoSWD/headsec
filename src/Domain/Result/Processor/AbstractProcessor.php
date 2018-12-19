@@ -7,29 +7,27 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 
 abstract class AbstractProcessor
 {
-    private $headerName = '';
-    private $headerValue = '';
+    /** @var AbstractParsedHeader */
+    protected $parsedHeader;
+    /** @var AuditionResult */
+    private $auditionResult;
 
-    public function __construct(string $headerName, string $headerValue)
+    abstract public function process(ParsedHeaders $parsedHeaders): void;
+
+    public function __construct(AbstractParsedHeader $parsedHeader, AuditionResult $auditionResult)
     {
-        $this->headerName = $headerName;
-        $this->headerValue = $headerValue;
+        $this->parsedHeader = $parsedHeader;
+        $this->auditionResult = $auditionResult;
     }
 
-    abstract public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void;
-
-    protected function getHeaderName(): string
+    protected function addResult(array $observations): void
     {
-        return $this->headerName;
-    }
-
-    protected function getHeaderValue(): string
-    {
-        return $this->headerValue;
+        $this->auditionResult->addResult($this->parsedHeader->name(), $this->parsedHeader->value(), $observations);
     }
 }

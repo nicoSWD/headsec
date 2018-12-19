@@ -8,7 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\XXSSProtectionHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XXSSProtectionHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class XXSSProtectionHeader extends AbstractHeaderParser

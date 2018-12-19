@@ -7,27 +7,28 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\ReferrerPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithInvalidValueWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithLeakingOriginWarning;
 
 final class ReferrerPolicyProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $headerResult = $parsedHeaders->getReferrerPolicyResult();
+        $observations = [];
 
-        if ($headerResult) {
-            $observations = [];
-
-            if ($headerResult->isMayLeakOrigin()) {
-                $observations[] = new ReferrerPolicyWithLeakingOriginWarning();
-            } elseif (!$headerResult->doesNotLeakReferrer()) {
-                $observations[] = new ReferrerPolicyWithInvalidValueWarning();
-            }
-
-            $auditionResult->addResult($headerResult->name(), $headerResult->value(), $observations);
+        if ($this->header()->isMayLeakOrigin()) {
+            $observations[] = new ReferrerPolicyWithLeakingOriginWarning();
+        } elseif (!$this->header()->doesNotLeakReferrer()) {
+            $observations[] = new ReferrerPolicyWithInvalidValueWarning();
         }
+
+        $this->addResult($observations);
+    }
+
+    private function header(): ReferrerPolicyHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

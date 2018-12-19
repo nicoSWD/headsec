@@ -25,13 +25,21 @@ final class AuditionResult
 
     public function getMissingHeaders(): array
     {
+        $allSecurityHeaders = (new SecurityHeader())->all();
         $foundHeaders = [];
 
         foreach ($this->observations as [$headerName]) {
             $foundHeaders[] = $headerName;
         }
 
-        return array_diff((new SecurityHeader())->all(), $foundHeaders, [SecurityHeader::SERVER, SecurityHeader::SET_COOKIE, SecurityHeader::X_POWERED_BY, SecurityHeader::EXPECT_CT]);
+        $excludeFromSuggestions = [
+            SecurityHeader::SERVER,
+            SecurityHeader::SET_COOKIE,
+            SecurityHeader::X_POWERED_BY,
+            SecurityHeader::EXPECT_CT
+        ];
+
+        return array_diff($allSecurityHeaders, $foundHeaders, $excludeFromSuggestions);
     }
 
     public function getScore(): int

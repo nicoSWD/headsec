@@ -7,21 +7,25 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithInsecureValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XFrameOptionsHeaderResult;
 
 final class XFrameOptionsProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $xFrameOptionsResult = $parsedHeaders->getXFrameOptionsResult();
         $observations = [];
 
-        if ($xFrameOptionsResult && !$xFrameOptionsResult->getHasSecureOrigin() && !$xFrameOptionsResult->hasAllowFrom()) {
+        if (!$this->header()->getHasSecureOrigin() && !$this->header()->hasAllowFrom()) {
             $observations[] = new XFrameOptionsWithInsecureValueWarning();
         }
 
-        $auditionResult->addResult($this->getHeaderName(), $this->getHeaderValue(), $observations);
+        $this->addResult($observations);
+    }
+
+    private function header(): XFrameOptionsHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

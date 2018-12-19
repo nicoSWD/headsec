@@ -7,28 +7,30 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\StrictTransportSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithInsufficientMaxAgeWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning;
 
 final class StrictTransportSecurityProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $headerResult = $parsedHeaders->getStrictTransportSecurityResult();
         $observations = [];
 
-        if ($headerResult) {
-            if (!$headerResult->hasSecureMaxAge()) {
-                $observations[] = new StrictTransportSecurityWithInsufficientMaxAgeWarning();
-            }
-
-            if (!$headerResult->hasFlagIncludeSubDomains()) {
-                $observations[] = new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning();
-            }
-
-            $auditionResult->addResult($headerResult->name(), $headerResult->value(), $observations);
+        if (!$this->header()->hasSecureMaxAge()) {
+            $observations[] = new StrictTransportSecurityWithInsufficientMaxAgeWarning();
         }
+
+        if (!$this->header()->hasFlagIncludeSubDomains()) {
+            $observations[] = new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning();
+        }
+
+        $this->addResult($observations);
+    }
+
+    private function header(): StrictTransportSecurityHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

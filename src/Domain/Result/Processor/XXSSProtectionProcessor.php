@@ -7,33 +7,35 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XXSSProtectionHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOffWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutModeBlockWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutReportURIWarning;
 
 final class XXSSProtectionProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $XXSSProtectionResult = $parsedHeaders->getXXSSProtectionResult();
         $observations = [];
 
-        if ($XXSSProtectionResult) {
-            if (!$XXSSProtectionResult->protectionIsOn()) {
-                $observations[] = new XXSSProtectionTurnedOffWarning();
-            } else {
-                if (!$XXSSProtectionResult->isBlocking()) {
-                    $observations[] = new XXSSProtectionWithoutModeBlockWarning();
-                }
-
-                if (!$XXSSProtectionResult->hasReportUri()) {
-                    $observations[] = new XXSSProtectionWithoutReportURIWarning();
-                }
-            }
+        if (!$this->header()->protectionIsOn()) {
+            $observations[] = new XXSSProtectionTurnedOffWarning();
         }
 
-        $auditionResult->addResult($this->getHeaderName(), $this->getHeaderValue(), $observations);
+        if (!$this->header()->isBlocking()) {
+            $observations[] = new XXSSProtectionWithoutModeBlockWarning();
+        }
+
+        if (!$this->header()->hasReportUri()) {
+            $observations[] = new XXSSProtectionWithoutReportURIWarning();
+        }
+
+        $this->addResult($observations);
+    }
+
+    private function header(): XXSSProtectionHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

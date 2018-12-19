@@ -7,13 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 
 final class NonSecurityHeaderProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $auditionResult->addResult($this->getHeaderName(), $this->getHeaderValue(), []);
+        $this->addResult([]);
     }
 }

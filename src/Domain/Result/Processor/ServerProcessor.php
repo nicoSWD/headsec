@@ -7,21 +7,25 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\ServerHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDisclosedVersionNumberWarning;
 
 final class ServerProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $serverHeader = $parsedHeaders->getServerResult();
         $observations = [];
 
-        if ($serverHeader && $serverHeader->leaksServerVersion()) {
+        if ($this->header()->leaksServerVersion()) {
             $observations[] = new ServerDisclosedVersionNumberWarning();
         }
 
-        $auditionResult->addResult($this->getHeaderName(), $this->getHeaderValue(), $observations);
+        $this->addResult($observations);
+    }
+
+    private function header(): ServerHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

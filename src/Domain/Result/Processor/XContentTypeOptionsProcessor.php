@@ -7,21 +7,25 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XContentTypeWithInvalidValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XContentTypeOptionsHeaderResult;
 
 final class XContentTypeOptionsProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $xContentTypeOptionsResult = $parsedHeaders->getXContentTypeOptionsResult();
         $observations = [];
 
-        if ($xContentTypeOptionsResult && !$xContentTypeOptionsResult->isNoSniff()) {
+        if (!$this->header()->isNoSniff()) {
             $observations[] = new XContentTypeWithInvalidValueWarning();
         }
 
-        $auditionResult->addResult($this->getHeaderName(), $this->getHeaderValue(), $observations);
+        $this->addResult($observations);
+    }
+
+    private function header(): XContentTypeOptionsHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

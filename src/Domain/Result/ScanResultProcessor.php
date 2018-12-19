@@ -32,9 +32,9 @@ final class ScanResultProcessor
     {
         $auditionResult = new AuditionResult();
 
-        foreach ($parsedHeaders->getHeaders() as $parsedHeader) {
-            $processor = $this->processorFactory->create($parsedHeader->name(), $parsedHeader->value());
-            $processor->process($parsedHeaders, $auditionResult);
+        foreach ($parsedHeaders->all() as $parsedHeader) {
+            $processor = $this->processorFactory->create($parsedHeader, $auditionResult);
+            $processor->process($parsedHeaders);
         }
 
         return $auditionResult;

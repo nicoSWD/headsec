@@ -5,9 +5,11 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Result;
+namespace nicoSWD\SecHeaderCheck\Domain\Result\Result;
 
-final class SetCookieResult extends AbstractParsedHeader
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
+
+final class SetCookieHeaderResult extends AbstractParsedHeader
 {
     private $hasFlagSecure = false;
     private $hasFlagHttpOnly = false;

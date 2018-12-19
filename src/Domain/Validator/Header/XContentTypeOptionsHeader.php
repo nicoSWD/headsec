@@ -8,7 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\XContentTypeOptionsHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XContentTypeOptionsHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class XContentTypeOptionsHeader extends AbstractHeaderParser

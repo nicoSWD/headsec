@@ -7,24 +7,21 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\ContentSecurityPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning;
 
 final class ContentSecurityPolicyProcessor extends AbstractProcessor
 {
-    public function process(ParsedHeaders $parsedHeaders, AuditionResult $auditionResult): void
+    public function process(ParsedHeaders $parsedHeaders): void
     {
-        $contentSecurityPolicyHeaders = $parsedHeaders->getContentSecurityPolicyResult();
+        $contentSecurityPolicyHeader = $this->header();
         $hasSecureFrameAncestors = false;
         $hasSecureXFrameOptions = false;
         $observations = [];
 
-        foreach ($contentSecurityPolicyHeaders as $contentSecurityPolicyHeader) {
-            if ($contentSecurityPolicyHeader->isSecure()) {
-                $hasSecureFrameAncestors = true;
-                break;
-            }
+        if ($contentSecurityPolicyHeader->isSecure()) {
+            $hasSecureFrameAncestors = true;
         }
 
         $xFrameOptionsHeader = $parsedHeaders->getXFrameOptionsResult();
@@ -34,11 +31,16 @@ final class ContentSecurityPolicyProcessor extends AbstractProcessor
         }
 
         if (!$hasSecureXFrameOptions) {
-            if ($contentSecurityPolicyHeaders && !$hasSecureFrameAncestors) {
+            if ($contentSecurityPolicyHeader && !$hasSecureFrameAncestors) {
                 $observations[] = new ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning();
             }
         }
 
-        $auditionResult->addResult($contentSecurityPolicyHeaders[0]->name(), $contentSecurityPolicyHeaders[0]->value(), $observations);
+        $this->addResult($observations);
+    }
+
+    private function header(): ContentSecurityPolicyHeaderResult
+    {
+        return $this->parsedHeader;
     }
 }

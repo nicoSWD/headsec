@@ -14,7 +14,7 @@ final class ScoreCalculator
         $possibleScore = 0;
         $penalties = 0;
 
-        foreach ($scanResult->getHeaders() as $header) {
+        foreach ($scanResult->all() as $header) {
             $possibleScore++;
 
             if (!$header->isSecure()) {

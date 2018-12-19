@@ -5,9 +5,11 @@
  * @link     https://github.com/nicoSWD
  * @author   Nicolas Oelgart <nico@oelgart.com>
  */
-namespace nicoSWD\SecHeaderCheck\Domain\Result;
+namespace nicoSWD\SecHeaderCheck\Domain\Result\Result;
 
-final class XFrameOptionsResult extends AbstractParsedHeader
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
+
+final class XFrameOptionsHeaderResult extends AbstractParsedHeader
 {
     private $hasSecureOrigin = false;
     private $hasAllowFrom = false;

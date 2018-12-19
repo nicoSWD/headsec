@@ -8,7 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\XFrameOptionsResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Result\XFrameOptionsHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class XFrameOptionsHeader extends AbstractHeaderParser
@@ -18,7 +18,7 @@ final class XFrameOptionsHeader extends AbstractHeaderParser
 
     public function parse(): AbstractParsedHeader
     {
-        return (new XFrameOptionsResult($this->getName(), $this->getValue()))
+        return (new XFrameOptionsHeaderResult($this->getName(), $this->getValue()))
             ->setHasSecureOrigin($this->isSecureOrigin())
             ->setHasAllowFrom($this->hasAllowFrom());
     }

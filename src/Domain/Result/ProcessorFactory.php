@@ -23,31 +23,31 @@ use nicoSWD\SecHeaderCheck\Domain\Result\Processor\XXSSProtectionProcessor;
 
 final class ProcessorFactory
 {
-    public function create(string $headerName, string $headerValue): AbstractProcessor
+    public function create(AbstractParsedHeader $parsedHeader, AuditionResult $auditionResult): AbstractProcessor
     {
-        switch ($headerName) {
+        switch ($parsedHeader->name()) {
             case SecurityHeader::CONTENT_SECURITY_POLICY:
-                return new ContentSecurityPolicyProcessor($headerName, $headerValue);
+                return new ContentSecurityPolicyProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::EXPECT_CT:
-                return new ExpectCTProcessor($headerName, $headerValue);
+                return new ExpectCTProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::REFERRER_POLICY:
-                return new ReferrerPolicyProcessor($headerName, $headerValue);
+                return new ReferrerPolicyProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::SET_COOKIE:
-                return new SetCookieProcessor($headerName, $headerValue);
+                return new SetCookieProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::SERVER:
-                return new ServerProcessor($headerName, $headerValue);
+                return new ServerProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::STRICT_TRANSPORT_SECURITY:
-                return new StrictTransportSecurityProcessor($headerName, $headerValue);
+                return new StrictTransportSecurityProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::X_FRAME_OPTIONS:
-                return new XFrameOptionsProcessor($headerName, $headerValue);
+                return new XFrameOptionsProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::X_CONTENT_TYPE_OPTIONS:
-                return new XContentTypeOptionsProcessor($headerName, $headerValue);
+                return new XContentTypeOptionsProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::X_POWERED_BY:
-                return new XPoweredByProcessor($headerName, $headerValue);
+                return new XPoweredByProcessor($parsedHeader, $auditionResult);
             case SecurityHeader::X_XSS_PROTECTION:
-                return new XXSSProtectionProcessor($headerName, $headerValue);
+                return new XXSSProtectionProcessor($parsedHeader, $auditionResult);
             default:
-                return new NonSecurityHeaderProcessor($headerName, $headerValue);
+                return new NonSecurityHeaderProcessor($parsedHeader, $auditionResult);
         }
     }
 }
