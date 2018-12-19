@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class XContentTypeOptionsHeaderResult extends AbstractHeaderAuditResult
+final class XContentTypeOptionsHeaderResult extends AbstractParsedHeader
 {
     private $isNoSniff = false;
 

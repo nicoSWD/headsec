@@ -7,22 +7,20 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\StrictTransportSecurityHeaderResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class StrictTransportSecurityHeader extends AbstractHeaderValidator
+final class StrictTransportSecurityHeader extends AbstractHeaderParser
 {
     private const SIX_MONTHS_IN_SECONDS = 15768000;
     private const FLAG_INCLUDE_SUB_DOMAINS = 'includesubdomains';
 
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
-        $strictTransportSecurityHeaderResult = new StrictTransportSecurityHeaderResult($this->getName(), $this->getValue());
-        $strictTransportSecurityHeaderResult->setHasSecureMaxAge($this->isMinRecommendedMaxAge());
-        $strictTransportSecurityHeaderResult->setHasFlagIncludeSubDomains($this->hasIncludeSubDomainsFlag());
-
-        return $strictTransportSecurityHeaderResult;
+        return (new StrictTransportSecurityHeaderResult($this->getName(), $this->getValue()))
+            ->setHasSecureMaxAge($this->isMinRecommendedMaxAge())
+            ->setHasFlagIncludeSubDomains($this->hasIncludeSubDomainsFlag());
     }
 
     private function hasIncludeSubDomainsFlag(): bool

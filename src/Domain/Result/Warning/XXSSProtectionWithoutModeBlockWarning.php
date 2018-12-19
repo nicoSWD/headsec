@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class XXSSProtectionWithoutModeBlockWarning extends Warning
 {
-
+    protected $message = 'Non-blocking mode';
 }

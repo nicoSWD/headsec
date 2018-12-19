@@ -8,9 +8,9 @@
 namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 
-abstract class AbstractHeaderValidator
+abstract class AbstractHeaderParser
 {
     private $name = '';
     private $value = '';
@@ -21,7 +21,7 @@ abstract class AbstractHeaderValidator
         $this->value = $header->value();
     }
 
-    abstract public function audit(): AbstractHeaderAuditResult;
+    abstract public function parse(): AbstractParsedHeader;
 
     public function getName(): string
     {

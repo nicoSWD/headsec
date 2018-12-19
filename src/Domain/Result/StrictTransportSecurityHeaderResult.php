@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class StrictTransportSecurityHeaderResult extends AbstractHeaderAuditResult
+final class StrictTransportSecurityHeaderResult extends AbstractParsedHeader
 {
     private $hasSecureMaxAge = false;
     private $hasFlagIncludeSubDomains = false;
@@ -22,9 +22,11 @@ final class StrictTransportSecurityHeaderResult extends AbstractHeaderAuditResul
         return $this->hasSecureMaxAge;
     }
 
-    public function setHasSecureMaxAge(bool $hasSecureMaxAge): void
+    public function setHasSecureMaxAge(bool $hasSecureMaxAge): self
     {
         $this->hasSecureMaxAge = $hasSecureMaxAge;
+
+        return $this;
     }
 
     public function hasFlagIncludeSubDomains(): bool
@@ -32,8 +34,10 @@ final class StrictTransportSecurityHeaderResult extends AbstractHeaderAuditResul
         return $this->hasFlagIncludeSubDomains;
     }
 
-    public function setHasFlagIncludeSubDomains(bool $hasFlagIncludeSubDomains): void
+    public function setHasFlagIncludeSubDomains(bool $hasFlagIncludeSubDomains): self
     {
         $this->hasFlagIncludeSubDomains = $hasFlagIncludeSubDomains;
+
+        return $this;
     }
 }

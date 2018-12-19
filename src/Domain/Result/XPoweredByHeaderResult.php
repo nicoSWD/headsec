@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class XPoweredByHeaderResult extends AbstractHeaderAuditResult
+final class XPoweredByHeaderResult extends AbstractParsedHeader
 {
     public function isSecure(): bool
     {

@@ -7,16 +7,16 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\XXSSProtectionHeaderResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class XXSSProtectionHeader extends AbstractHeaderValidator
+final class XXSSProtectionHeader extends AbstractHeaderParser
 {
     private const MODE_ON = '1';
     private const MODE_BLOCK = 'mode=block';
 
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
         $options = $this->getOptions();
 

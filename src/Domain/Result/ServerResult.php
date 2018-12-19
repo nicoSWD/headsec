@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class ServerResult extends AbstractHeaderAuditResult
+final class ServerResult extends AbstractParsedHeader
 {
     private $leaksServerVersion = true;
 

@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class ReferrerPolicyHeaderResult extends AbstractHeaderAuditResult
+final class ReferrerPolicyHeaderResult extends AbstractParsedHeader
 {
     private $mayLeakOrigin = true;
     private $doesNotLeakReferrer = false;

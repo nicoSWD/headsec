@@ -35,11 +35,11 @@ final class SecHeadersCheckCommand extends Command
         $this->setName('nicoswd:security-header-check')
             ->setDescription('Check a site\'s security headers')
             ->addArgument('url', InputArgument::REQUIRED, 'URL to check')
-            ->addOption('follow-redirects', 'f', InputOption::VALUE_OPTIONAL, 'Follow redirects', true)
+            ->addOption('ignore-redirects', 'i', InputOption::VALUE_OPTIONAL, 'Follow redirects', false)
             ->addOption('output-format', 'o', InputOption::VALUE_OPTIONAL, 'Output format', 'console')
             ->addOption('target-score', 't', InputOption::VALUE_OPTIONAL, 'Target score', '5')
+            ->addOption('show-all-headers', 'a', InputOption::VALUE_OPTIONAL, 'Show all headers', false)
             // Ideas...
-            ->addOption('raw-headers', 'r', InputOption::VALUE_OPTIONAL, 'Show raw headers', false)
             ->addOption('silent', 's', InputOption::VALUE_OPTIONAL, 'No output, just fail on error', false)
             ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Load config file', '')
             ->addOption('print-score', 'p', InputOption::VALUE_OPTIONAL, 'Only output the score', '')
@@ -51,8 +51,9 @@ final class SecHeadersCheckCommand extends Command
         $scanRequest = new ScanSecurityHeadersRequest();
         $scanRequest->url = $input->getArgument('url');
         $scanRequest->outputFormat = $input->getOption('output-format');
-        $scanRequest->followRedirects = in_array($input->getOption('follow-redirects'), ['1', 'yes', 'y', 'true'], true);
+        $scanRequest->followRedirects = $input->getOption('ignore-redirects') === false;
         $scanRequest->targetScore = (float) $input->getOption('target-score');
+        $scanRequest->showAllHeaders = $input->getOption('show-all-headers') !== false;
 
         $scanResult = $this->scanSecurityHeadersUseCase->execute($scanRequest);
 

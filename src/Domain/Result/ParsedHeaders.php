@@ -9,18 +9,17 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
-final class UnprocessedAuditionResult
+final class ParsedHeaders
 {
     /** @var ParsedHeaderBag */
     private $headers;
-    private $score = .0;
 
     public function __construct()
     {
         $this->headers = new ParsedHeaderBag();
     }
 
-    public function add(AbstractHeaderAuditResult $header): void
+    public function add(AbstractParsedHeader $header): void
     {
         $this->headers->add($header);
     }
@@ -42,9 +41,19 @@ final class UnprocessedAuditionResult
         return $this->headers->findMultiple(SecurityHeader::SET_COOKIE);
     }
 
+    public function getXPoweredByResult(): ?XPoweredByHeaderResult
+    {
+        return $this->headers->findOne(SecurityHeader::X_POWERED_BY);
+    }
+
     public function getXFrameOptionsResult(): ?XFrameOptionsResult
     {
         return $this->headers->findOne(SecurityHeader::X_FRAME_OPTIONS);
+    }
+
+    public function getServerResult(): ?ServerResult
+    {
+        return $this->headers->findOne(SecurityHeader::SERVER);
     }
 
     public function getStrictTransportSecurityResult(): ?StrictTransportSecurityHeaderResult
@@ -57,13 +66,13 @@ final class UnprocessedAuditionResult
         return $this->headers->findOne(SecurityHeader::REFERRER_POLICY);
     }
 
-    public function getScore(): float
+    public function getXXSSProtectionResult(): ?XXSSProtectionHeaderResult
     {
-        return $this->score;
+        return $this->headers->findOne(SecurityHeader::X_XSS_PROTECTION);
     }
 
-    public function setScore(float $score)
+    public function getXContentTypeOptionsResult(): ?XContentTypeOptionsHeaderResult
     {
-        $this->score = $score;
+        return $this->headers->findOne(SecurityHeader::X_CONTENT_TYPE_OPTIONS);
     }
 }

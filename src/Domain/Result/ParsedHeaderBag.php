@@ -11,15 +11,15 @@ use Iterator;
 
 final class ParsedHeaderBag implements Iterator
 {
-    /** @var AbstractHeaderAuditResult[] */
+    /** @var AbstractParsedHeader[] */
     private $headers = [];
 
-    public function add(AbstractHeaderAuditResult $header): void
+    public function add(AbstractParsedHeader $header): void
     {
         $this->headers[] = $header;
     }
 
-    /** @return AbstractHeaderAuditResult[] */
+    /** @return AbstractParsedHeader[] */
     public function findMultiple(string $name): array
     {
         $headers = [];
@@ -33,7 +33,7 @@ final class ParsedHeaderBag implements Iterator
         return $headers;
     }
 
-    public function findOne(string $name): ?AbstractHeaderAuditResult
+    public function findOne(string $name): ?AbstractParsedHeader
     {
         $headers = $this->findMultiple($name);
 
@@ -44,7 +44,7 @@ final class ParsedHeaderBag implements Iterator
         return null;
     }
 
-    /** @return AbstractHeaderAuditResult */
+    /** @return AbstractParsedHeader */
     public function current()
     {
         return current($this->headers);

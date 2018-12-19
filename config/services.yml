@@ -14,8 +14,8 @@ services:
   nicoSWD\SecHeaderCheck\Domain\Header\SecurityScanner:
     arguments:
       - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
-      - '@nicoswd.security_header_check.domain.validator.header_validator_factory'
-      - '@nicoswd.security_header_check.domain.header.post_security_scanner'
+      - '@nicoswd.security_header_check.domain.validator.header_parser_factory'
+      - '@nicoswd.security_header_check.domain.result.post_security_scanner'
 
   nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory:
     arguments:
@@ -38,13 +38,21 @@ services:
       - 5
       - 3
 
-  nicoswd.security_header_check.domain.validator.header_validator_factory:
-    class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderValidatorFactory
+  nicoswd.security_header_check.domain.validator.header_parser_factory:
+    class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderParserFactory
 
-  nicoswd.security_header_check.domain.header.post_security_scanner:
-    class: nicoSWD\SecHeaderCheck\Domain\Header\ScanResultProcessor
+  nicoswd.security_header_check.domain.result.post_security_scanner:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ScanResultProcessor
     arguments:
       - '@nicoswd.security_header_check.domain.result.score_calculator'
+      - '@nicoswd.security_header_check.domain.header.security_header'
+      - '@nicoswd.security_header_check.domain.result.processor_factory'
 
   nicoswd.security_header_check.domain.result.score_calculator:
     class: nicoSWD\SecHeaderCheck\Domain\Result\ScoreCalculator
+
+  nicoswd.security_header_check.domain.header.security_header:
+    class: nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader
+
+  nicoswd.security_header_check.domain.result.processor_factory:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ProcessorFactory

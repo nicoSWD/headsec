@@ -9,12 +9,10 @@ namespace nicoSWD\SecHeaderCheck\Domain\Header;
 
 final class HttpHeader
 {
-    /** @var string */
     private $name = '';
-    /** @var string|string[] */
-    private $value;
+    private $value = '';
 
-    public function __construct(string $name, $value)
+    public function __construct(string $name, string $value)
     {
         $this->name = $name;
         $this->value = $value;
@@ -25,7 +23,7 @@ final class HttpHeader
         return $this->name;
     }
 
-    public function value()
+    public function value(): string
     {
         return $this->value;
     }

@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class NonSecurityHeaderResult extends AbstractHeaderAuditResult
+final class NonSecurityHeaderResult extends AbstractParsedHeader
 {
     public function isSecure(): bool
     {

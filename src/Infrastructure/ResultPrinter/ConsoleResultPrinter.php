@@ -9,29 +9,45 @@ namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\OutputOptions;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class ConsoleResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(AuditionResult $scanResults): string
+    public function getOutput(AuditionResult $scanResults, OutputOptions $outputOptions): string
     {
         $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
 
         $output = '';
         $totalWarnings = 0;
 
-        foreach ($scanResults->getObservations() as [$headerName, $headerValue, $observations]) {
-                $totalWarnings++;
+        $allObservations = $scanResults->getObservations();
+        $padding = strlen(sprintf('%s', count($allObservations)));
 
-                $output .= '(' . $totalWarnings . ') <bg=' . (true ? 'default' : 'default') . ';fg=' . (true ? 'white' : '') . '>' . str_pad($this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue),
-                        $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL ;
-        }
+        foreach ($allObservations as [$headerName, $headerValue, $observations]) {
+            if (!$observations && !$outputOptions->showAllHeaders()) {
+                continue;
+            }
 
-        foreach ($scanResults->getMissingHeaders() as $headerName) {
             $totalWarnings++;
 
-            $output .= '(' . $totalWarnings . ') <bg=' . (true ? 'default' : 'default') . ';fg=' . (true ? 'white' : '') . '>' . str_pad($this->prettyName($headerName),
-                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings(['Header is missing']) . PHP_EOL ;
+            $output .= sprintf("(%{$padding}s)", $totalWarnings) . ' <bg=default;fg=white>' . str_pad($this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue),
+                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL ;
+        }
+
+        $missingHeaders = $scanResults->getMissingHeaders();
+
+        if ($missingHeaders) {
+            $output .= PHP_EOL . 'Missing headers: ';
+        }
+
+        foreach ($missingHeaders as $headerName) {
+            $totalWarnings++;
+            $output .= '<bg=red;fg=black>' . $this->prettyName($headerName) . '</> ';
+        }
+
+        if ($missingHeaders) {
+            $output .= PHP_EOL;
         }
 
         if ($totalWarnings === 0) {
@@ -52,10 +68,14 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
     private function getWarnings(array $observations): string
     {
-        $out = PHP_EOL . '    ';
+        $out = PHP_EOL . '     ';
 
         foreach ($observations as $observation) {
-            $out .= '<bg=red;fg=white> ' . (string) $observation . ' </> ';
+            $out .= '<bg=red;fg=black> ' . (string) $observation . ' </> ';
+        }
+
+        if (empty($observations)) {
+            $out .= '<bg=green;fg=black>No issues</> ';
         }
 
         return $out;
@@ -65,7 +85,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
     {
         $maxHeaderLength = 0;
 
-        foreach ($scanResults->getObservations() as [$headerName, $headerValue, $observations]) {
+        foreach ($scanResults->getObservations() as [$headerName]) {
             $length = strlen($headerName);
             if ($length > $maxHeaderLength) {
                 $maxHeaderLength = $length;

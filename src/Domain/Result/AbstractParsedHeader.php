@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-abstract class AbstractHeaderAuditResult
+abstract class AbstractParsedHeader
 {
     private $name = '';
     private $value = '';

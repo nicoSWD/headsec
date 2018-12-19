@@ -13,4 +13,5 @@ final class ScanSecurityHeadersRequest
     public $outputFormat = 'console';
     public $targetScore = 8.;
     public $followRedirects = true;
+    public $showAllHeaders = false;
 }

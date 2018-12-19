@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class XXSSProtectionHeaderResult extends AbstractHeaderAuditResult
+final class XXSSProtectionHeaderResult extends AbstractParsedHeader
 {
     private $protectionIsOn = false;
     private $isBlocking = false;

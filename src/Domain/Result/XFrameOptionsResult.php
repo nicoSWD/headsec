@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class XFrameOptionsResult extends AbstractHeaderAuditResult
+final class XFrameOptionsResult extends AbstractParsedHeader
 {
     private $hasSecureOrigin = false;
     private $hasAllowFrom = false;

@@ -7,16 +7,16 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\XFrameOptionsResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class XFrameOptionsHeader extends AbstractHeaderValidator
+final class XFrameOptionsHeader extends AbstractHeaderParser
 {
     private const OPTION_DENY = 'deny';
     private const OPTION_SAME_ORIGIN = 'sameorigin';
 
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
         return (new XFrameOptionsResult($this->getName(), $this->getValue()))
             ->setHasSecureOrigin($this->isSecureOrigin())

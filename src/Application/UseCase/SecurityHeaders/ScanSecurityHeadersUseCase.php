@@ -8,6 +8,7 @@
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScanner;
+use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\OutputOptions;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
 
 final class ScanSecurityHeadersUseCase
@@ -25,8 +26,11 @@ final class ScanSecurityHeadersUseCase
 
     public function execute(ScanSecurityHeadersRequest $request): ScanSecurityHeadersResponse
     {
+        $outputOptions = new OutputOptions();
+        $outputOptions->setShowAllHeaders($request->showAllHeaders);
+
         $scanResults = $this->headerService->scan($request->url, $request->followRedirects);
-        $outputPrinter = $this->resultPrinterFactory->createFromFormat($request->outputFormat);
+        $outputPrinter = $this->resultPrinterFactory->createFromFormat($request->outputFormat, $outputOptions);
 
         $result = new ScanSecurityHeadersResponse();
         $result->output = $outputPrinter->getOutput($scanResults);

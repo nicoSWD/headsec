@@ -10,9 +10,9 @@ namespace nicoSWD\SecHeaderCheck\Domain\Validator;
 use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
-final class HeaderValidatorFactory
+final class HeaderParserFactory
 {
-    public function createFromHeader(HttpHeader $header): AbstractHeaderValidator
+    public function createFromHeader(HttpHeader $header): AbstractHeaderParser
     {
         switch ($header->name()) {
             case SecurityHeader::STRICT_TRANSPORT_SECURITY:

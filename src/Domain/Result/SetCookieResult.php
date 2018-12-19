@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class SetCookieResult extends AbstractHeaderAuditResult
+final class SetCookieResult extends AbstractParsedHeader
 {
     private $hasFlagSecure = false;
     private $hasFlagHttpOnly = false;

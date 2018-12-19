@@ -19,4 +19,9 @@ final class SecurityHeader
     public const X_CONTENT_TYPE_OPTIONS = 'x-content-type-options';
     public const X_POWERED_BY = 'x-powered-by';
     public const X_XSS_PROTECTION = 'x-xss-protection';
+
+    public function all(): array
+    {
+        return (new \ReflectionClass($this))->getConstants();
+    }
 }

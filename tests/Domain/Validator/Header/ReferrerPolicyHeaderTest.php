@@ -17,7 +17,7 @@ final class ReferrerPolicyHeaderTest extends TestCase
     {
         $header = new ReferrerPolicyHeader($setting);
 
-        $this->assertSame(1., $header->audit());
+        $this->assertSame(1., $header->parse());
         $this->assertEmpty($header->getWarnings());
     }
 
@@ -26,7 +26,7 @@ final class ReferrerPolicyHeaderTest extends TestCase
     {
         $header = new ReferrerPolicyHeader($setting);
 
-        $this->assertSame(.5, $header->audit());
+        $this->assertSame(.5, $header->parse());
         $this->assertCount(1, $header->getWarnings());
     }
 
@@ -34,7 +34,7 @@ final class ReferrerPolicyHeaderTest extends TestCase
     {
         $header = new ReferrerPolicyHeader('do-something');
 
-        $this->assertSame(.0, $header->audit());
+        $this->assertSame(.0, $header->parse());
         $this->assertCount(1, $header->getWarnings());
     }
 

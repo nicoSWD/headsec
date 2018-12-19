@@ -27,15 +27,15 @@ final class ResultPrinterFactory
     }
 
     /** @throws Exception\InvalidOutputFormatException */
-    public function createFromFormat(string $format): ResultPrinterInterface
+    public function createFromFormat(string $format, OutputOptions $outputOptions): ResultPrinter
     {
         switch ($format) {
             case OutputFormat::CONSOLE:
-                return $this->consolePrinter;
+                return new ResultPrinter($this->consolePrinter, $outputOptions);
             case OutputFormat::JSON:
-                return $this->jsonPrinter;
+                return new ResultPrinter($this->jsonPrinter, $outputOptions);
             case OutputFormat::XML:
-                return $this->xmlPrinter;
+                return new ResultPrinter($this->xmlPrinter, $outputOptions);
             default:
                 throw new Exception\InvalidOutputFormatException();
         }

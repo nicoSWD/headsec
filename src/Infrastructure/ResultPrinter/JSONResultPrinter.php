@@ -8,11 +8,12 @@
 namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\OutputOptions;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
 final class JSONResultPrinter implements ResultPrinterInterface
 {
-    public function getOutput(AuditionResult $scanResults): string
+    public function getOutput(AuditionResult $scanResults, OutputOptions $outputOptions): string
     {
         $data = [
             'score'    => '',

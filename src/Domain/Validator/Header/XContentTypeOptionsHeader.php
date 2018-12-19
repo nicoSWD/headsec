@@ -7,15 +7,15 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\XContentTypeOptionsHeaderResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class XContentTypeOptionsHeader extends AbstractHeaderValidator
+final class XContentTypeOptionsHeader extends AbstractHeaderParser
 {
     private const NO_SNIFF = 'nosniff';
 
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
         return (new XContentTypeOptionsHeaderResult($this->getName(), $this->getValue()))
             ->setIsNoSniff($this->isNoSniff());

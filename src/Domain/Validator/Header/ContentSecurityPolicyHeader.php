@@ -7,11 +7,11 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\ContentSecurityPolicyHeaderResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
+final class ContentSecurityPolicyHeader extends AbstractHeaderParser
 {
     private const DEFAULT_SRC = 'default-src';
     private const SCRIPT_SRC = 'script-src';
@@ -33,7 +33,7 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderValidator
 
     private $foundDirectives = [];
 
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
         foreach ($this->getDirectives($this->getValue()) as $directive) {
             [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);

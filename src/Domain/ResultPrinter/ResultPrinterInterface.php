@@ -11,5 +11,5 @@ use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
 
 interface ResultPrinterInterface
 {
-    public function getOutput(AuditionResult  $scanResults): string;
+    public function getOutput(AuditionResult $scanResults, OutputOptions $outputOptions): string;
 }

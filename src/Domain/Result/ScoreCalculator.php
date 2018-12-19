@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 final class ScoreCalculator
 {
-    public function calculateScore(UnprocessedAuditionResult $scanResult)
+    public function calculateScore(ParsedHeaders $scanResult)
     {
         $possibleScore = 0;
         $penalties = 0;

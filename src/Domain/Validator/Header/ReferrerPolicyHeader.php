@@ -7,13 +7,13 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractHeaderAuditResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\ReferrerPolicyHeaderResult;
-use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderValidator;
+use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
-final class ReferrerPolicyHeader extends AbstractHeaderValidator
+final class ReferrerPolicyHeader extends AbstractHeaderParser
 {
-    public function audit(): AbstractHeaderAuditResult
+    public function parse(): AbstractParsedHeader
     {
         return (new ReferrerPolicyHeaderResult($this->getName(), $this->getValue()))
             ->setMayLeakOrigin($this->mayLeakOrigin())

@@ -9,5 +9,5 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 final class ServerDisclosedVersionNumberWarning extends Warning
 {
-
+    protected $message = 'Header seems to leak server version';
 }
