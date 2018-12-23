@@ -7,8 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\Command;
 
-use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanSecurityHeadersRequest;
-use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanSecurityHeadersUseCase;
+use nicoSWD\SecHeaderCheck\Application\UseCase\ScanHeaders\ScanURLRequest;
+use nicoSWD\SecHeaderCheck\Application\UseCase\ScanHeaders\ScanURLResponse;
+use nicoSWD\SecHeaderCheck\Application\UseCase\ScanHeaders\ScanURLUseCase;
+use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanHeadersRequest;
+use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanHeadersResponse;
+use nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders\ScanHeadersUseCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,22 +24,27 @@ final class SecHeadersCheckCommand extends Command
     private const STATUS_ERROR = 1;
     private const STATUS_SUCCESS = 0;
 
-    /** @var ScanSecurityHeadersUseCase */
-    private $scanSecurityHeadersUseCase;
+    /** @var ScanURLUseCase */
+    private $scanURLUseCase;
+    /** @var ScanHeadersUseCase */
+    private $scanHeadersUseCase;
 
-    public function __construct(ScanSecurityHeadersUseCase $scanSecurityHeadersUseCase)
-    {
+    public function __construct(
+        ScanURLUseCase $scanURLUseCase,
+        ScanHeadersUseCase $scanHeadersUseCase
+    ) {
         parent::__construct();
 
-        $this->scanSecurityHeadersUseCase = $scanSecurityHeadersUseCase;
+        $this->scanURLUseCase = $scanURLUseCase;
+        $this->scanHeadersUseCase = $scanHeadersUseCase;
     }
 
     protected function configure()
     {
         $this->setName('nicoswd:security-header-check')
             ->setDescription('Check a site\'s security headers')
-            ->addArgument('url', InputArgument::REQUIRED, 'URL to check')
-            ->addOption('ignore-redirects', 'i', InputOption::VALUE_OPTIONAL, 'Follow redirects', false)
+            ->addArgument('url', InputArgument::OPTIONAL, 'URL to check')
+            ->addOption('ignore-redirects', 'r', InputOption::VALUE_OPTIONAL, 'Ignore redirects', false)
             ->addOption('output-format', 'o', InputOption::VALUE_OPTIONAL, 'Output format', 'console')
             ->addOption('target-score', 't', InputOption::VALUE_OPTIONAL, 'Target score', '5')
             ->addOption('show-all-headers', 'a', InputOption::VALUE_OPTIONAL, 'Show all headers', false)
@@ -48,14 +57,7 @@ final class SecHeadersCheckCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $scanRequest = new ScanSecurityHeadersRequest();
-        $scanRequest->url = $input->getArgument('url');
-        $scanRequest->outputFormat = $input->getOption('output-format');
-        $scanRequest->followRedirects = $input->getOption('ignore-redirects') === false;
-        $scanRequest->targetScore = (float) $input->getOption('target-score');
-        $scanRequest->showAllHeaders = $input->getOption('show-all-headers') !== false;
-
-        $scanResult = $this->scanSecurityHeadersUseCase->execute($scanRequest);
+        $scanResult = $this->getScanResult($input);
 
         $output->writeln($scanResult->output);
 
@@ -64,5 +66,58 @@ final class SecHeadersCheckCommand extends Command
         }
 
         return self::STATUS_ERROR;
+    }
+
+    protected function scanHeadersFromURL(InputInterface $input): ScanURLResponse
+    {
+        $scanRequest = new ScanURLRequest();
+        $scanRequest->url = $input->getArgument('url');
+        $scanRequest->outputFormat = $input->getOption('output-format');
+        $scanRequest->targetScore = (float) $input->getOption('target-score');
+        $scanRequest->followRedirects = $input->getOption('ignore-redirects') === false;
+        $scanRequest->showAllHeaders = $input->getOption('show-all-headers') !== false;
+
+        $scanResult = $this->scanURLUseCase->execute($scanRequest);
+
+        return $scanResult;
+    }
+
+    private function scanHeadersFromStdIn(InputInterface $input): ScanHeadersResponse
+    {
+        $scanRequest = new ScanHeadersRequest();
+        $scanRequest->headers = $this->getHeadersFromStdIn();
+        $scanRequest->outputFormat = $input->getOption('output-format');
+        $scanRequest->targetScore = (float) $input->getOption('target-score');
+        $scanRequest->showAllHeaders = $input->getOption('show-all-headers') !== false;
+
+        $scanResult = $this->scanHeadersUseCase->execute($scanRequest);
+
+        return $scanResult;
+    }
+
+    private function getHeadersFromStdIn(): string
+    {
+        $headers = '';
+
+        if (ftell(STDIN) === 0) {
+            while (!feof(STDIN)) {
+                $headers .= fread(STDIN, 1024);
+            }
+        }
+
+        return $headers;
+    }
+
+    private function getScanResult(InputInterface $input)
+    {
+        $url = $input->getArgument('url');
+
+        if ($url) {
+            $scanResult = $this->scanHeadersFromURL($input);
+        } else {
+            $scanResult = $this->scanHeadersFromStdIn($input);
+        }
+
+        return $scanResult;
     }
 }

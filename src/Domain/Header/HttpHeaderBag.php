@@ -11,11 +11,36 @@ use Iterator;
 
 final class HttpHeaderBag implements Iterator
 {
+    /** @var HttpHeader[] */
     private $headers = [];
 
     public function add(HttpHeader $headerValue)
     {
         $this->headers[] = $headerValue;
+    }
+
+    public function has(string $headerName): bool
+    {
+        foreach ($this->headers as $header) {
+            if ($header->name() === $headerName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function get(string $headerName): array
+    {
+        $headers = [];
+
+        foreach ($this->headers as $header) {
+            if ($header->name() === $headerName) {
+                $headers[] = $header;
+            }
+        }
+
+        return $headers;
     }
 
     /** @return HttpHeader|bool */

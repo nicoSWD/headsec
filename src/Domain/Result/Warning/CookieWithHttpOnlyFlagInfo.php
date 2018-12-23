@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
-final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning extends Info
+final class CookieWithHttpOnlyFlagInfo extends Info
 {
-    protected $message = 'Missing flag \'includeSubDomains\'';
+    protected $message = 'HttpOnly flag is set';
 }

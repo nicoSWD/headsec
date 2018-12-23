@@ -12,4 +12,6 @@ use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 interface HeaderProviderInterface
 {
     public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HttpHeaderBag;
+
+    public function getHeadersFromString(string $headers): HttpHeaderBag;
 }

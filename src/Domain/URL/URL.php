@@ -7,6 +7,8 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\URL;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+
 final class URL
 {
     private const SCHEME_HTTPS = 'https';
@@ -63,8 +65,10 @@ final class URL
         return (int) $this->components['port'];
     }
 
-    public function redirectTo(string $newLocation): self
+    public function redirectTo(HttpHeader $locationHeader): self
     {
+        $newLocation = $locationHeader->value();
+
         if (substr($newLocation, 0, 2) === '//') {
             $newLocation = sprintf('%s:%s', $this->scheme(), $newLocation);
         } elseif ($newLocation[0] === '/') {

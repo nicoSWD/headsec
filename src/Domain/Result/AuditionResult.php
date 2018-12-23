@@ -12,6 +12,13 @@ use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 final class AuditionResult
 {
     private $observations = [];
+    /** @var SecurityHeader */
+    private $securityHeader;
+
+    public function __construct(SecurityHeader $securityHeader)
+    {
+        $this->securityHeader = $securityHeader;
+    }
 
     public function getObservations(): array
     {
@@ -25,7 +32,6 @@ final class AuditionResult
 
     public function getMissingHeaders(): array
     {
-        $allSecurityHeaders = (new SecurityHeader())->all();
         $foundHeaders = [];
 
         foreach ($this->observations as [$headerName]) {
@@ -39,7 +45,7 @@ final class AuditionResult
             SecurityHeader::EXPECT_CT
         ];
 
-        return array_diff($allSecurityHeaders, $foundHeaders, $excludeFromSuggestions);
+        return array_diff($this->securityHeader->all(), $foundHeaders, $excludeFromSuggestions);
     }
 
     public function getScore(): int

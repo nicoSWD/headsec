@@ -17,12 +17,12 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
     private const ONE_KB = 1024;
     private const MAX_HEADER_SIZE = self::ONE_KB * 8;
 
-    public function getRawHeaders(URL $url): array
+    public function getRawHeaders(URL $url): string
     {
         $fp = $this->connect($url);
         $this->sendRequest($url, $fp);
 
-        $headers = [];
+        $headers = '';
         $bytesRead = 0;
 
         while (!feof($fp)) {
@@ -38,23 +38,12 @@ final class NativeHeaderProvider extends AbstractHeaderProvider
                 throw new MaxHeaderSizeExceededException();
             }
 
-            [$headerName, $headerValue] = $this->getNameAndValue($line);
-
-            $headers[$headerName][] = $headerValue;
+            $headers .= $line;
         }
 
         fclose($fp);
 
         return $headers;
-    }
-
-    private function getNameAndValue(string $line): array
-    {
-        $parts = explode(':', $line, 2);
-        $headerName = trim(strtolower($parts[0]));
-        $headerValue = trim($parts[1] ?? '');
-
-        return [$headerName, $headerValue];
     }
 
     private function readLine($fp)

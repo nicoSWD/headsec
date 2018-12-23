@@ -7,32 +7,32 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-use nicoSWD\SecHeaderCheck\Domain\Header\SecurityScanner;
+use nicoSWD\SecHeaderCheck\Domain\Header\HeaderScanner;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\OutputOptions;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory;
 
-final class ScanSecurityHeadersUseCase
+final class ScanHeadersUseCase
 {
-    /** @var SecurityScanner */
-    private $headerService;
+    /** @var HeaderScanner */
+    private $securityScanner;
     /** @var ResultPrinterFactory */
     private $resultPrinterFactory;
 
-    public function __construct(SecurityScanner $headerService, ResultPrinterFactory $resultPrinterFactory)
+    public function __construct(HeaderScanner $securityScanner, ResultPrinterFactory $resultPrinterFactory)
     {
-        $this->headerService = $headerService;
+        $this->securityScanner = $securityScanner;
         $this->resultPrinterFactory = $resultPrinterFactory;
     }
 
-    public function execute(ScanSecurityHeadersRequest $request): ScanSecurityHeadersResponse
+    public function execute(ScanHeadersRequest $request): ScanHeadersResponse
     {
         $outputOptions = new OutputOptions();
         $outputOptions->setShowAllHeaders($request->showAllHeaders);
 
-        $scanResults = $this->headerService->scan($request->url, $request->followRedirects);
+        $scanResults = $this->securityScanner->scanHeaders($request->headers);
         $outputPrinter = $this->resultPrinterFactory->createFromFormat($request->outputFormat, $outputOptions);
 
-        $result = new ScanSecurityHeadersResponse();
+        $result = new ScanHeadersResponse();
         $result->output = $outputPrinter->getOutput($scanResults);
         $result->score = $scanResults->getScore();
         $result->hitTargetScore = $scanResults->getScore() >= $request->targetScore;

@@ -7,11 +7,10 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-final class ScanSecurityHeadersRequest
+final class ScanHeadersRequest
 {
-    public $url = '';
+    public $headers = '';
     public $outputFormat = 'console';
     public $targetScore = 8.;
-    public $followRedirects = true;
     public $showAllHeaders = false;
 }

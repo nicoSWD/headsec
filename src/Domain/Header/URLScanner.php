@@ -14,7 +14,7 @@ use nicoSWD\SecHeaderCheck\Domain\Result\ScanResultProcessor;
 use nicoSWD\SecHeaderCheck\Domain\URL\URL;
 use nicoSWD\SecHeaderCheck\Domain\Validator\HeaderParserFactory;
 
-final class SecurityScanner
+final class URLScanner
 {
     /** @var HeaderProviderInterface */
     private $headerProvider;
@@ -33,7 +33,7 @@ final class SecurityScanner
         $this->scanResultProcessor = $scanResultProcessor;
     }
 
-    public function scan(string $url, bool $followRedirects = true): AuditionResult
+    public function scanURL(string $url, bool $followRedirects = true): AuditionResult
     {
         $headers = $this->getHeaders($url, $followRedirects);
         $parsedHeaders = new ParsedHeaders();

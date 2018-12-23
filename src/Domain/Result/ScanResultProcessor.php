@@ -7,36 +7,32 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
-
 final class ScanResultProcessor
 {
     /** @var ScoreCalculator */
     private $scoreCalculator;
-    /** @var SecurityHeader */
-    private $securityHeader;
     /** @var ProcessorFactory */
     private $processorFactory;
+    /** @var AuditionResult */
+    private $auditionResult;
 
     public function __construct(
         ScoreCalculator $scoreCalculator,
-        SecurityHeader $securityHeader,
-        ProcessorFactory $processorFactory
+        ProcessorFactory $processorFactory,
+        AuditionResult $auditionResult
     ) {
         $this->scoreCalculator = $scoreCalculator;
-        $this->securityHeader = $securityHeader;
         $this->processorFactory = $processorFactory;
+        $this->auditionResult = $auditionResult;
     }
 
     public function processParsedHeaders(ParsedHeaders $parsedHeaders): AuditionResult
     {
-        $auditionResult = new AuditionResult();
-
         foreach ($parsedHeaders->all() as $parsedHeader) {
-            $processor = $this->processorFactory->create($parsedHeader, $auditionResult);
+            $processor = $this->processorFactory->create($parsedHeader, $this->auditionResult);
             $processor->process($parsedHeaders);
         }
 
-        return $auditionResult;
+        return $this->auditionResult;
     }
 }

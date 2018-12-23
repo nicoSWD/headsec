@@ -16,13 +16,11 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 {
     public function getOutput(AuditionResult $scanResults, OutputOptions $outputOptions): string
     {
-        $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
-
         $output = '';
         $totalWarnings = 0;
 
         $allObservations = $scanResults->getObservations();
-        $padding = strlen(sprintf('%s', count($allObservations)));
+        $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
 
         foreach ($allObservations as [$headerName, $headerValue, $observations]) {
             if (!$observations && !$outputOptions->showAllHeaders()) {
@@ -31,8 +29,14 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
             $totalWarnings++;
 
-            $output .= sprintf("(%{$padding}s)", $totalWarnings) . ' <bg=default;fg=white>' . str_pad($this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue),
-                    $maxHeaderLength, ' ') . ' </>' . $this->getWarnings($observations) . PHP_EOL;
+            if ($this->doesFail($observations)) {
+                $res = '<fg=red>Fail </>';
+            } else {
+                $res = '<fg=green>Pass </>';
+            }
+
+
+            $output .= /*sprintf("(%{$padding}s)", $totalWarnings) .*/  $res . '<bg=default;fg=white>' . $this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue) . ' </>' . $this->getWarnings($observations);
         }
 
         $missingHeaders = $scanResults->getMissingHeaders();
@@ -63,35 +67,40 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
     private function prettyName($headerName)
     {
-        return implode('-', array_map('ucfirst', explode('-', $headerName)));
+        return '<fg=cyan>' . implode('-', array_map('ucfirst', explode('-', $headerName))) . '</>';
     }
 
     private function getWarnings(array $observations): string
     {
-        $out = PHP_EOL . '     ';
+        $out = '';
+
+        if ($observations) {
+//            $out .= PHP_EOL . "     >>";
+        }
 
         foreach ($observations as $observation) {
+            $out .= PHP_EOL . "   =>";
+
             if ($observation->getPenalty() === .0) {
-                $out .= '<bg=yellow;fg=black> ' . (string) $observation . ' </> ';
+                $out .= '<fg=yellow> ' . (string) $observation . '</> ';
+            } elseif ($observation->getPenalty() === .5) {
+                $out .= '<fg=red> ' . (string) $observation . '</> ';
             } else {
-                $out .= '<bg=red;fg=black> ' . (string) $observation . ' </> ';
+                $out .= '<fg=red> ' . (string) $observation . '</> ';
             }
+
         }
 
-        if (empty($observations)) {
-            $out .= '<bg=green;fg=black>No issues</> ';
-        }
-
-        return $out;
+        return $out . PHP_EOL;
     }
 
     private function getHeaderMaxLength(AuditionResult $scanResults): int
     {
         $maxHeaderLength = 0;
 
-        foreach ($scanResults->getObservations() as [$headerName]) {
+        foreach ($scanResults->getObservations() as [$headerName, , $observation]) {
             $length = strlen($headerName);
-            if ($length > $maxHeaderLength) {
+            if ($length > $maxHeaderLength && count($observation) > 0) {
                 $maxHeaderLength = $length;
             }
         }
@@ -105,12 +114,12 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
         if ($headerName === SecurityHeader::SET_COOKIE) {
             $callback = function (array $match): string {
-                if  (strlen($match['value']) < 20) {
+                if (strlen($match['value']) < 20) {
                     return $match['name'] . $match['value'];
                 }
 
                 return sprintf(
-                    '%s%s[...]%s',
+                    '%s%s[<bg=cyan>...</>]%s',
                     $match['name'],
                     substr($match['value'], 0, 8),
                     substr($match['value'], -8)
@@ -121,5 +130,16 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         }
 
         return $headerValue;
+    }
+
+    private function doesFail(array $observations)
+    {
+        $penalty = 0;
+
+        foreach ($observations as $observation) {
+            $penalty += $observation->getPenalty();
+        }
+
+        return $penalty > 0;
     }
 }

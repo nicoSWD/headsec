@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Application\UseCase\SecurityHeaders;
 
-final class ScanSecurityHeadersResponse
+final class ScanHeadersResponse
 {
     public $score = 0;
     public $output = '';

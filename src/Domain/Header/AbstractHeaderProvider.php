@@ -23,16 +23,34 @@ abstract class AbstractHeaderProvider implements HeaderProviderInterface
         $this->connectionTimeout = $connectionTimeout;
     }
 
-    abstract public function getRawHeaders(URL $url): array;
+    abstract public function getRawHeaders(URL $url): string;
 
     public function getHeadersFromUrl(URL $url, bool $followRedirects = true): HttpHeaderBag
     {
-        $headers = $this->getRawHeaders($url);
+        $headers = $this->getHeadersFromString($this->getRawHeaders($url));
 
         if ($followRedirects) {
             $headers = $this->getRawHeadersFromRedirectingUrl($url, $headers);
         }
 
+        return $headers;
+    }
+
+    public function getHeadersFromString(string $headers): HttpHeaderBag
+    {
+        $headersLines = preg_split('~\r?\n~', $headers, -1, PREG_SPLIT_NO_EMPTY);
+        $parsedHeaders = [];
+
+        foreach ($headersLines as $line) {
+            [$headerName, $headerValue] = $this->getNameAndValue($line);
+            $parsedHeaders[$headerName][] = $headerValue;
+        }
+
+        return $this->headerArrayToBag($parsedHeaders);
+    }
+
+    private function headerArrayToBag(array $headers): HttpHeaderBag
+    {
         $headerBag = new HttpHeaderBag();
 
         foreach ($headers as $headerName => $values) {
@@ -44,19 +62,30 @@ abstract class AbstractHeaderProvider implements HeaderProviderInterface
         return $headerBag;
     }
 
-    private function getRawHeadersFromRedirectingUrl(URL $url, array $headers): array
+    private function getRawHeadersFromRedirectingUrl(URL $url, HttpHeaderBag $headers): HttpHeaderBag
     {
         $numRedirects = 0;
 
-        while (!empty($headers['location'][0])) {
+        while ($headers->has('location')) {
             if (++$numRedirects > $this->maxRedirects) {
                 throw new TooManyRedirectsException();
             }
 
-            $headers = $this->getRawHeaders($url->redirectTo($headers['location'][0]));
+            $headers = $this->getHeadersFromString(
+                $this->getRawHeaders($url->redirectTo($headers->get('location')[0]))
+            );
         }
 
         return $headers;
+    }
+
+    protected function getNameAndValue(string $line): array
+    {
+        $parts = explode(':', $line, 2);
+        $headerName = trim(strtolower($parts[0]));
+        $headerValue = trim($parts[1] ?? '');
+
+        return [$headerName, $headerValue];
     }
 
     private function createHeader(string $headerName, string $value): HttpHeader
