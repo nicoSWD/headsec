@@ -28,8 +28,8 @@ final class ScanResultProcessor
 
     public function processParsedHeaders(ParsedHeaders $parsedHeaders): AuditionResult
     {
-        foreach ($parsedHeaders->all() as $parsedHeader) {
-            $processor = $this->processorFactory->create($parsedHeader, $this->auditionResult);
+        foreach ($parsedHeaders->all() as $currentHeader) {
+            $processor = $this->processorFactory->create($currentHeader, $this->auditionResult);
             $processor->process($parsedHeaders);
         }
 

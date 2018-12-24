@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ContentSecurityPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning;
@@ -18,7 +19,7 @@ final class ContentSecurityPolicyProcessor extends AbstractProcessor
         $contentSecurityPolicyHeader = $this->header();
         $hasSecureFrameAncestors = false;
         $hasSecureXFrameOptions = false;
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if ($contentSecurityPolicyHeader->isSecure()) {
             $hasSecureFrameAncestors = true;
@@ -32,11 +33,11 @@ final class ContentSecurityPolicyProcessor extends AbstractProcessor
 
         if (!$hasSecureXFrameOptions) {
             if ($contentSecurityPolicyHeader && !$hasSecureFrameAncestors) {
-                $observations[] = new ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning();
+                $observations->attach(new ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning());
             }
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): ContentSecurityPolicyHeaderResult

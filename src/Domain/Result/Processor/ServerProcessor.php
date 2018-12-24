@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ServerHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDisclosedVersionNumberWarning;
@@ -15,13 +16,13 @@ final class ServerProcessor extends AbstractProcessor
 {
     public function process(ParsedHeaders $parsedHeaders): void
     {
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if ($this->header()->leaksServerVersion()) {
-            $observations[] = new ServerDisclosedVersionNumberWarning();
+            $observations->attach(new ServerDisclosedVersionNumberWarning());
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): ServerHeaderResult

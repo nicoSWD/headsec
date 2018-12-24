@@ -9,6 +9,8 @@ namespace nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\HeaderWithObservations;
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\OutputOptions;
 use nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterInterface;
 
@@ -19,11 +21,8 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $output = '';
         $totalWarnings = 0;
 
-        $allObservations = $scanResults->getObservations();
-        $maxHeaderLength = $this->getHeaderMaxLength($scanResults);
-
-        foreach ($allObservations as [$headerName, $headerValue, $observations]) {
-            if (!$observations && !$outputOptions->showAllHeaders()) {
+        foreach ($scanResults->getObservations() as $observations) {
+            if (!$observations->getObservations()->count() && !$outputOptions->showAllHeaders()) {
                 continue;
             }
 
@@ -35,8 +34,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
                 $res = '<fg=green>Pass </>';
             }
 
-
-            $output .= /*sprintf("(%{$padding}s)", $totalWarnings) .*/  $res . '<bg=default;fg=white>' . $this->prettyName($headerName) . ': ' . $this->shortenHeaderValue($headerName, $headerValue) . ' </>' . $this->getWarnings($observations);
+            $output .= $res . '<bg=default;fg=white>' . $this->prettyName($observations->getHeaderName()) . ': ' . $this->shortenHeaderValue($observations->getHeaderName(), $observations->getHeaderValue()) . ' </>' . $this->getWarnings($observations->getObservations());
         }
 
         $missingHeaders = $scanResults->getMissingHeaders();
@@ -70,16 +68,12 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         return '<fg=cyan>' . implode('-', array_map('ucfirst', explode('-', $headerName))) . '</>';
     }
 
-    private function getWarnings(array $observations): string
+    private function getWarnings(ObservationCollection $observations): string
     {
         $out = '';
 
-        if ($observations) {
-//            $out .= PHP_EOL . "     >>";
-        }
-
         foreach ($observations as $observation) {
-            $out .= PHP_EOL . "   =>";
+            $out .= PHP_EOL . '   =>';
 
             if ($observation->getPenalty() === .0) {
                 $out .= '<fg=yellow> ' . (string) $observation . '</> ';
@@ -88,24 +82,9 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             } else {
                 $out .= '<fg=red> ' . (string) $observation . '</> ';
             }
-
         }
 
         return $out . PHP_EOL;
-    }
-
-    private function getHeaderMaxLength(AuditionResult $scanResults): int
-    {
-        $maxHeaderLength = 0;
-
-        foreach ($scanResults->getObservations() as [$headerName, , $observation]) {
-            $length = strlen($headerName);
-            if ($length > $maxHeaderLength && count($observation) > 0) {
-                $maxHeaderLength = $length;
-            }
-        }
-
-        return $maxHeaderLength;
     }
 
     private function shortenHeaderValue(string $headerName, string $headerValue): string
@@ -115,28 +94,28 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         if ($headerName === SecurityHeader::SET_COOKIE) {
             $callback = function (array $match): string {
                 if (strlen($match['value']) < 20) {
-                    return $match['name'] . $match['value'];
+                    return $match['all'];
                 }
 
                 return sprintf(
-                    '%s%s[<bg=cyan>...</>]%s',
+                    '%s=s%s[<bg=cyan>...</>]%s',
                     $match['name'],
                     substr($match['value'], 0, 8),
                     substr($match['value'], -8)
                 );
             };
 
-            return preg_replace_callback('~^(?<name>.*?=)(?<value>.*?;)~', $callback, $headerValue);
+            return preg_replace_callback('~^(?<all>(?<name>.*?)=(?<value>.*?;))~', $callback, $headerValue);
         }
 
         return $headerValue;
     }
 
-    private function doesFail(array $observations)
+    private function doesFail(HeaderWithObservations $header): bool
     {
         $penalty = 0;
 
-        foreach ($observations as $observation) {
+        foreach ($header->getObservations() as $observation) {
             $penalty += $observation->getPenalty();
         }
 

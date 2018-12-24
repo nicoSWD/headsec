@@ -11,6 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
 final class AuditionResult
 {
+    /** @var HeaderWithObservations[] */
     private $observations = [];
     /** @var SecurityHeader */
     private $securityHeader;
@@ -20,29 +21,30 @@ final class AuditionResult
         $this->securityHeader = $securityHeader;
     }
 
-    public function getObservations(): array
+    /** @return HeaderWithObservations[] */
+    public function getObservations()
     {
         return $this->observations;
     }
 
-    public function addResult(string $headerName, string $headerValue, array $observations)
+    public function addObservations(HeaderWithObservations $observations)
     {
-        $this->observations[] = [$headerName, $headerValue, $observations];
+        $this->observations[] = $observations;
     }
 
     public function getMissingHeaders(): array
     {
         $foundHeaders = [];
 
-        foreach ($this->observations as [$headerName]) {
-            $foundHeaders[] = $headerName;
+        foreach ($this->getObservations() as $observation) {
+            $foundHeaders[] = $observation->getHeaderName();
         }
 
         $excludeFromSuggestions = [
+            SecurityHeader::EXPECT_CT,
             SecurityHeader::SERVER,
             SecurityHeader::SET_COOKIE,
             SecurityHeader::X_POWERED_BY,
-            SecurityHeader::EXPECT_CT
         ];
 
         return array_diff($this->securityHeader->all(), $foundHeaders, $excludeFromSuggestions);

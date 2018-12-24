@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\StrictTransportSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithInsufficientMaxAgeWarning;
@@ -16,17 +17,17 @@ final class StrictTransportSecurityProcessor extends AbstractProcessor
 {
     public function process(ParsedHeaders $parsedHeaders): void
     {
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if (!$this->header()->hasSecureMaxAge()) {
-            $observations[] = new StrictTransportSecurityWithInsufficientMaxAgeWarning();
+            $observations->attach(new StrictTransportSecurityWithInsufficientMaxAgeWarning());
         }
 
         if (!$this->header()->hasFlagIncludeSubDomains()) {
-            $observations[] = new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning();
+            $observations->attach(new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning());
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): StrictTransportSecurityHeaderResult

@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\XXSSProtectionHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOffWarning;
@@ -17,21 +18,21 @@ final class XXSSProtectionProcessor extends AbstractProcessor
 {
     public function process(ParsedHeaders $parsedHeaders): void
     {
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if (!$this->header()->protectionIsOn()) {
-            $observations[] = new XXSSProtectionTurnedOffWarning();
+            $observations->attach(new XXSSProtectionTurnedOffWarning());
         }
 
         if (!$this->header()->isBlocking()) {
-            $observations[] = new XXSSProtectionWithoutModeBlockWarning();
+            $observations->attach(new XXSSProtectionWithoutModeBlockWarning());
         }
 
         if (!$this->header()->hasReportUri()) {
-            $observations[] = new XXSSProtectionWithoutReportURIWarning();
+            $observations->attach(new XXSSProtectionWithoutReportURIWarning());
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): XXSSProtectionHeaderResult

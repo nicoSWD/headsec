@@ -9,6 +9,8 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\HeaderWithObservations;
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 
 abstract class AbstractProcessor
@@ -16,18 +18,24 @@ abstract class AbstractProcessor
     /** @var AbstractParsedHeader */
     protected $parsedHeader;
     /** @var AuditionResult */
-    private $auditionResult;
+    private $observations;
 
     abstract public function process(ParsedHeaders $parsedHeaders): void;
 
-    public function __construct(AbstractParsedHeader $parsedHeader, AuditionResult $auditionResult)
+    public function __construct(AbstractParsedHeader $parsedHeader, AuditionResult $observations)
     {
         $this->parsedHeader = $parsedHeader;
-        $this->auditionResult = $auditionResult;
+        $this->observations = $observations;
     }
 
-    protected function addResult(array $observations): void
+    protected function addObservations(ObservationCollection $observations): void
     {
-        $this->auditionResult->addResult($this->parsedHeader->name(), $this->parsedHeader->value(), $observations);
+        $this->observations->addObservations(
+            new HeaderWithObservations(
+                $this->parsedHeader->name(),
+                $this->parsedHeader->value(),
+                $observations
+            )
+        );
     }
 }

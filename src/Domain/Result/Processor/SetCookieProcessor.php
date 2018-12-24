@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithHttpOnlyFlagInfo;
@@ -18,23 +19,23 @@ final class SetCookieProcessor extends AbstractProcessor
 {
     public function process(ParsedHeaders $parsedHeaders): void
     {
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if (!$this->header()->hasFlagHttpOnly()) {
-            $observations[] = new CookieWithMissingHttpOnlyFlagWarning();
+            $observations->attach(new CookieWithMissingHttpOnlyFlagWarning());
         } else {
-            $observations[] = new CookieWithHttpOnlyFlagInfo();
+            $observations->attach(new CookieWithHttpOnlyFlagInfo());
         }
 
         if (!$this->header()->hasFlagSecure()) {
-            $observations[] = new CookieWithMissingSecureFlagWarning();
+            $observations->attach(new CookieWithMissingSecureFlagWarning());
         }
 
         if (!$this->header()->hasFlagSameSite()) {
-            $observations[] = new CookieWithMissingSameSiteFlagWarning();
+            $observations->attach(new CookieWithMissingSameSiteFlagWarning());
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): SetCookieHeaderResult

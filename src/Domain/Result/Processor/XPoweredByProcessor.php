@@ -7,6 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 
+use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XPoweredByDisclosesTechnologyWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\XPoweredByHeaderResult;
@@ -15,13 +16,13 @@ final class XPoweredByProcessor extends AbstractProcessor
 {
     public function process(ParsedHeaders $parsedHeaders): void
     {
-        $observations = [];
+        $observations = new ObservationCollection();
 
         if (!$this->header()->isSecure()) {
-            $observations[] = new XPoweredByDisclosesTechnologyWarning();
+            $observations->attach(new XPoweredByDisclosesTechnologyWarning());
         }
 
-        $this->addResult($observations);
+        $this->addObservations($observations);
     }
 
     private function header(): XPoweredByHeaderResult
