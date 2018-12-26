@@ -28,4 +28,24 @@ abstract class AbstractObservation
     {
         return $this->getMessage();
     }
+
+    public function isError(): bool
+    {
+        return false;
+    }
+
+    public function isWarning(): bool
+    {
+        return false;
+    }
+
+    public function isInfo(): bool
+    {
+        return false;
+    }
+
+    public function isKudos(): bool
+    {
+        return false;
+    }
 }

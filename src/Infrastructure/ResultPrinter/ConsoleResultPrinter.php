@@ -28,8 +28,10 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
 
             $totalWarnings++;
 
-            if ($this->doesFail($observations)) {
+            if ($this->hasErrors($observations)) {
                 $res = '<fg=red>Fail </>';
+            } elseif ($this->hasWarnings($observations)) {
+                $res = '<fg=yellow>Pass </>';
             } else {
                 $res = '<fg=green>Pass </>';
             }
@@ -63,7 +65,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         return $output;
     }
 
-    private function prettyName($headerName)
+    private function prettyName($headerName): string
     {
         return '<fg=cyan>' . implode('-', array_map('ucfirst', explode('-', $headerName))) . '</>';
     }
@@ -75,10 +77,12 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         foreach ($observations as $observation) {
             $out .= PHP_EOL . '   =>';
 
-            if ($observation->getPenalty() === .0) {
+            if ($observation->isInfo()) {
                 $out .= '<fg=yellow> ' . (string) $observation . '</> ';
-            } elseif ($observation->getPenalty() === .5) {
+            } elseif ($observation->isWarning()) {
                 $out .= '<fg=red> ' . (string) $observation . '</> ';
+            } elseif ($observation->isKudos()) {
+                $out .= '<fg=green> ' . (string) $observation . '</> ';
             } else {
                 $out .= '<fg=red> ' . (string) $observation . '</> ';
             }
@@ -98,7 +102,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
                 }
 
                 return sprintf(
-                    '%s=s%s[<bg=cyan>...</>]%s',
+                    '%s=s%s<bg=cyan>(...)</>%s',
                     $match['name'],
                     substr($match['value'], 0, 8),
                     substr($match['value'], -8)
@@ -111,14 +115,25 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         return $headerValue;
     }
 
-    private function doesFail(HeaderWithObservations $header): bool
+    private function hasErrors(HeaderWithObservations $header): bool
     {
-        $penalty = 0;
-
         foreach ($header->getObservations() as $observation) {
-            $penalty += $observation->getPenalty();
+            if ($observation->isError() || $observation->isWarning()) {
+                return true;
+            }
         }
 
-        return $penalty > 0;
+        return false;
+    }
+
+    private function hasWarnings(HeaderWithObservations $header): bool
+    {
+        foreach ($header->getObservations() as $observation) {
+            if ($observation->isInfo()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

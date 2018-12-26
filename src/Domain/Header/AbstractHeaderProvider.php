@@ -41,6 +41,11 @@ abstract class AbstractHeaderProvider implements HeaderProviderInterface
         $headersLines = preg_split('~\r?\n~', $headers, -1, PREG_SPLIT_NO_EMPTY);
         $parsedHeaders = [];
 
+        $firstLine = array_shift($headersLines);
+
+        [$headerName, $headerValue] = explode(' ', $firstLine, 2);
+        $parsedHeaders[$headerName][] = $headerValue;
+
         foreach ($headersLines as $line) {
             [$headerName, $headerValue] = $this->getNameAndValue($line);
             $parsedHeaders[$headerName][] = $headerValue;

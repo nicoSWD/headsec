@@ -13,4 +13,9 @@ abstract class Warning extends AbstractObservation
     {
         return .5;
     }
+
+    public function isWarning(): bool
+    {
+        return true;
+    }
 }

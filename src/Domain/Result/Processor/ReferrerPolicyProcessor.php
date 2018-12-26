@@ -10,6 +10,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ReferrerPolicyHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\PerfectReferrerPolicyKudos;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithInvalidValueWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ReferrerPolicyWithLeakingOriginWarning;
 
@@ -23,6 +24,8 @@ final class ReferrerPolicyProcessor extends AbstractProcessor
             $observations->attach(new ReferrerPolicyWithLeakingOriginWarning());
         } elseif (!$this->header()->doesNotLeakReferrer()) {
             $observations->attach(new ReferrerPolicyWithInvalidValueWarning());
+        } else {
+            $observations->attach(new PerfectReferrerPolicyKudos());
         }
 
         $this->addObservations($observations);

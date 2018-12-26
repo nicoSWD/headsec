@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Info;
+use nicoSWD\SecHeaderCheck\Domain\Result\Kudos;
 
-final class CookieWithMissingHttpOnlyFlagWarning extends Info
+final class CookieWithHttpOnlyFlagKudos extends Kudos
 {
-    protected $message = 'Missing HttpOnly flag';
+    protected $message = 'HttpOnly flag is set';
 }

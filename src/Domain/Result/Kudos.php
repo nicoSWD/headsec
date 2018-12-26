@@ -7,14 +7,14 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-abstract class Error extends AbstractObservation
+abstract class Kudos extends AbstractObservation
 {
     public function getPenalty(): float
     {
-        return 1.;
+        return .0;
     }
 
-    public function isError(): bool
+    public function isKudos(): bool
     {
         return true;
     }

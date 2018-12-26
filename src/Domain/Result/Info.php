@@ -13,4 +13,9 @@ abstract class Info extends AbstractObservation
     {
         return .0;
     }
+
+    public function isInfo(): bool
+    {
+        return true;
+    }
 }
