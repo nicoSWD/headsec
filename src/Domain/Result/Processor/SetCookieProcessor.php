@@ -12,8 +12,9 @@ use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithHttpOnlyFlagKudos;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagInfo;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSecureFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithSecureFlagKudos;
 
 final class SetCookieProcessor extends AbstractProcessor
 {
@@ -29,10 +30,12 @@ final class SetCookieProcessor extends AbstractProcessor
 
         if (!$this->header()->hasFlagSecure()) {
             $observations->attach(new CookieWithMissingSecureFlagWarning());
+        } else {
+            $observations->attach(new CookieWithSecureFlagKudos());
         }
 
         if (!$this->header()->hasFlagSameSite()) {
-//            $observations->attach(new CookieWithMissingSameSiteFlagWarning());
+            $observations->attach(new CookieWithMissingSameSiteFlagInfo());
         }
 
         $this->addObservations($observations);

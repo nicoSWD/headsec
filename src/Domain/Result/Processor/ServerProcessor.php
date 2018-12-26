@@ -11,6 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ServerHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDisclosedVersionNumberWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\ServerDoesNotLeakVersionKudos;
 
 final class ServerProcessor extends AbstractProcessor
 {
@@ -20,6 +21,8 @@ final class ServerProcessor extends AbstractProcessor
 
         if ($this->header()->leaksServerVersion()) {
             $observations->attach(new ServerDisclosedVersionNumberWarning());
+        } else {
+            $observations->attach(new ServerDoesNotLeakVersionKudos());
         }
 
         $this->addObservations($observations);

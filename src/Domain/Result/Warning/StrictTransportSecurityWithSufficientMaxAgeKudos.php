@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Error;
+use nicoSWD\SecHeaderCheck\Domain\Result\Kudos;
 
-final class XContentTypeWithInvalidValueWarning extends Error
+final class StrictTransportSecurityWithSufficientMaxAgeKudos extends Kudos
 {
-    protected $message = '\'nosniff\' is the only allowed value';
+    protected $message = 'Proper max-age is set';
 }

@@ -11,6 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithInsecureValueWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\XFrameOptionsHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XFrameOptionsWithSecureOriginKudos;
 
 final class XFrameOptionsProcessor extends AbstractProcessor
 {
@@ -20,6 +21,8 @@ final class XFrameOptionsProcessor extends AbstractProcessor
 
         if (!$this->header()->getHasSecureOrigin() && !$this->header()->hasAllowFrom()) {
             $observations->attach(new XFrameOptionsWithInsecureValueWarning());
+        } else {
+            $observations->attach(new XFrameOptionsWithSecureOriginKudos());
         }
 
         $this->addObservations($observations);

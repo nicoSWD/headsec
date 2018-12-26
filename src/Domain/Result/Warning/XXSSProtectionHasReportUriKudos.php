@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Info;
+use nicoSWD\SecHeaderCheck\Domain\Result\Kudos;
 
-final class CookieWithMissingSameSiteFlagWarning extends Info
+final class XXSSProtectionHasReportUriKudos extends Kudos
 {
-    protected $message = 'Missing SameSite flag';
+    protected $message = 'XSS protection has report URI';
 }

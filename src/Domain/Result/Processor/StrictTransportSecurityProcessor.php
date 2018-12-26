@@ -10,8 +10,10 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\StrictTransportSecurityHeaderResult;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithIncludeSubDomainsFlagKudos;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithInsufficientMaxAgeWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\StrictTransportSecurityWithSufficientMaxAgeKudos;
 
 final class StrictTransportSecurityProcessor extends AbstractProcessor
 {
@@ -21,10 +23,14 @@ final class StrictTransportSecurityProcessor extends AbstractProcessor
 
         if (!$this->header()->hasSecureMaxAge()) {
             $observations->attach(new StrictTransportSecurityWithInsufficientMaxAgeWarning());
+        } else {
+            $observations->attach(new StrictTransportSecurityWithSufficientMaxAgeKudos());
         }
 
         if (!$this->header()->hasFlagIncludeSubDomains()) {
             $observations->attach(new StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning());
+        } else {
+            $observations->attach(new StrictTransportSecurityWithIncludeSubDomainsFlagKudos());
         }
 
         $this->addObservations($observations);
