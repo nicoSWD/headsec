@@ -11,7 +11,7 @@ use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithHttpOnlyFlagKudos;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingHttpOnlyFlagInfo;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSameSiteFlagInfo;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithMissingSecureFlagWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\CookieWithSecureFlagKudos;
@@ -23,19 +23,19 @@ final class SetCookieProcessor extends AbstractProcessor
         $observations = new ObservationCollection();
 
         if (!$this->header()->hasFlagHttpOnly()) {
-            $observations->attach(new CookieWithMissingHttpOnlyFlagWarning());
+            $observations->addInfo(new CookieWithMissingHttpOnlyFlagInfo());
         } else {
-            $observations->attach(new CookieWithHttpOnlyFlagKudos());
+            $observations->addKudos(new CookieWithHttpOnlyFlagKudos());
         }
 
         if (!$this->header()->hasFlagSecure()) {
-            $observations->attach(new CookieWithMissingSecureFlagWarning());
+            $observations->addWarning(new CookieWithMissingSecureFlagWarning());
         } else {
-            $observations->attach(new CookieWithSecureFlagKudos());
+            $observations->addKudos(new CookieWithSecureFlagKudos());
         }
 
         if (!$this->header()->hasFlagSameSite()) {
-            $observations->attach(new CookieWithMissingSameSiteFlagInfo());
+            $observations->addInfo(new CookieWithMissingSameSiteFlagInfo());
         }
 
         $this->addObservations($observations);

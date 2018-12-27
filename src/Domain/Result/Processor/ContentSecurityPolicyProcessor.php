@@ -33,7 +33,7 @@ final class ContentSecurityPolicyProcessor extends AbstractProcessor
 
         if (!$hasSecureXFrameOptions) {
             if ($contentSecurityPolicyHeader && !$hasSecureFrameAncestors) {
-                $observations->attach(new ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning());
+                $observations->addWarning(new ContentSecurityPolicyMissingFrameAncestorsDirectiveWarning());
             }
         }
 

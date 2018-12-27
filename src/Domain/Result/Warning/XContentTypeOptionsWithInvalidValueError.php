@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Info;
+use nicoSWD\SecHeaderCheck\Domain\Result\Error;
 
-final class XPoweredByDisclosesTechnologyWarning extends Info
+final class XContentTypeOptionsWithInvalidValueError extends Error
 {
-    protected $message = 'Header may disclose technology';
+    protected $message = '\'nosniff\' is the only allowed value';
 }

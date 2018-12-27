@@ -22,7 +22,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $totalWarnings = 0;
 
         foreach ($scanResults->getObservations() as $observations) {
-            if (!$observations->getObservations()->count() && !$outputOptions->showAllHeaders()) {
+            if ($observations->getObservations()->empty() && !$outputOptions->showAllHeaders()) {
                 continue;
             }
 

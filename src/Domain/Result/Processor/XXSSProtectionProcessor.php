@@ -15,7 +15,7 @@ use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionIsBlockingKudos;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOffWarning;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionTurnedOnKudos;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutModeBlockWarning;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutReportURIWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XXSSProtectionWithoutReportURIInfo;
 
 final class XXSSProtectionProcessor extends AbstractProcessor
 {
@@ -24,21 +24,21 @@ final class XXSSProtectionProcessor extends AbstractProcessor
         $observations = new ObservationCollection();
 
         if (!$this->header()->protectionIsOn()) {
-            $observations->attach(new XXSSProtectionTurnedOffWarning());
+            $observations->addWarning(new XXSSProtectionTurnedOffWarning());
         } else {
-            $observations->attach(new XXSSProtectionTurnedOnKudos());
+            $observations->addKudos(new XXSSProtectionTurnedOnKudos());
         }
 
         if (!$this->header()->isBlocking()) {
-            $observations->attach(new XXSSProtectionWithoutModeBlockWarning());
+            $observations->addWarning(new XXSSProtectionWithoutModeBlockWarning());
         } else {
-            $observations->attach(new XXSSProtectionIsBlockingKudos());
+            $observations->addKudos(new XXSSProtectionIsBlockingKudos());
         }
 
         if (!$this->header()->hasReportUri()) {
-            $observations->attach(new XXSSProtectionWithoutReportURIWarning());
+            $observations->addInfo(new XXSSProtectionWithoutReportURIInfo());
         } else {
-            $observations->attach(new XXSSProtectionHasReportUriKudos());
+            $observations->addKudos(new XXSSProtectionHasReportUriKudos());
         }
 
         $this->addObservations($observations);

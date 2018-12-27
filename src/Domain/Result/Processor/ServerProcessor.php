@@ -20,9 +20,9 @@ final class ServerProcessor extends AbstractProcessor
         $observations = new ObservationCollection();
 
         if ($this->header()->leaksServerVersion()) {
-            $observations->attach(new ServerDisclosedVersionNumberWarning());
+            $observations->addWarning(new ServerDisclosedVersionNumberWarning());
         } else {
-            $observations->attach(new ServerDoesNotLeakVersionKudos());
+            $observations->addKudos(new ServerDoesNotLeakVersionKudos());
         }
 
         $this->addObservations($observations);

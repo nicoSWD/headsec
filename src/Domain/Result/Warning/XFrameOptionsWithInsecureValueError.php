@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Info;
+use nicoSWD\SecHeaderCheck\Domain\Result\Error;
 
-final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagWarning extends Info
+final class XFrameOptionsWithInsecureValueError extends Error
 {
-    protected $message = 'Missing flag \'includeSubDomains\'';
+    protected $message = "Either 'sameorigin', 'deny' or 'allow-from' are expected";
 }

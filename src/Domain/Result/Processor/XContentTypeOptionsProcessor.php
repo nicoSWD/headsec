@@ -10,7 +10,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Processor;
 use nicoSWD\SecHeaderCheck\Domain\Result\ObservationCollection;
 use nicoSWD\SecHeaderCheck\Domain\Result\ParsedHeaders;
 use nicoSWD\SecHeaderCheck\Domain\Result\Warning\PerfectXContentTypeOptionsKudos;
-use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XContentTypeOptionsWithInvalidValueWarning;
+use nicoSWD\SecHeaderCheck\Domain\Result\Warning\XContentTypeOptionsWithInvalidValueError;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\XContentTypeOptionsHeaderResult;
 
 final class XContentTypeOptionsProcessor extends AbstractProcessor
@@ -20,9 +20,9 @@ final class XContentTypeOptionsProcessor extends AbstractProcessor
         $observations = new ObservationCollection();
 
         if (!$this->header()->isNoSniff()) {
-            $observations->attach(new XContentTypeOptionsWithInvalidValueWarning());
+            $observations->addError(new XContentTypeOptionsWithInvalidValueError());
         } else {
-            $observations->attach(new PerfectXContentTypeOptionsKudos());
+            $observations->addKudos(new PerfectXContentTypeOptionsKudos());
         }
 
         $this->addObservations($observations);

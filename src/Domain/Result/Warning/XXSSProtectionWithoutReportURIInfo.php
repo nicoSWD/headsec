@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Error;
+use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
-final class XFrameOptionsWithInsecureValueWarning extends Error
+final class XXSSProtectionWithoutReportURIInfo extends Info
 {
-    protected $message = "Either 'sameorigin', 'deny' or 'allow-from' are expected";
+    protected $message = 'Consider adding a report URI';
 }

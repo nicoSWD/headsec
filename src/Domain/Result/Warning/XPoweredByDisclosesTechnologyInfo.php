@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
-final class CookieWithMissingHttpOnlyFlagWarning extends Info
+final class XPoweredByDisclosesTechnologyInfo extends Info
 {
-    protected $message = 'Missing HttpOnly flag';
+    protected $message = 'Header may disclose technology';
 }

@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
 use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
-final class XXSSProtectionWithoutReportURIWarning extends Info
+final class StrictTransportSecurityWithMissingIncludeSubDomainsFlagInfo extends Info
 {
-    protected $message = 'Consider adding a report URI';
+    protected $message = 'Missing flag \'includeSubDomains\'';
 }

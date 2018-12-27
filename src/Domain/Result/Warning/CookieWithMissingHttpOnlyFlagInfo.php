@@ -7,9 +7,9 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result\Warning;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\Error;
+use nicoSWD\SecHeaderCheck\Domain\Result\Info;
 
-final class XContentTypeOptionsWithInvalidValueWarning extends Error
+final class CookieWithMissingHttpOnlyFlagInfo extends Info
 {
-    protected $message = '\'nosniff\' is the only allowed value';
+    protected $message = 'Missing HttpOnly flag';
 }
