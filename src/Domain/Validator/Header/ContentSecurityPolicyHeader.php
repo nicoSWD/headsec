@@ -7,7 +7,6 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ContentSecurityPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
@@ -33,7 +32,7 @@ final class ContentSecurityPolicyHeader extends AbstractHeaderParser
 
     private $foundDirectives = [];
 
-    public function parse(): AbstractParsedHeader
+    public function parse(): ContentSecurityPolicyHeaderResult
     {
         foreach ($this->getDirectives($this->getValue()) as $directive) {
             [$directiveName, $policy] = $this->parseDirectiveNameAndPolicy($directive);

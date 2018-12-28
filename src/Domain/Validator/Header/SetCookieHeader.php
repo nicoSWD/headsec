@@ -7,7 +7,6 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\SetCookieHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
@@ -17,7 +16,7 @@ final class SetCookieHeader extends AbstractHeaderParser
     private const FLAG_HTTP_ONLY = 'httponly';
     private const FLAG_SAME_SITE_STRICT = 'samesite=strict';
 
-    public function parse(): AbstractParsedHeader
+    public function parse(): SetCookieHeaderResult
     {
         $flags = $this->getCookieFlags();
 

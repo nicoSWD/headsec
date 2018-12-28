@@ -20,7 +20,7 @@ final class ReferrerPolicyProcessor extends AbstractProcessor
     {
         $observations = new ObservationCollection();
 
-        if ($this->header()->isMayLeakOrigin()) {
+        if ($this->header()->mayLeakOrigin()) {
             $observations->addWarning(new ReferrerPolicyWithLeakingOriginWarning());
         } elseif (!$this->header()->doesNotLeakReferrer()) {
             $observations->addWarning(new ReferrerPolicyWithInvalidValueWarning());

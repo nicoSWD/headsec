@@ -19,7 +19,7 @@ final class ReferrerPolicyHeaderResult extends AbstractParsedHeader
         return $this->doesNotLeakReferrer();
     }
 
-    public function isMayLeakOrigin(): bool
+    public function mayLeakOrigin(): bool
     {
         return $this->mayLeakOrigin;
     }

@@ -7,13 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ReferrerPolicyHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class ReferrerPolicyHeader extends AbstractHeaderParser
 {
-    public function parse(): AbstractParsedHeader
+    public function parse(): ReferrerPolicyHeaderResult
     {
         return (new ReferrerPolicyHeaderResult($this->getName(), $this->getValue()))
             ->setMayLeakOrigin($this->mayLeakOrigin())
@@ -38,6 +37,7 @@ final class ReferrerPolicyHeader extends AbstractHeaderParser
             'origin',
             'origin-when-cross-origin',
             'strict-origin-when-cross-origin',
+            'unsafe-url',
         ];
 
         return $this->valueIsIn($leakyReferrerOptions);
@@ -45,6 +45,9 @@ final class ReferrerPolicyHeader extends AbstractHeaderParser
 
     private function valueIsIn(array $options): bool
     {
-        return in_array(strtolower($this->getValue()), $options, true);
+        $value = strtolower($this->getValue());
+        $values = preg_split('~\s*,\s*~', $value, -1, PREG_SPLIT_NO_EMPTY);
+
+        return ($options !== array_intersect($options, $values));
     }
 }

@@ -7,13 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\ServerHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class ServerHeader extends AbstractHeaderParser
 {
-    public function parse(): AbstractParsedHeader
+    public function parse(): ServerHeaderResult
     {
         return (new ServerHeaderResult($this->getName(), $this->getValue()))
             ->setLeaksServerVersion($this->serverContainsVersionNumber());

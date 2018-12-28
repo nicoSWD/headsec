@@ -7,13 +7,12 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\NonSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class NonSecurityHeader extends AbstractHeaderParser
 {
-    public function parse(): AbstractParsedHeader
+    public function parse(): NonSecurityHeaderResult
     {
         return new NonSecurityHeaderResult($this->getName(), $this->getValue());
     }

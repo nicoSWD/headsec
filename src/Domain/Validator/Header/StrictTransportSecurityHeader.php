@@ -7,7 +7,6 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
-use nicoSWD\SecHeaderCheck\Domain\Result\AbstractParsedHeader;
 use nicoSWD\SecHeaderCheck\Domain\Result\Result\StrictTransportSecurityHeaderResult;
 use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
@@ -16,7 +15,7 @@ final class StrictTransportSecurityHeader extends AbstractHeaderParser
     private const SIX_MONTHS_IN_SECONDS = 15768000;
     private const FLAG_INCLUDE_SUB_DOMAINS = 'includesubdomains';
 
-    public function parse(): AbstractParsedHeader
+    public function parse(): StrictTransportSecurityHeaderResult
     {
         return (new StrictTransportSecurityHeaderResult($this->getName(), $this->getValue()))
             ->setHasSecureMaxAge($this->isMinRecommendedMaxAge())

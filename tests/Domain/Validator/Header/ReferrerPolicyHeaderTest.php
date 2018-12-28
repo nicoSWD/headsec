@@ -7,35 +7,21 @@
  */
 namespace Tests\nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Header\ReferrerPolicyHeader;
 use PHPUnit\Framework\TestCase;
 
 final class ReferrerPolicyHeaderTest extends TestCase
 {
     /** @dataProvider nonLeakingReferrerSettings */
-    public function testGivenAReferrerPolicyHeaderWithNonLeakingSettingsItShouldNotWarnAndPenalise($setting)
+    public function testGivenAReferrerPolicyHeaderWithNonLeakingSettingsItShouldNotWarnAndPenalise($policy)
     {
-        $header = new ReferrerPolicyHeader($setting);
+        $header = new ReferrerPolicyHeader(new HttpHeader(SecurityHeader::REFERRER_POLICY, $policy));
+        $result = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
-    }
-
-    /** @dataProvider leakingReferrerSettings */
-    public function testGivenAReferrerPolicyHeaderWithLeakingSettingsItShouldWarnAndPenalise($setting)
-    {
-        $header = new ReferrerPolicyHeader($setting);
-
-        $this->assertSame(.5, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
-    }
-
-    public function testGivenAReferrerPolicyHeaderWithAnUnknownOptionItShouldWarnAndPenalise()
-    {
-        $header = new ReferrerPolicyHeader('do-something');
-
-        $this->assertSame(.0, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertTrue($result->doesNotLeakReferrer());
+        $this->assertFalse($result->mayLeakOrigin());
     }
 
     public function nonLeakingReferrerSettings(): array

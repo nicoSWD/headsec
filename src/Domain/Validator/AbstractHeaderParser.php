@@ -21,7 +21,8 @@ abstract class AbstractHeaderParser
         $this->value = $header->value();
     }
 
-    abstract public function parse(): AbstractParsedHeader;
+    /** @return AbstractParsedHeader */
+    abstract public function parse();
 
     public function getName(): string
     {
