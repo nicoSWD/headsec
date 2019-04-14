@@ -60,7 +60,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
             $output .= '  <bg=green;fg=black>                            </>' . PHP_EOL ;
         }
 
-        $output .= PHP_EOL .'Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)';
+//        $output .= PHP_EOL .'Total Score: <comment>' . $scanResults->getScore() . '</comment> out of <comment>10</comment> (<fg=red>Fail</>)';
 
         return $output;
     }
@@ -73,9 +73,10 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
     private function getWarnings(ObservationCollection $observations): string
     {
         $out = '';
+        $c = 1;
 
         foreach ($observations as $observation) {
-            $out .= PHP_EOL . '   =>';
+            $out .= PHP_EOL . '  ' . $c++ . ')';
 
             if ($observation->isInfo()) {
                 $out .= '<fg=yellow> ' . (string) $observation . '</> ';
@@ -98,18 +99,18 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         if ($headerName === SecurityHeader::SET_COOKIE) {
             $callback = function (array $match): string {
                 if (strlen($match['value']) < 20) {
-                    return $match['all'];
+                    return $match['full_match'];
                 }
 
                 return sprintf(
-                    '%s=s%s<bg=cyan>(...)</>%s',
+                    '%s=%s<bg=cyan>(...)</>%s',
                     $match['name'],
                     substr($match['value'], 0, 8),
                     substr($match['value'], -8)
                 );
             };
 
-            return preg_replace_callback('~^(?<all>(?<name>.*?)=(?<value>.*?;))~', $callback, $headerValue);
+            return preg_replace_callback('~(?<full_match>(?<name>.*?)=(?<value>.*?;))~', $callback, $headerValue);
         }
 
         return $headerValue;

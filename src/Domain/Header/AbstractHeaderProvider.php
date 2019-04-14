@@ -77,7 +77,7 @@ abstract class AbstractHeaderProvider implements HeaderProviderInterface
             }
 
             $headers = $this->getHeadersFromString(
-                $this->getRawHeaders($url->redirectTo($headers->get('location')[0]))
+                $this->getRawHeaders($url->redirectTo($headers->getFirst('location')))
             );
         }
 

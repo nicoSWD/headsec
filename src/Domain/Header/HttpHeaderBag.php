@@ -43,6 +43,11 @@ final class HttpHeaderBag implements Iterator
         return $headers;
     }
 
+    public function getFirst(string $headerName): HttpHeader
+    {
+        return $this->get($headerName)[0];
+    }
+
     /** @return HttpHeader|bool */
     public function current()
     {

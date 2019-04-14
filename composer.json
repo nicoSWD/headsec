@@ -1,5 +1,5 @@
 {
-    "name": "nicoswd/sec-header-check",
+    "name": "nicoswd/httpsec",
     "type": "library",
     "description": "Check security headers",
     "require": {
@@ -7,7 +7,8 @@
         "symfony/config": "^4.1",
         "symfony/dependency-injection": "^4.1",
         "symfony/yaml": "^4.1",
-        "ext-json": "*"
+        "ext-json": "*",
+        "symfony/finder": "^4.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.4",
