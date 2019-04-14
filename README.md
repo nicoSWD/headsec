@@ -4,7 +4,7 @@ Test a site's HTTP headers for possible security issues
 
 **Basic usage**
 ```shell
-$ headsec https://www.target.com
+headsec https://www.target.com
 ```
 
 **Advances usage**
@@ -12,7 +12,7 @@ $ headsec https://www.target.com
 If you're trying to test an URL that requires authentication, a POST request, or anything
 of the like, you can use `curl` and pipe the result to `headsec`
 ```shell
-$ curl https://yahoo.com/ --head -sS | headsec
+curl https://yahoo.com/ --head -sS | headsec
 ```
 
 **Screenshot**
@@ -22,8 +22,8 @@ $ curl https://yahoo.com/ --head -sS | headsec
 **Installation**
 
 ```shell
-$ curl https://github.com/nicoSWD/headsec/releases/download/v0.1/headsec.phar -L -o /usr/local/bin/headsec
-$ chmod u+x /usr/local/bin/headsec
+curl https://github.com/nicoSWD/headsec/releases/download/v0.1/headsec.phar -L -o /usr/local/bin/headsec
+chmod u+x /usr/local/bin/headsec
 ```
 
 **Build from source**
@@ -32,15 +32,15 @@ $ chmod u+x /usr/local/bin/headsec
 
 **Build**
 ```shell
-$ make
+make
 ```
 
 **Test**
 ```shell
-$ make test
+make test
 ```
 
 **Install**
 ```shell
-$ make install
+make install
 ```
