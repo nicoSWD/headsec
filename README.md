@@ -7,7 +7,7 @@ Test a site's HTTP headers for possible security issues
 headsec https://www.target.com
 ```
 
-**Advances usage**
+**Advanced usage**
 
 If you're trying to test an URL that requires authentication, a POST request, or anything
 of the like, you can use `curl` and pipe the result to `headsec`
