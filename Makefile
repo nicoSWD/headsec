@@ -3,15 +3,15 @@
 
 build-phar:
 		composer install --no-dev
-		php ./bin/create-phar.php ./build/httpsec.phar
+		php ./bin/create-phar.php ./build/headsec.phar
 
 install:
-		cp ./build/httpsec.phar /usr/local/bin/httpsec
-		chmod u+x /usr/local/bin/httpsec
+		cp ./build/headsec.phar /usr/local/bin/headsec
+		chmod u+x /usr/local/bin/headsec
 
 test:
 		composer install --dev
 		./vendor/bin/phpunit
 
 clean:
-		rm ./build/httpsec.phar
+		rm ./build/headsec.phar

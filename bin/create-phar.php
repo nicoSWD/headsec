@@ -19,14 +19,14 @@ $baseDir = dirname(__DIR__);
 
 $finder = new Finder();
 $finder->files()->in([
-    $baseDir . '/bin',
     $baseDir . '/config',
     $baseDir . '/src',
+    $baseDir . '/resources',
     $baseDir . '/vendor'
 ]);
 
 $phar = new Phar($pharFile);
-$phar->setStub("#!/usr/bin/env php\n<?php Phar::mapPhar('phpsec.phar'); require 'phar://phpsec.phar/bin/run.php'; __HALT_COMPILER();");
+$phar->setStub("#!/usr/bin/env php\n<?php Phar::mapPhar('headsec.phar'); require 'phar://headsec.phar/resources/run.php'; __HALT_COMPILER();");
 $phar->compress(Phar::GZ);
 $phar->buildFromIterator($finder->getIterator(), $baseDir);
 

@@ -1,18 +1,18 @@
-# httpsec (beta)
+# headsec (beta)
 
 Test a site's HTTP headers for possible security issues
 
 **Basic usage**
 ```shell
-$ httpsec https://www.target.com
+$ headsec https://www.target.com
 ```
 
 **Advances usage**
 
 If you're trying to test an URL that requires authentication, a POST request, or anything
-of the like, you can use `curl` and pipe the result to `httpsec`
+of the like, you can use `curl` and pipe the result to `headsec`
 ```shell
-$ curl https://yahoo.com/ --head -sS | httpsec
+$ curl https://yahoo.com/ --head -sS | headsec
 ```
 
 **Screenshot**
@@ -22,8 +22,8 @@ $ curl https://yahoo.com/ --head -sS | httpsec
 **Installation**
 
 ```shell
-$ curl https://github.com/nicoSWD/httpsec/releases/download/v0.1/httpsec.phar -L -o /usr/local/bin/httpsec
-$ chmod u+x /usr/local/bin/httpsec
+$ curl https://github.com/nicoSWD/headsec/releases/download/v0.1/headsec.phar -L -o /usr/local/bin/headsec
+$ chmod u+x /usr/local/bin/headsec
 ```
 
 **Build from source**

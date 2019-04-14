@@ -1,5 +1,5 @@
 {
-    "name": "nicoswd/httpsec",
+    "name": "nicoswd/headsec",
     "type": "library",
     "description": "Check security headers",
     "require": {
