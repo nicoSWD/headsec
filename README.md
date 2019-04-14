@@ -19,6 +19,13 @@ $ curl https://yahoo.com/ --head | httpsec
 
 ![screenshot](resources/screenshots/screenshot.png)
 
+**Installation**
+
+```shell
+$ curl https://github.com/nicoSWD/httpsec/releases/download/v0.1/httpsec.phar -L -o /usr/local/bin/phpsec
+$ chmod u+x /usr/local/bin/phpsec
+```
+
 **Build**
 ```shell
 $ make
