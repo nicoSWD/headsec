@@ -28,6 +28,8 @@ $ chmod u+x /usr/local/bin/httpsec
 
 **Build from source**
 
+[composer](https://getcomposer.org) needs to be installed globally in order to build this
+
 **Build**
 ```shell
 $ make
