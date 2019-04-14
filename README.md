@@ -9,10 +9,10 @@ $ httpsec https://www.target.com
 
 **Advances usage**
 
-If you're trying to test a site that requires authentication, a POST request, or anything
+If you're trying to test an URL that requires authentication, a POST request, or anything
 of the like, you can use `curl` and pipe the result to `httpsec`
 ```shell
-$ curl https://yahoo.com/ --head | httpsec
+$ curl https://yahoo.com/ --head -sS | httpsec
 ```
 
 **Screenshot**
