@@ -22,9 +22,11 @@ $ curl https://yahoo.com/ --head | httpsec
 **Installation**
 
 ```shell
-$ curl https://github.com/nicoSWD/httpsec/releases/download/v0.1/httpsec.phar -L -o /usr/local/bin/phpsec
-$ chmod u+x /usr/local/bin/phpsec
+$ curl https://github.com/nicoSWD/httpsec/releases/download/v0.1/httpsec.phar -L -o /usr/local/bin/httpsec
+$ chmod u+x /usr/local/bin/httpsec
 ```
+
+**Build from source**
 
 **Build**
 ```shell
