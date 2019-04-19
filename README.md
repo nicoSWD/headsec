@@ -17,7 +17,7 @@ curl https://yahoo.com/ --head -sS | headsec
 
 **Screenshot**
 
-![screenshot](resources/screenshots/screenshot.png)
+![screenshot](resources/screenshots/screenshot.gif)
 
 **Installation**
 
