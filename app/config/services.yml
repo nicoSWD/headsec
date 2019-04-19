@@ -1,0 +1,69 @@
+services:
+  nicoSWD\SecHeaderCheck\:
+    resource: '../../src/*'
+    exclude: '../../src/Application/Command'
+    autowire: true
+    public: false
+
+  nicoSWD\SecHeaderCheck\Application\Command\:
+    resource: '../../src/Application/Command'
+    autowire: true
+    public: true
+    tags: [console.command]
+
+  nicoSWD\SecHeaderCheck\Domain\Header\URLScanner:
+    arguments:
+      - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
+      - '@nicoswd.security_header_check.domain.validator.header_parser_factory'
+      - '@nicoswd.security_header_check.domain.result.post_security_scanner'
+
+  nicoSWD\SecHeaderCheck\Domain\Header\HeaderScanner:
+    arguments:
+      - '@nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider'
+      - '@nicoswd.security_header_check.domain.validator.header_parser_factory'
+      - '@nicoswd.security_header_check.domain.result.post_security_scanner'
+
+  nicoSWD\SecHeaderCheck\Domain\ResultPrinter\ResultPrinterFactory:
+    arguments:
+      - '@nicoswd.security_header_check.infrastructure.result_printer.json_result_printer'
+      - '@nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer'
+      - '@nicoswd.security_header_check.infrastructure.result_printer.console_result_printer'
+
+  nicoswd.security_header_check.infrastructure.result_printer.json_result_printer:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\JSONResultPrinter
+
+  nicoswd.security_header_check.infrastructure.result_printer.xml_result_printer:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\XMLResultPrinter
+
+  nicoswd.security_header_check.infrastructure.result_printer.console_result_printer:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\ResultPrinter\ConsoleResultPrinter
+
+  nicoswd.security_header_check.infrastructure.header.native_abstract_header_provider:
+    class: nicoSWD\SecHeaderCheck\Infrastructure\Header\NativeHeaderProvider
+    arguments:
+      - 5
+      - 5
+
+  nicoswd.security_header_check.domain.validator.header_parser_factory:
+    class: nicoSWD\SecHeaderCheck\Domain\Validator\HeaderParserFactory
+
+  nicoswd.security_header_check.domain.result.post_security_scanner:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ScanResultProcessor
+    arguments:
+      - '@nicoswd.security_header_check.domain.result.score_calculator'
+      - '@nicoswd.security_header_check.domain.result.processor_factory'
+      - '@nicoswd.security_header_check.domain.result.audition_result'
+
+  nicoswd.security_header_check.domain.result.score_calculator:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ScoreCalculator
+
+  nicoswd.security_header_check.domain.header.security_header:
+    class: nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader
+
+  nicoswd.security_header_check.domain.result.processor_factory:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\ProcessorFactory
+
+  nicoswd.security_header_check.domain.result.audition_result:
+    class: nicoSWD\SecHeaderCheck\Domain\Result\AuditionResult
+    arguments:
+      - '@nicoswd.security_header_check.domain.header.security_header'
