@@ -1,18 +1,21 @@
 .DEFAULT_GOAL := build-phar
 .PHONY: clean
 
-build-phar:
-	composer install --no-dev --optimize-autoloader
+install-composer:
+	sh build/install-composer.sh
+
+build-phar: install-composer
+	build/composer.phar install --no-dev --optimize-autoloader
 	bin/create-phar build/headsec.phar
 	chmod u+x build/headsec.phar
 
-dev:
-	composer install --dev
+dev: install-composer
+	build/composer.phar install --dev
 	bin/create-phar build/headsec.phar
 	chmod u+x build/headsec.phar
 
-test:
-	composer install --dev
+test: install-composer
+	build/composer.phar install --dev
 	vendor/bin/phpunit
 
 install:

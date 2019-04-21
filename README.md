@@ -29,8 +29,6 @@ curl https://raw.githubusercontent.com/nicoSWD/headsec/master/install.sh -sS | s
 
 **Build from source**
 
-[composer](https://getcomposer.org) needs to be installed globally in order to build this
-
 **Build**
 ```shell
 make
