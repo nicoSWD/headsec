@@ -24,7 +24,7 @@ curl https://yahoo.com/ --head -sS | headsec
 **Installation**
 
 ```shell
-curl https://raw.githubusercontent.com/nicoSWD/headsec/master/install.sh | sh
+curl https://raw.githubusercontent.com/nicoSWD/headsec/master/install.sh -sS | sh
 ```
 
 **Build from source**
