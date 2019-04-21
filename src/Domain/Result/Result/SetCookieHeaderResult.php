@@ -63,4 +63,9 @@ final class SetCookieHeaderResult extends AbstractParsedHeader
 
         return $this;
     }
+
+    public function cookieName(): string
+    {
+        return $this->cookieName;
+    }
 }

@@ -7,6 +7,8 @@
  */
 namespace Tests\nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Header\StrictTransportSecurityHeader;
 use PHPUnit\Framework\TestCase;
 
@@ -14,33 +16,28 @@ final class StrictTransportSecurityHeaderTest extends TestCase
 {
     public function testGivenAPerfectStrictTransportSecurityHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new StrictTransportSecurityHeader('max-age=15768000; includeSubdomains');
+        $header = new StrictTransportSecurityHeader(new HttpHeader(SecurityHeader::STRICT_TRANSPORT_SECURITY, 'max-age=31536000; includeSubdomains'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->hasSecureMaxAge());
+        $this->assertTrue($parsedHeader->hasFlagIncludeSubDomains());
     }
 
     public function testGivenAStrictTransportSecurityHeaderWithMissingSubDomainsFlagItShouldWarnAboutItButNotPenalise()
     {
-        $header = new StrictTransportSecurityHeader('max-age=15768000');
+        $header = new StrictTransportSecurityHeader(new HttpHeader(SecurityHeader::STRICT_TRANSPORT_SECURITY, 'max-age=15768000'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertCount(1, $header->getWarnings());
-    }
-
-    public function testGivenAStrictTransportSecurityHeaderWithLowMaxAgeItShouldWarnAndPenalise()
-    {
-        $header = new StrictTransportSecurityHeader('max-age=5000');
-
-        $this->assertSame(.5, $header->parse());
-        $this->assertCount(2, $header->getWarnings());
+        $this->assertFalse($parsedHeader->hasSecureMaxAge());
+        $this->assertFalse($parsedHeader->hasFlagIncludeSubDomains());
     }
 
     public function testGivenAStrictTransportSecurityHeaderWithMissingMaxAgeItShouldWarnAndPenalise()
     {
-        $header = new StrictTransportSecurityHeader('includeSubdomains');
+        $header = new StrictTransportSecurityHeader(new HttpHeader(SecurityHeader::STRICT_TRANSPORT_SECURITY, 'includeSubdomains'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(.0, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->hasSecureMaxAge());
+        $this->assertTrue($parsedHeader->hasFlagIncludeSubDomains());
     }
 }

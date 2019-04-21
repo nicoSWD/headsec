@@ -15,6 +15,7 @@ final class SetCookieHeader extends AbstractHeaderParser
     private const FLAG_SECURE = 'secure';
     private const FLAG_HTTP_ONLY = 'httponly';
     private const FLAG_SAME_SITE_STRICT = 'samesite=strict';
+    private const FLAG_SAME_SITE_LAX = 'samesite=lax';
 
     public function parse(): SetCookieHeaderResult
     {
@@ -39,7 +40,9 @@ final class SetCookieHeader extends AbstractHeaderParser
 
     private function hasSameSiteFlag(array $options): bool
     {
-        return in_array(self::FLAG_SAME_SITE_STRICT, $options, true);
+        return
+            in_array(self::FLAG_SAME_SITE_STRICT, $options, true) ||
+            in_array(self::FLAG_SAME_SITE_LAX, $options, true);
     }
 
     private function getCookieFlags(): array

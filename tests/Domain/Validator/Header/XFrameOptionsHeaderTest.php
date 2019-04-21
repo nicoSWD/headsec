@@ -7,6 +7,8 @@
  */
 namespace Tests\nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Header\XFrameOptionsHeader;
 use PHPUnit\Framework\TestCase;
 
@@ -14,33 +16,33 @@ final class XFrameOptionsHeaderTest extends TestCase
 {
     public function testGivenADenyXFrameOptionsHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new XFrameOptionsHeader('deny');
+        $header = new XFrameOptionsHeader(new HttpHeader(SecurityHeader::X_FRAME_OPTIONS, 'deny'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->getHasSecureOrigin());
     }
 
     public function testGivenASameOriginXFrameOptionsHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new XFrameOptionsHeader('sameorigin');
+        $header = new XFrameOptionsHeader(new HttpHeader(SecurityHeader::X_FRAME_OPTIONS, 'sameorigin'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->getHasSecureOrigin());
     }
 
     public function testGivenAnAllowFromXFrameOptionsHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new XFrameOptionsHeader('allow-from https://www.google.com');
+        $header = new XFrameOptionsHeader(new HttpHeader(SecurityHeader::X_FRAME_OPTIONS, 'allow-from https://www.google.com'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->hasAllowFrom());
     }
 
     public function testGivenAnInsecureXFrameOptionsHeaderItShouldWarnAboutIt()
     {
-        $header = new XFrameOptionsHeader('allow');
+        $header = new XFrameOptionsHeader(new HttpHeader(SecurityHeader::X_FRAME_OPTIONS, 'allow'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(0., $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->getHasSecureOrigin());
     }
 }

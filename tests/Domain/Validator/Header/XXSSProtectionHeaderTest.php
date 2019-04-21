@@ -7,6 +7,8 @@
  */
 namespace Tests\nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Header\XXSSProtectionHeader;
 use PHPUnit\Framework\TestCase;
 
@@ -14,33 +16,41 @@ final class XXSSProtectionHeaderTest extends TestCase
 {
     public function testGivenAPerfectHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new XXSSProtectionHeader('1; mode=block; report=/xss/report');
+        $header = new XXSSProtectionHeader(New HttpHeader(SecurityHeader::X_XSS_PROTECTION, '1; mode=block; report=/xss/report'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->hasReportUri());
+        $this->assertTrue($parsedHeader->isBlocking());
+        $this->assertTrue($parsedHeader->protectionIsOn());
     }
 
     public function testGivenAGoodHeaderWithoutReportUriItShouldWarnAboutIt()
     {
-        $header = new XXSSProtectionHeader('1; mode=block');
+        $header = new XXSSProtectionHeader(New HttpHeader(SecurityHeader::X_XSS_PROTECTION, '1; mode=block'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->hasReportUri());
+        $this->assertTrue($parsedHeader->isBlocking());
+        $this->assertTrue($parsedHeader->protectionIsOn());
     }
 
     public function testGivenAHeaderWhenProtectionIsOnItShouldWarnAboutMissingBlockMode()
     {
-        $header = new XXSSProtectionHeader('1');
+        $header = new XXSSProtectionHeader(New HttpHeader(SecurityHeader::X_XSS_PROTECTION, '1'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(.5, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->hasReportUri());
+        $this->assertFalse($parsedHeader->isBlocking());
+        $this->assertTrue($parsedHeader->protectionIsOn());
     }
 
     public function testGivenAHeaderWhenProtectionIsOffItShouldWarnAboutIt()
     {
-        $header = new XXSSProtectionHeader('0');
+        $header = new XXSSProtectionHeader(New HttpHeader(SecurityHeader::X_XSS_PROTECTION, '0'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(.0, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->hasReportUri());
+        $this->assertFalse($parsedHeader->isBlocking());
+        $this->assertFalse($parsedHeader->protectionIsOn());
     }
 }

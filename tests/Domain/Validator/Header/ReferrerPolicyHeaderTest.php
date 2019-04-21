@@ -21,7 +21,15 @@ final class ReferrerPolicyHeaderTest extends TestCase
         $result = $header->parse();
 
         $this->assertTrue($result->doesNotLeakReferrer());
-        $this->assertFalse($result->mayLeakOrigin());
+    }
+
+    /** @dataProvider leakingReferrerSettings */
+    public function testGivenAReferrerPolicyHeaderWithLeakingSettingsItShouldNotWarnAndPenalise($policy)
+    {
+        $header = new ReferrerPolicyHeader(new HttpHeader(SecurityHeader::REFERRER_POLICY, $policy));
+        $result = $header->parse();
+
+        $this->assertTrue($result->mayLeakOrigin());
     }
 
     public function nonLeakingReferrerSettings(): array

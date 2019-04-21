@@ -9,7 +9,7 @@ namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
 use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 
-final class AuditionResult
+class AuditionResult
 {
     /** @var HeaderWithObservations[] */
     private $observations = [];

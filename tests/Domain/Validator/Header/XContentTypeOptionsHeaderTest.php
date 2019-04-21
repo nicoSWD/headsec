@@ -7,6 +7,8 @@
  */
 namespace Tests\nicoSWD\SecHeaderCheck\Domain\Validator\Header;
 
+use nicoSWD\SecHeaderCheck\Domain\Header\HttpHeader;
+use nicoSWD\SecHeaderCheck\Domain\Header\SecurityHeader;
 use nicoSWD\SecHeaderCheck\Domain\Validator\Header\XContentTypeOptionsHeader;
 use PHPUnit\Framework\TestCase;
 
@@ -14,17 +16,17 @@ final class XContentTypeOptionsHeaderTest extends TestCase
 {
     public function testGivenAPerfectXContentTypeOptionsHeaderItShouldNotReturnAnyWarnings()
     {
-        $header = new XContentTypeOptionsHeader('nosniff');
+        $header = new XContentTypeOptionsHeader(new HttpHeader(SecurityHeader::X_CONTENT_TYPE_OPTIONS, 'nosniff'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(1., $header->parse());
-        $this->assertEmpty($header->getWarnings());
+        $this->assertTrue($parsedHeader->isNoSniff());
     }
 
     public function testGivenAnXContentTypeHeaderWithAnInvalidValueItShouldWarnAndPenalise()
     {
-        $header = new XContentTypeOptionsHeader('anything');
+        $header = new XContentTypeOptionsHeader(new HttpHeader(SecurityHeader::X_CONTENT_TYPE_OPTIONS, 'anything'));
+        $parsedHeader = $header->parse();
 
-        $this->assertSame(.0, $header->parse());
-        $this->assertCount(1, $header->getWarnings());
+        $this->assertFalse($parsedHeader->isNoSniff());
     }
 }

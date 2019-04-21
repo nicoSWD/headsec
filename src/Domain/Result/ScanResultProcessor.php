@@ -7,7 +7,7 @@
  */
 namespace nicoSWD\SecHeaderCheck\Domain\Result;
 
-final class ScanResultProcessor
+class ScanResultProcessor
 {
     /** @var ScoreCalculator */
     private $scoreCalculator;
