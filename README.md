@@ -22,8 +22,7 @@ curl https://yahoo.com/ --head -sS | headsec
 **Installation**
 
 ```shell
-curl https://github.com/nicoSWD/headsec/releases/download/v0.1/headsec.phar -L -o /usr/local/bin/headsec
-chmod u+x /usr/local/bin/headsec
+curl https://raw.githubusercontent.com/nicoSWD/headsec/master/install.sh | sh
 ```
 
 **Build from source**

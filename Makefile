@@ -6,6 +6,11 @@ build-phar:
 	bin/create-phar build/headsec.phar
 	chmod u+x build/headsec.phar
 
+dev:
+	composer install --dev
+	bin/create-phar build/headsec.phar
+	chmod u+x build/headsec.phar
+
 test:
 	composer install --dev
 	vendor/bin/phpunit

@@ -42,7 +42,7 @@ final class ConsoleResultPrinter implements ResultPrinterInterface
         $missingHeaders = $scanResults->getMissingHeaders();
 
         if ($missingHeaders) {
-            $output .= PHP_EOL . 'Missing headers: ';
+            $output .= PHP_EOL . '<bg=red>Missing headers</>: ';
         }
 
         foreach ($missingHeaders as $headerName) {

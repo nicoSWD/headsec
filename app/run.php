@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 use nicoSWD\SecHeaderCheck\Application\Command\SecHeadersCheckCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;

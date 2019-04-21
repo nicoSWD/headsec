@@ -12,7 +12,7 @@ use nicoSWD\SecHeaderCheck\Domain\Validator\AbstractHeaderParser;
 
 final class StrictTransportSecurityHeader extends AbstractHeaderParser
 {
-    private const SIX_MONTHS_IN_SECONDS = 15768000;
+    private const ONE_YEAR_IN_SECONDS = 31536000;
     private const FLAG_INCLUDE_SUB_DOMAINS = 'includesubdomains';
 
     public function parse(): StrictTransportSecurityHeaderResult
@@ -37,7 +37,7 @@ final class StrictTransportSecurityHeader extends AbstractHeaderParser
     {
         $maxAge = $this->getMaxAge($this->getValue());
 
-        return $maxAge !== false && $maxAge >= self::SIX_MONTHS_IN_SECONDS;
+        return $maxAge !== false && $maxAge >= self::ONE_YEAR_IN_SECONDS;
     }
 
     private function getMaxAge(string $value)
