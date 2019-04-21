@@ -1,5 +1,6 @@
 # headsec (beta)
 [![Build Status](https://travis-ci.org/nicoSWD/headsec.svg?branch=master)](https://travis-ci.org/nicoSWD/headsec)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nicoSWD/headsec/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nicoSWD/headsec/?branch=master)
 
 Test a site's HTTP headers for possible security issues
 
