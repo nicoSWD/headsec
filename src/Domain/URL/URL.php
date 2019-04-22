@@ -14,7 +14,7 @@ final class URL
     private const SCHEME_HTTPS = 'https';
     private const SCHEME_HTTP = 'http';
 
-    private const ALLOWED_PROTOCOLS = [
+    private const ALLOWED_SCHEMES = [
         self::SCHEME_HTTP,
         self::SCHEME_HTTPS,
     ];
@@ -24,6 +24,10 @@ final class URL
 
     public function __construct(string $url)
     {
+        if (!$this->urlHasScheme($url)) {
+            $url = sprintf('http://%s', $url);
+        }
+
         if (!$this->isValid($url)) {
             throw new Exception\InvalidUrlException();
         }
@@ -86,12 +90,24 @@ final class URL
             return false;
         }
 
-        $this->components = parse_url($url);
+        $components = parse_url($url);
 
-        if (!isset($this->components['scheme'], $this->components['host'])) {
+        if (!isset($components['host'], $components['scheme']) || !$this->isAllowedScheme($components['scheme'])) {
             return false;
         }
 
-        return in_array($this->components['scheme'], self::ALLOWED_PROTOCOLS, true);
+        $this->components = $components;
+
+        return true;
+    }
+
+    private function isAllowedScheme(string $scheme): bool
+    {
+        return in_array($scheme, self::ALLOWED_SCHEMES, true);
+    }
+
+    private function urlHasScheme(string $url): bool
+    {
+        return preg_match('~^[a-z][a-z\d\-\.]*://~i', $url) === 1;
     }
 }
