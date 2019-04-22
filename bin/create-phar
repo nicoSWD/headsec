@@ -17,14 +17,25 @@ if (is_file($pharFile)) {
     unlink($pharFile);
 }
 
-$finder = (new Finder)->files()->in([
+$dirs = [
     $baseDir . '/app',
     $baseDir . '/src',
     $baseDir . '/vendor'
-]);
+];
+
+$finder = (new Finder())
+    ->files()
+    ->in($dirs)
+    ->name('/\.(php|yml)$/')
+    ->notPath('Tests');
+
+$stub = "#!/usr/bin/env php\n";
+$stub .= "<?php Phar::mapPhar('headsec.phar');\n";
+$stub .= "require 'phar://headsec.phar/app/run.php';\n";
+$stub .= "__HALT_COMPILER();";
 
 $phar = new Phar($pharFile);
-$phar->setStub("#!/usr/bin/env php\n<?php Phar::mapPhar('headsec.phar'); require 'phar://headsec.phar/app/run.php'; __HALT_COMPILER();");
+$phar->setStub($stub);
 $phar->compress(Phar::GZ);
 $phar->buildFromIterator($finder->getIterator(), $baseDir);
 
